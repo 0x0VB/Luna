@@ -1,0 +1,1 @@
+This folder holds all of the definition files used for autofill by Sumneko's lua extension.

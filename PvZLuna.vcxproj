@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Dependencies\liblua54.a" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Classes\Definitions.h" />
+    <ClInclude Include="Source\Classes\ForwardDefinitions.h" />
+    <ClInclude Include="Source\Classes\Functions.h" />
+    <ClInclude Include="Source\Classes\LawnApp\LawnApp.h" />
+    <ClInclude Include="Source\Classes\Sexy\UIButton\UIButton.h" />
+    <ClInclude Include="Source\Classes\Sexy\UIElement\UIElement.h" />
+    <ClInclude Include="Source\Classes\Sexy\UIElement\UIElementFunc.h" />
+    <ClInclude Include="Source\Classes\Sexy\UIRoot\UIRoot.h" />
+    <ClInclude Include="Source\Enums\Enums.h" />
+    <ClInclude Include="Source\Enums\GameModes.h" />
+    <ClInclude Include="Source\Enums\GameResult.h" />
+    <ClInclude Include="Source\Enums\GameScenes.h" />
+    <ClInclude Include="Source\Include\lauxlib.h" />
+    <ClInclude Include="Source\Include\lua.h" />
+    <ClInclude Include="Source\Include\lua.hpp" />
+    <ClInclude Include="Source\Include\luaconf.h" />
+    <ClInclude Include="Source\Include\lualib.h" />
+    <ClInclude Include="Source\Luna\LunaClass\Classes\LawnApp.h" />
+    <ClInclude Include="Source\Luna\LunaClass\Classes\Sexy\UIContainer.h" />
+    <ClInclude Include="Source\Luna\LunaClass\Classes\Sexy\UIRoot.h" />
+    <ClInclude Include="Source\Luna\LunaClass\ClassFunc.h" />
+    <ClInclude Include="Source\Luna\LunaClass\LunaClass.h" />
+    <ClInclude Include="Source\Luna\LunaEvent\EventFunc.h" />
+    <ClInclude Include="Source\Luna\LunaEvent\LunaEvent.h" />
+    <ClInclude Include="Source\Luna\LunaIO\IOFunc.h" />
+    <ClInclude Include="Source\Luna\LunaIO\LunaIO.h" />
+    <ClInclude Include="Source\Luna\Luna.h" />
+    <ClInclude Include="Source\Luna\LunaStructs\Color\Color.h" />
+    <ClInclude Include="Source\Luna\LunaStructs\Color\ColorFunc.h" />
+    <ClInclude Include="Source\Luna\LunaStructs\LunaStructs.h" />
+    <ClInclude Include="Source\Luna\LunaStructs\Pad\Pad.h" />
+    <ClInclude Include="Source\Luna\LunaStructs\Pad\PadFunc.h" />
+    <ClInclude Include="Source\Luna\LunaStructs\Rect\Rect.h" />
+    <ClInclude Include="Source\Luna\LunaStructs\Rect\RectFunc.h" />
+    <ClInclude Include="Source\Luna\LunaStructs\StructsFunc.h" />
+    <ClInclude Include="Source\Luna\LunaStructs\Vector2\Vector2.h" />
+    <ClInclude Include="Source\Luna\LunaStructs\Vector2\Vector2Func.h" />
+    <ClInclude Include="Source\Luna\LunaStructs\Vector3\Vector3.h" />
+    <ClInclude Include="Source\Luna\LunaStructs\Vector3\Vector3Func.h" />
+    <ClInclude Include="Source\Luna\LunaUtil\UtilFunc.h" />
+    <ClInclude Include="Source\Luna\LunaUtil\LunaUtil.h" />
+    <ClInclude Include="Source\PvZUtil\ButtonListener.h" />
+    <ClInclude Include="Source\PvZUtil\Definitions.h" />
+    <ClInclude Include="Source\PvZUtil\DialogButton.h" />
+    <ClInclude Include="Source\PvZUtil\Font.h" />
+    <ClInclude Include="Source\PvZUtil\Graphics.h" />
+    <ClInclude Include="Source\PvZUtil\LawnApp.h" />
+    <ClInclude Include="Source\PvZUtil\Main.hpp" />
+    <ClInclude Include="Source\PvZUtil\PreModalInfo.h" />
+    <ClInclude Include="Source\PvZUtil\UIButton.h" />
+    <ClInclude Include="Source\PvZUtil\UIElement.h" />
+    <ClInclude Include="Source\PvZUtil\UIRoot.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{7629fa53-511d-45e8-9cb4-3472ccc6c255}</ProjectGuid>
+    <RootNamespace>PvZLuna</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\Build\</OutDir>
+    <IntDir>.\Intermediates\</IntDir>
+    <TargetExt>.dll</TargetExt>
+    <TargetName>Luna</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>.\Build\</OutDir>
+    <IntDir>.\Intermediates\</IntDir>
+    <TargetExt>.dll</TargetExt>
+    <TargetName>Luna</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Dependencies\liblua54.a;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Dependencies\liblua54.a;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
