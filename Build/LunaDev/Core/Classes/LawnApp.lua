@@ -19,6 +19,7 @@
 ---@field UpdateState integer The current update state.
 ---@field UpdateDepth integer The depth of the current update.
 ---@field Speed number The speed of the game. 1 by default.
+---@field AppPaused boolean Pauses the *entire app* when true. Changing this is not recommended as it stops the entire app, not just the game.
 ---@field MouseIn boolean `true` when the mouse is on the game window.
 ---@field Active boolean `true` when the game window is active.
 ---@field Minimized boolean `true` when the game window is minimized.
@@ -33,13 +34,19 @@
 ---@field EasyPlantingCheat boolean Makes all plants free and have no recharge when set to `true`.
 ---@field CloseRequest boolean `true` when the user requests a close.
 ---@field Age integer How many frames the game has been alive for.
----@field MustacheMode boolean Turns on Mustache Mode.
----@field SuperMowerMode boolean Turns on SuperMower Mode.
----@field FutureMode boolean Turns on Future Mode.
----@field PinataMode boolean Turns on PinataMode.
----@field DaisyMode boolean Turns on Daisy Mode.
----@field SukhbirMode boolean Turns on Sukhbir Mode.
+---@field MustacheMode boolean Gives zombies mustaches.
+---@field SuperMowerMode boolean Changes the appearance of lawn mowers to make them look cooler.
+---@field FutureMode boolean Gives the zombies cool futuristic glasses.
+---@field PinataMode boolean Makes a candy explosion whenever zombies die.
+---@field DaisyMode boolean Makes diasies in the place of zombies' death.
+---@field SukhbirMode boolean Makes the zombies groan turn into a "Suck their brains".
+---@field DanceMode boolean Makes the zombies dance!
 LawnApp = {};
+
+---Creates a Windows MessageBox.
+---@param Message string
+---@param Title string?
+function LawnApp:MessageBox(Message, Title) end;
 
 ---@type LunaEvent
 LawnApp.OnUpdate = {};

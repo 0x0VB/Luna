@@ -70,15 +70,18 @@ namespace Luna::Event
 			lua_settop(L, RT);
 		}
 
-		static LunaEvent* New(const char* Name, void* Handler, CONST DWORD* Entries, size_t EntryCount = 1, bool AutoHook = false)
+		// Creates and returns a new event with the given parameters, pushes the lua userdata of this event onto the stack.
+		static LunaEvent* New(const char* Name, void* Handler, DWORD Entries[], size_t EntryCount = 1, bool AutoHook = false)
 		{
-			auto self = (LunaEvent*)lua_newuserdata(L, sizeof(LunaEvent));
+			int T = lua_gettop(L);
+			auto self = (LunaEvent*)lua_newuserdata(L, sizeof(LunaEvent));// 1
 			self->Setup(Name, Handler, Entries, EntryCount, AutoHook);
-			LunaUtil::Local("EventMeta");
-			lua_pushlightuserdata(L, self);
-			lua_pushvalue(L, -3);
-			lua_settable(L, -3);
-			lua_setmetatable(L, -2);
+			LunaUtil::Local("EventMeta");// 2
+			lua_pushlightuserdata(L, self);// 3
+			lua_pushvalue(L, T + 1);
+			lua_settable(L, T + 2);
+			lua_setmetatable(L, T + 1);
+			lua_settop(L, T);
 			return self;
 		}
 	};
