@@ -1,5 +1,6 @@
 #pragma once
 #include "Definitions.h"
+#include "Resources.h"
 #include "PreModalInfo.h"
 #include "Graphics.h"
 #include "Font.h"

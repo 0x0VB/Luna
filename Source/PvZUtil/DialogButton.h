@@ -35,21 +35,14 @@ public:
 	}
 	static void __stdcall Draw(Sexy::Graphics* G, int X, int Y, int W, int H, bool Down, bool Highlighted, const PopString& Text)
 	{
-		CONST auto LeftImage = *(Sexy::Image**)0x6A7258;
-		CONST auto RightImage = *(Sexy::Image**)0x6A72A0;
-		CONST auto MiddleImage = *(Sexy::Image**)0x6A78F4;
-		CONST auto LeftDown = *(Sexy::Image**)0x6A78A4;
-		CONST auto RightDown = *(Sexy::Image**)0x6A739C;
-		CONST auto MiddleDown = *(Sexy::Image**)0x6A7984;
-		CONST auto ButtonFont = *(Sexy::Font**)0x6A7AD4;
-		CONST auto HighlightF = *(Sexy::Font**)0x6A7248;
-
-		auto Right = (Down) ? RightDown : RightImage;
-		auto Left = (Down) ? LeftDown : LeftImage;
-		auto Middle = (Down) ? MiddleDown : MiddleImage;
-		auto Font = (Highlighted) ? HighlightF : ButtonFont;
+		using namespace Resources;
+		auto Right = (Down) ? *StoneButtonRightDown : *StoneButtonRight;
+		auto Left = (Down) ? *StoneButtonLeftDown : *StoneButtonLeft;
+		auto Middle = (Down) ? *StoneButtonMiddleDown : *StoneButtonMiddle;
+		auto Font = (Highlighted) ? *DwarvenTodcraft18BrightGreenInset : *DwarvenTodcraft18GreenInset;
 
 		int Width = W;
+		int StartX = X;
 		W -= 71;
 		int Segments = W / 46;
 		int Remaining = W % 46;
@@ -71,23 +64,26 @@ public:
 		int SWidth = Font->TextWidth(Text);
 		int Height = Font->GetAscent();
 		G->State.Color = Color(255, 255, 255);
-		G->DrawString(Text, (Width - SWidth) / 2 + 1, Y -4 + (Height + (H - Height / 6) -1) / 2);
+		G->DrawString(Text, StartX + 1 + (Width - SWidth) / 2, Y - 4 + (Height + (H - Height / 6) - 1) / 2);
 	}
 };
 
-void __declspec(naked) StoneButtonDrawHandler()
+namespace Disp::StoneButton
 {
-	__asm
+	void __declspec(naked) StoneButtonDrawHandler()
 	{
-		push[esp + 0x1C]
-		push[esp + 0x1C]
-		push[esp + 0x1C]
-		push[esp + 0x1C]
-		push[esp + 0x1C]
-		push[esp + 0x1C]
-		push eax
-		push[esp + 0x20]
-		call LawnStoneButton::Draw
-		ret
+		__asm
+		{
+			push[esp + 0x1C]
+			push[esp + 0x1C]
+			push[esp + 0x1C]
+			push[esp + 0x1C]
+			push[esp + 0x1C]
+			push[esp + 0x1C]
+			push eax
+			push[esp + 0x20]
+			call LawnStoneButton::Draw
+			ret
+		}
 	}
 }

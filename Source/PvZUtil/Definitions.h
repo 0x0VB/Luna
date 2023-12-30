@@ -22,10 +22,12 @@ struct PopString
     DWORD Padding;
     std::string String;
     
-    PopString(const char* Char = "") { Padding = 0; String.assign(Char); }
+    PopString(const char* Char = "") { Padding = 0; String = Char; }
     PopString(std::string Str) { Padding = 0; String = Str; }
     operator const char* () { return String.c_str(); }
     operator std::string() { return String; }
+    void operator=(const char* Char) { String = Char; }
+    void operator=(std::string Str) { String = Str; }
 };
 
 struct PopFlags

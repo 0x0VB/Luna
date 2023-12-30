@@ -12,6 +12,7 @@
 #include <list>
 #include <map>
 #include <set>
+namespace Disp {}
 
 // Lua Globals
 #include "Include/lua.hpp"
@@ -26,8 +27,9 @@ std::ofstream LUNA_BYTECODE;
 
 // Including Libraries
 #include "Enums/Enums.h"
-
 #include "PvZUtil/Main.hpp"
+LawnApp* App;
+
 #include "Luna/Luna.h"
 
 void InitiateLunaState()
@@ -42,41 +44,11 @@ void InitiateLunaState()
 int ModWriter(lua_State* L, const void* Buffer, size_t Size, void* Data)
 { LUNA_BYTECODE.write((const char*)Buffer, Size); return 0; }
 
-LawnApp* App;
-
-BOOL Added;
-CONST DWORD RetPt = 0x00538fd7;
-Sexy::Graphics* G;
-LawnStoneButton* Btn;
-Color TC = Color::FromHex("#00F");
-Sexy::Image* TestI = NULL;
-const PopString& Nm =  PopString("0xVB");
-void __declspec(naked) Test()
-{
-	__asm
-	{
-		pushad
-		mov G, eax
-	}
-	if (!App->Loaded || Added) goto Exit;
-	App->UIRoot->AddChild(Btn);
-	Added = true;
-
-Exit:
-	__asm
-	{
-		popad
-		mov [esp+184], 01
-		jmp RetPt
-	}
-}
-
 class LunaListener : public Sexy::ButtonListener
 {
 	virtual void ButtonClick(int ID, int ClickType)
 	{
-		DWORD Entry = { 0x447b00 };
-		auto Event = Luna::Event::LunaEvent::New("StoneDraw", StoneButtonDrawHandler, &Entry, 1, true);
+		
 	}
 };
 
@@ -98,11 +70,12 @@ BOOL APIENTRY DllMain
 	int LoadResult = luaL_loadfile(L, "LunaDev/Mod.lua");
 	if (LoadResult == LUA_OK) { FunctionLoaded = true; LunaIO::AllocateConsole(); }// If Mod.lua is found, then DevMode is enabled.
 	else if (LoadResult != LUA_ERRFILE) { std::cout << "LUA_ERRFILE" << "\n"; LunaIO::Print(lua_tostring(L, -1), LunaIO::Error); return TRUE; }
-
+	std::cout << "LawnApp: " << App << "\n";
 	LunaInit(LunaIO); std::cout << "LunaIO Loaded.\n";// Responsible for print/warn/info functions.
 	LunaInit(LunaUtil); std::cout << "LunaUtil Loaded.\n";// General-purpose lua functions that make dealing with lua easier.
 	LunaInit(LunaStruct); std::cout << "LunaStruct Loaded.\n";// Contains structs like Vector2, Rect, Color, etc.
 	LunaInit(Luna::Event); std::cout << "LunaEvent Loaded.\n";// Ports events onto lua, is also the main hooking lib.
+	LunaInit(Luna::Class); std::cout << "LunaClass Loaded.\n";// Wraps C++ classes into lua, allowing user interaction.
 
 	if (FunctionLoaded)
 	{
@@ -123,19 +96,16 @@ BOOL APIENTRY DllMain
 			return FALSE;
 		}
 	}
-	std::cout << "Mod Function Loaded." << "\n";
-	std::cout << "Luna Developer Mode Loaded\t\tV0.2.1\n";
-	if (lua_pcall(L, 0, 0, 0) != LUA_OK) LunaIO::Print(lua_tostring(L, -1), LunaIO::Error);
-	// Call the Mod main function and print errors.
-	// uniqua: hello
-	// Debugging Code Starts Here
-	App->WindowBounds = IRect(0, 0, 800, 700);// Expand window bounds to test LawnApp
-	Btn = LawnStoneButton::New(0, new LunaListener(), "Luna!");// Create new button (can't parent it yet because img resources to render it aren't loaded)
-	Btn->Bounds = IRect(0, 0, 200, 46);// Set button size
 
-	CONST DWORD Entries = { 0x00538fcf };
-	auto Event = Luna::Event::LunaEvent::New("Update", Test, &Entries, 1, true);// Connect the Test function to the LawnApp update function
-	// This uses the LunaEvent lib to create a hook at 0x00538fcf
-	
+	std::cout << "Mod Function Loaded." << "\n"; system("cls");
+	std::cout << "Luna Developer Mode Loaded\t\tV0.2.2\n\n";
+	if (lua_pcall(L, 0, 0, 0) != LUA_OK)
+	{
+		LunaIO::Print("ERROR MESSAGE:", LunaIO::Error);
+		LunaIO::Print(lua_tostring(L, -1), LunaIO::Error);
+		App->Popup("There was an error while executing the mod! Please send the error message to the mod creator.");
+	}
+
+	std::cout << "[MOD]: Execution has halted!";
 	return TRUE;
 }
