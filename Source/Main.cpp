@@ -16,12 +16,14 @@
 #include <filesystem>
 
 // Including Libraries
+#include "Include/lua.hpp"
 #include "Enums/Enums.h"
-#include "PvZUtil/Main.hpp" // LawnApp* App;
+#include "PvZUtil/include.h" // LawnApp* App;
 
 // Luna core
-#include "Include/lua.hpp"
-#include "Luna/Luna.h"		// lua_State* L;
+lua_State* L = nullptr;		// lua_State* L; must be defined before including Luna.h because it's used as global state...
+LawnApp* App = nullptr;		// LawnApp* App; must be defined before including Luna.h because it's used as global variable...
+#include "Luna/include.h"		
 
 // Luna Globals
 CONST BOOL LUNA_DEBUG_MODE = TRUE;

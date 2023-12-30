@@ -1,5 +1,5 @@
 #pragma once
-inline lua_State* L;
+
 namespace Luna { };
 #include "LunaIO/LunaIO.h"
 #include "LunaUtil/LunaUtil.h"

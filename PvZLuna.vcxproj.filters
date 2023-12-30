@@ -50,7 +50,7 @@
     <ClInclude Include="Source\Enums\GameScenes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Luna\Luna.h">
+    <ClInclude Include="Source\Luna\include.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Luna\LunaIO\LunaIO.h">
@@ -125,7 +125,7 @@
     <ClInclude Include="Source\PvZUtil\Definitions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PvZUtil\Main.hpp">
+    <ClInclude Include="Source\PvZUtil\include.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\PvZUtil\LawnApp.h">

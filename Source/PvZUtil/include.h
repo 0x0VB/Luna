@@ -10,4 +10,3 @@
 #include "UIRoot.h"
 #include "UIButton.h"
 #include "DialogButton.h"
-inline LawnApp* App;

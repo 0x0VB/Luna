@@ -36,7 +36,7 @@
     <ClInclude Include="Source\Luna\LunaEvent\LunaEvent.h" />
     <ClInclude Include="Source\Luna\LunaIO\IOFunc.h" />
     <ClInclude Include="Source\Luna\LunaIO\LunaIO.h" />
-    <ClInclude Include="Source\Luna\Luna.h" />
+    <ClInclude Include="Source\Luna\include.h" />
     <ClInclude Include="Source\Luna\LunaStructs\Color\Color.h" />
     <ClInclude Include="Source\Luna\LunaStructs\Color\ColorFunc.h" />
     <ClInclude Include="Source\Luna\LunaStructs\LunaStructs.h" />
@@ -57,7 +57,7 @@
     <ClInclude Include="Source\PvZUtil\Font.h" />
     <ClInclude Include="Source\PvZUtil\Graphics.h" />
     <ClInclude Include="Source\PvZUtil\LawnApp.h" />
-    <ClInclude Include="Source\PvZUtil\Main.hpp" />
+    <ClInclude Include="Source\PvZUtil\include.h" />
     <ClInclude Include="Source\PvZUtil\PreModalInfo.h" />
     <ClInclude Include="Source\PvZUtil\Resources.h" />
     <ClInclude Include="Source\PvZUtil\UIButton.h" />
