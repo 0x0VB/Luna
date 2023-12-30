@@ -33,6 +33,31 @@ namespace Disp::LunaApp
 		}
 	}
 #pragma endregion
+#pragma region OnFinalDraw
+	DWORD __stdcall FinalDrawCaller(Sexy::Graphics* G);
+	void FinalDrawHandler();
+	DWORD FinalDrawEntries[1] = { 0x5390DC };
+	LunaEvent* OnFinalDraw;
+	Sexy::Image* MyImg = nullptr;
+
+	DWORD __stdcall FinalDrawCaller(Sexy::Graphics* G)
+	{
+		if (MyImg == nullptr) MyImg = (Sexy::Image*)App->GetImage("images/coolpic.jpg", true);
+		G->DrawImage(MyImg, 0, 0, 800, 600);
+		return 0x5390E1;
+	}
+	void __declspec(naked) FinalDrawHandler()
+	{
+		__asm
+		{
+			push ecx
+			push ecx
+			call FinalDrawCaller
+			pop ecx
+			jmp eax
+		}
+	}
+#pragma endregion
 
 	int MsgBox(lua_State* L)
 	{
@@ -44,6 +69,7 @@ namespace Disp::LunaApp
 	{
 		StoneButtonDraw = Luna::Event::LunaEvent::New("OnStoneButtonDraw", StoneButton::StoneButtonDrawHandler, StoneButtonEntries, 1, true);
 		OnUpdate = LunaEvent::New("OnUpdate", UpdateHandler, UpdateEntries, 1, false);
+		OnFinalDraw = LunaEvent::New("OnFinalDraw", FinalDrawHandler, FinalDrawEntries, 1, true);
 	}
 }
 

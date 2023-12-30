@@ -1,4 +1,5 @@
 #pragma once
+
 namespace Luna { };
 #include "LunaIO/LunaIO.h"
 #include "LunaUtil/LunaUtil.h"

@@ -1,0 +1,57 @@
+---@class MagnetItem
+---@field Position FVector2
+---@field Destination FVector2
+---@field MagnetItemType MagnetItemType
+
+---@class Plant: GameObject
+---@field SeedType SeedType
+---@field Column integer
+---@field AnimTimer integer
+---@field CurrentFrame integer
+---@field TicksPerFrame integer
+---@field FrameCount integer
+---@field CurrentTick integer
+---@field Dead boolean
+---@field Smashed boolean
+---@field HP integer
+---@field MaxHP integer
+---@field Offensive boolean
+---@field VanishTimer integer
+---@field DetonationTimer integer
+---@field ArmingTimer integer
+---@field ActionTimer integer
+---@field ActionRate integer
+---@field MaxActionTimer integer
+---@field PlantRect Rect
+---@field AttackRect Rect
+---@field Target IVector2
+---@field StartLane integer
+---@field Particle Particle
+---@field FireTimer integer
+---@field BodyAnimation Reanimation
+---@field HeadAnimation Reanimation
+---@field Head2Animation Reanimation
+---@field Head3Animation Reanimation
+---@field BlinkAnimation Reanimation
+---@field LightAnimation Reanimation
+---@field SleepAnimation Reanimation
+---@field BlinkTimer integer
+---@field RecentlyEatenTimer integer
+---@field FlashTimer integer
+---@field GlowTimer integer
+---@field ShakeOffset FVector2
+---@field TargetZombie Zombie
+---@field WakingTimer integer
+---@field Asleep boolean
+---@field OnBoard boolean
+---@field OnBungee boolean
+---@field Highlighted boolean
+---@field ImitaterType SeedType
+---@field ZenGardenIndex integer
+local Plant = {};
+
+---Forces this plant to fire.
+---@param Lane integer?
+---@param SecondaryWeapon boolean?
+---@param Target Zombie?
+function Plant:Fire(Lane, SecondaryWeapon, Target) end;
