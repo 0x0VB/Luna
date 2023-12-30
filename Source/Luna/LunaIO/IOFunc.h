@@ -10,6 +10,7 @@ void LunaIO::AllocateConsole()
 
 	CONSOLE_ALLOCATED = true;
 	CONSOLE_HANDLE = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTitleA("LunaIO");
 }
 
 void LunaIO::SetColor(IOColor Color)

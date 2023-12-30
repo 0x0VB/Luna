@@ -1,0 +1,17 @@
+---@class UIButton: UIElement
+---@field ID integer
+---@field Text string
+---@field Label string
+---@field Justify integer
+---@field Font Font
+---@field Image Image
+---@field HoveredImage Image
+---@field DownImage Image
+---@field DisabledImage Image
+---@field Bounds Rect
+---@field HoveredBounds Rect
+---@field DownBounds Rect
+---@field DisabledBounds Rect
+---@field Inverted boolean
+---@field NoDraw boolean
+local UIButton = {};
