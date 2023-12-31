@@ -48,13 +48,13 @@ void Disp::LunaApp::SetupEvents()
 }
 
 using namespace Luna::Class::Fields;
-Luna::Class::Base::LunaClass* Luna::Class::Classes::LunaApp::Source = nullptr;
-int Luna::Class::Classes::LunaApp::Init(lua_State* L)
+Luna::Class::LunaClass* Luna::Class::LunaApp::Source = nullptr;
+int Luna::Class::LunaApp::Init(lua_State* L)
 {
 	Source = new LunaClass();
 	Source->AllowsInjection = true;
 	Source->SetName("LawnApp");
-	Source->Inherit(Luna::Class::Classes::LunaAppBase::Source);
+	Source->Inherit(Luna::Class::LunaAppBase::Source);
 
 	BlnField::New("ZombiesLoaded", 0x800, Source);
 	BlnField::New("NewUser", 0x801, Source);

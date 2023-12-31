@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "SexyAppClass.h"
 
-Luna::Class::Base::LunaClass* Luna::Class::Classes::LunaAppBase::Source = nullptr;
-int Luna::Class::Classes::LunaAppBase::Init(lua_State* L)
+Luna::Class::LunaClass* Luna::Class::LunaAppBase::Source = nullptr;
+int Luna::Class::LunaAppBase::Init(lua_State* L)
 {
 	using namespace Fields;
 	Source = new LunaClass();

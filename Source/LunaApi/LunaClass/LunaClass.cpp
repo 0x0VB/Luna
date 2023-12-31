@@ -6,14 +6,16 @@
 #include "LunaApi/LunaIO/LunaIO.h"
 #include "Luna.h"
 
-namespace Luna::Class {
+
+using namespace Luna::Class;
+
+namespace Luna::Class
+{
 	std::map<void*, bool> CLASS_VALIDATE = {};
 	CONST SIZE_T MAX_FIELD_CAPACITY = 1000;
 	SIZE_T FIELDS_USED = 0;
-	Base::LunaField* FIELDS = nullptr;
+	LunaField* FIELDS = nullptr;
 }
-
-using namespace Luna::Class::Base;
 
 #pragma region LunaClass
 void LunaClass::SetName(const char* NewName)
@@ -338,17 +340,17 @@ LunaInstance* Luna::Class::GetAndAssert(lua_State* L)
 {
 	void* self = lua_touserdata(L, 1);
 	if (!lua_isuserdata(L, 1)) LunaIO::ThrowError("Unable to get self.");
-	if (CLASS_VALIDATE.contains(self)) return (Base::LunaInstance*)self;
+	if (CLASS_VALIDATE.contains(self)) return (LunaInstance*)self;
 	LunaIO::ThrowError("Self is not a valid LunaInstance.");
 }
 
-LunaInstance* Luna::Class::GetSelf(lua_State* L) { return (Base::LunaInstance*)lua_touserdata(L, 1); }
+LunaInstance* Luna::Class::GetSelf(lua_State* L) { return (LunaInstance*)lua_touserdata(L, 1); }
 
 #include "Classes/SexyAppClass.h"
 #include "Classes/LawnAppClass.h"
 int Luna::Class::Init(lua_State* L)
 {
-	FIELDS = new Base::LunaField[MAX_FIELD_CAPACITY];
+	FIELDS = new LunaField[MAX_FIELD_CAPACITY];
 	
 	lua_newtable(L);
 	LunaUtil::Local("ClassRef", -1);
@@ -379,8 +381,8 @@ int Luna::Class::Init(lua_State* L)
 	lua_settable(L, -3);
 
 	LunaUtil::Local("ClassMeta", -1);
-	LunaInit(Classes::LunaAppBase);
-	LunaInit(Classes::LunaApp);
+	LunaInit(Class::LunaAppBase);
+	LunaInit(Class::LunaApp);
 
 	return 0;
 }

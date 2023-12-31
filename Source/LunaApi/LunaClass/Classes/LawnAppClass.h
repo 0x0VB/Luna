@@ -56,9 +56,9 @@ namespace Disp::LunaApp
 	void SetupEvents();
 }
 
-class Luna::Class::Classes::LunaApp : public Luna::Class::Base::LunaClass
+class Luna::Class::LunaApp : public Luna::Class::LunaClass
 {
 public:
-	static Base::LunaClass* Source;
+	static LunaClass* Source;
 	static int Init(lua_State* L);
 };

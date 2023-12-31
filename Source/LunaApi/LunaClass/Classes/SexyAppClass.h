@@ -1,9 +1,9 @@
 #pragma once
 #include "LunaApi/LunaClass/LunaClass.h"
 
-class Luna::Class::Classes::LunaAppBase : public Luna::Class::Base::LunaClass
+class Luna::Class::LunaAppBase : public Luna::Class::LunaClass
 {
 public:
-	static Base::LunaClass* Source;
+	static LunaClass* Source;
 	static int Init(lua_State* L);
 };
