@@ -14,55 +14,68 @@
     <Library Include="Dependencies\liblua54.a" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Luna.cpp" />
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\LawnAppClass.cpp" />
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.cpp" />
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\PvZ\DialogButton.cpp" />
+    <ClCompile Include="Source\PvZ\Font.cpp" />
+    <ClCompile Include="Source\PvZ\LawnApp.cpp" />
+    <ClCompile Include="Source\PvZ\UIElement.cpp" />
+    <ClCompile Include="Source\PvZ\UIRoot.cpp" />
+    <ClCompile Include="Source\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Enums\Enums.h" />
     <ClInclude Include="Source\Enums\GameModes.h" />
     <ClInclude Include="Source\Enums\GameResult.h" />
     <ClInclude Include="Source\Enums\GameScenes.h" />
+    <ClInclude Include="Source\framework.h" />
     <ClInclude Include="Source\Include\lauxlib.h" />
     <ClInclude Include="Source\Include\lua.h" />
     <ClInclude Include="Source\Include\lua.hpp" />
     <ClInclude Include="Source\Include\luaconf.h" />
     <ClInclude Include="Source\Include\lualib.h" />
-    <ClInclude Include="Source\Luna\LunaClass\Classes\LawnApp.h" />
-    <ClInclude Include="Source\Luna\LunaClass\Classes\SexyApp.h" />
+    <ClInclude Include="Source\Luna.h" />
+    <ClCompile Include="Source\LunaApi\LunaIO\LunaIO.cpp" />
+    <ClCompile Include="Source\LunaApi\LunaEvent\LunaEvent.cpp" />
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\LawnAppClass.h" />
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.h" />
+    <ClCompile Include="Source\LunaApi\LunaClass\LunaClass.cpp" />
+    <ClInclude Include="Source\LunaApi\LunaClass\LunaClass.h" />
+    <ClInclude Include="Source\LunaApi\LunaEvent\LunaEvent.h" />
+    <ClInclude Include="Source\LunaApi\LunaIO\LunaIO.h" />
+    <ClInclude Include="Source\LunaApi\LunaStructs\Color\Color.h" />
+    <ClCompile Include="Source\LunaApi\LunaStructs\Color\Color.cpp" />
+    <ClInclude Include="Source\LunaApi\LunaStructs\LunaStructs.h" />
+    <ClCompile Include="Source\LunaApi\LunaStructs\LunaStructs.cpp" />
+    <ClInclude Include="Source\LunaApi\LunaStructs\Pad\Pad.h" />
+    <ClCompile Include="Source\LunaApi\LunaStructs\Pad\Pad.cpp" />
+    <ClInclude Include="Source\LunaApi\LunaStructs\Rect\Rect.h" />
+    <ClCompile Include="Source\LunaApi\LunaStructs\Rect\Rect.cpp" />
+    <ClInclude Include="Source\LunaApi\LunaStructs\Vector2\Vector2.h" />
+    <ClCompile Include="Source\LunaApi\LunaStructs\Vector2\Vector2.cpp" />
+    <ClInclude Include="Source\LunaApi\LunaStructs\Vector3\Vector3.h" />
+    <ClCompile Include="Source\LunaApi\LunaStructs\Vector3\Vector3.cpp" />
+    <ClInclude Include="Source\LunaApi\LunaUtil\LunaUtil.h" />
+    <ClCompile Include="Source\LunaApi\LunaUtil\LunaUtil.cpp" />
     <ClInclude Include="Source\Luna\LunaClass\Classes\Sexy\UIContainer.h" />
     <ClInclude Include="Source\Luna\LunaClass\Classes\Sexy\UIRoot.h" />
-    <ClInclude Include="Source\Luna\LunaClass\ClassFunc.h" />
-    <ClInclude Include="Source\Luna\LunaClass\LunaClass.h" />
-    <ClInclude Include="Source\Luna\LunaEvent\EventFunc.h" />
-    <ClInclude Include="Source\Luna\LunaEvent\LunaEvent.h" />
-    <ClInclude Include="Source\Luna\LunaIO\IOFunc.h" />
-    <ClInclude Include="Source\Luna\LunaIO\LunaIO.h" />
-    <ClInclude Include="Source\Luna\include.h" />
-    <ClInclude Include="Source\Luna\LunaStructs\Color\Color.h" />
-    <ClInclude Include="Source\Luna\LunaStructs\Color\ColorFunc.h" />
-    <ClInclude Include="Source\Luna\LunaStructs\LunaStructs.h" />
-    <ClInclude Include="Source\Luna\LunaStructs\Pad\Pad.h" />
-    <ClInclude Include="Source\Luna\LunaStructs\Pad\PadFunc.h" />
-    <ClInclude Include="Source\Luna\LunaStructs\Rect\Rect.h" />
-    <ClInclude Include="Source\Luna\LunaStructs\Rect\RectFunc.h" />
-    <ClInclude Include="Source\Luna\LunaStructs\StructsFunc.h" />
-    <ClInclude Include="Source\Luna\LunaStructs\Vector2\Vector2.h" />
-    <ClInclude Include="Source\Luna\LunaStructs\Vector2\Vector2Func.h" />
-    <ClInclude Include="Source\Luna\LunaStructs\Vector3\Vector3.h" />
-    <ClInclude Include="Source\Luna\LunaStructs\Vector3\Vector3Func.h" />
-    <ClInclude Include="Source\Luna\LunaUtil\UtilFunc.h" />
-    <ClInclude Include="Source\Luna\LunaUtil\LunaUtil.h" />
-    <ClInclude Include="Source\PvZUtil\ButtonListener.h" />
-    <ClInclude Include="Source\PvZUtil\Definitions.h" />
-    <ClInclude Include="Source\PvZUtil\DialogButton.h" />
-    <ClInclude Include="Source\PvZUtil\Font.h" />
-    <ClInclude Include="Source\PvZUtil\Graphics.h" />
-    <ClInclude Include="Source\PvZUtil\LawnApp.h" />
-    <ClInclude Include="Source\PvZUtil\include.h" />
-    <ClInclude Include="Source\PvZUtil\PreModalInfo.h" />
-    <ClInclude Include="Source\PvZUtil\Resources.h" />
-    <ClInclude Include="Source\PvZUtil\UIButton.h" />
-    <ClInclude Include="Source\PvZUtil\UIElement.h" />
-    <ClInclude Include="Source\PvZUtil\UIRoot.h" />
+    <ClInclude Include="Source\PvZ\ButtonListener.h" />
+    <ClInclude Include="Source\PvZ\Definitions.h" />
+    <ClInclude Include="Source\PvZ\DialogButton.h" />
+    <ClInclude Include="Source\PvZ\Font.h" />
+    <ClInclude Include="Source\PvZ\Graphics.h" />
+    <ClInclude Include="Source\PvZ\LawnApp.h" />
+    <ClInclude Include="Source\PvZ\PreModalInfo.h" />
+    <ClInclude Include="Source\PvZ\Resources.h" />
+    <ClInclude Include="Source\PvZ\UIButton.h" />
+    <ClInclude Include="Source\PvZ\UIElement.h" />
+    <ClInclude Include="Source\PvZ\UIRoot.h" />
+    <ClInclude Include="Source\stdafx.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -116,6 +129,8 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,6 +147,8 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

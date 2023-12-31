@@ -21,6 +21,63 @@
     <ClCompile Include="Source\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PvZ\LawnApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Luna.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PvZ\UIRoot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PvZ\UIElement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PvZ\Font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PvZ\DialogButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaIO\LunaIO.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaUtil\LunaUtil.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaStructs\LunaStructs.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaStructs\Color\Color.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaStructs\Pad\Pad.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaStructs\Rect\Rect.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaStructs\Vector2\Vector2.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaStructs\Vector3\Vector3.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaEvent\LunaEvent.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaClass\LunaClass.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\LawnAppClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Include\lauxlib.h">
@@ -50,115 +107,88 @@
     <ClInclude Include="Source\Enums\GameScenes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Luna\include.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaIO\LunaIO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaIO\IOFunc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaUtil\LunaUtil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaUtil\UtilFunc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaStructs\Vector2\Vector2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaStructs\LunaStructs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaStructs\StructsFunc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaStructs\Vector2\Vector2Func.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaStructs\Vector3\Vector3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaStructs\Vector3\Vector3Func.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaStructs\Rect\Rect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaStructs\Rect\RectFunc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaStructs\Pad\Pad.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaStructs\Pad\PadFunc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaClass\ClassFunc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaClass\LunaClass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaStructs\Color\Color.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaStructs\Color\ColorFunc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaClass\Classes\LawnApp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaEvent\LunaEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Luna\LunaEvent\EventFunc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Luna\LunaClass\Classes\Sexy\UIContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Luna\LunaClass\Classes\Sexy\UIRoot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PvZUtil\Definitions.h">
+    <ClInclude Include="Source\framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PvZUtil\include.h">
+    <ClInclude Include="Source\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PvZUtil\LawnApp.h">
+    <ClInclude Include="Source\Luna.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PvZUtil\ButtonListener.h">
+    <ClInclude Include="Source\PvZ\LawnApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PvZUtil\UIElement.h">
+    <ClInclude Include="Source\PvZ\Definitions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PvZUtil\UIRoot.h">
+    <ClInclude Include="Source\PvZ\ButtonListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PvZUtil\UIButton.h">
+    <ClInclude Include="Source\PvZ\DialogButton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PvZUtil\DialogButton.h">
+    <ClInclude Include="Source\PvZ\UIButton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PvZUtil\PreModalInfo.h">
+    <ClInclude Include="Source\PvZ\Resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PvZUtil\Graphics.h">
+    <ClInclude Include="Source\PvZ\UIRoot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PvZUtil\Font.h">
+    <ClInclude Include="Source\PvZ\UIElement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PvZUtil\Resources.h">
+    <ClInclude Include="Source\PvZ\Font.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Luna\LunaClass\Classes\SexyApp.h">
+    <ClInclude Include="Source\PvZ\Graphics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PvZ\PreModalInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaIO\LunaIO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaUtil\LunaUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaStructs\LunaStructs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaStructs\Color\Color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaStructs\Pad\Pad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaStructs\Rect\Rect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaStructs\Vector2\Vector2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaStructs\Vector3\Vector3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaEvent\LunaEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\LawnAppClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaClass\LunaClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
