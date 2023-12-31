@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "LawnAppClass.h"
 
+#include "SexyAppClass.h"
+
 #include "LunaApi/LunaUtil/LunaUtil.h"
 #include "Luna.h"
 
@@ -52,7 +54,7 @@ int Luna::Class::Classes::LunaApp::Init(lua_State* L)
 	Source = new LunaClass();
 	Source->AllowsInjection = true;
 	Source->SetName("LawnApp");
-	Source->Inherit(Source);
+	Source->Inherit(Luna::Class::Classes::LunaAppBase::Source);
 
 	BlnField::New("ZombiesLoaded", 0x800, Source);
 	BlnField::New("NewUser", 0x801, Source);
