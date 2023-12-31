@@ -2,6 +2,8 @@
 #include "Include/lua.h"
 #include "PvZ/LawnApp.h"
 
+#define LUNA_STATE Luna::GlobalLState
+
 namespace Luna
 {
 	extern bool DebugMode;

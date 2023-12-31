@@ -11,14 +11,14 @@
 DVector2 GetVector2(int Index)
 {
 	AssertType(Index, "Vector2", "arg#" + std::to_string(Index));
-	return *(DVector2*)lua_touserdata(Luna::GlobalLState, Index);
+	return *(DVector2*)lua_touserdata(LUNA_STATE, Index);
 }
-DVector2* GetV2Self() { return (DVector2*)lua_touserdata(Luna::GlobalLState, 1); }
+DVector2* GetV2Self() { return (DVector2*)lua_touserdata(LUNA_STATE, 1); }
 DVector2* NewVector2(double X, double Y)
 {
-	auto New = (DVector2*)lua_newuserdata(Luna::GlobalLState, sizeof(DVector2));
+	auto New = (DVector2*)lua_newuserdata(LUNA_STATE, sizeof(DVector2));
 	LunaUtil::Local("Vector2Meta");
-	lua_setmetatable(Luna::GlobalLState, -2);
+	lua_setmetatable(LUNA_STATE, -2);
 
 	New->X = X;
 	New->Y = Y;

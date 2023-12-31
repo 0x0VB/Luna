@@ -14,20 +14,20 @@ void Vector3<T>::Push() { NewVector3(X, Y, Z); }
 FVector3 GetVector3(int Idx)
 {
 	AssertType(Idx, "Vector3", "arg#" + std::to_string(Idx));
-	return *(FVector3*)lua_touserdata(Luna::GlobalLState, Idx);
+	return *(FVector3*)lua_touserdata(LUNA_STATE, Idx);
 }
-FVector3* GetV3Self() { return (FVector3*)lua_touserdata(Luna::GlobalLState, 1); }
+FVector3* GetV3Self() { return (FVector3*)lua_touserdata(LUNA_STATE, 1); }
 FVector3* NewVector3(float X, float Y, float Z)
 {
-	auto New = (FVector3*)lua_newuserdata(Luna::GlobalLState, sizeof(FVector3));
+	auto New = (FVector3*)lua_newuserdata(LUNA_STATE, sizeof(FVector3));
 	LunaUtil::Local("Vector3Meta");
-	lua_setmetatable(Luna::GlobalLState, -2);
+	lua_setmetatable(LUNA_STATE, -2);
 
 	New->X = X;
 	New->Y = Y;
 	New->Z = Z;
 
-	lua_pushlightuserdata(Luna::GlobalLState, New);
+	lua_pushlightuserdata(LUNA_STATE, New);
 	LunaUtil::Local("A", -1, true);
 	return New;
 }

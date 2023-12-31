@@ -47,21 +47,21 @@ void LunaIO::ThrowError(std::string Text, bool AppendTraceback, int Level)
 {
 	if (AppendTraceback)
 	{
-		luaL_traceback(Luna::GlobalLState, Luna::GlobalLState, Text.c_str(), Level);
-		lua_error(Luna::GlobalLState);
+		luaL_traceback(LUNA_STATE, LUNA_STATE, Text.c_str(), Level);
+		lua_error(LUNA_STATE);
 	}
 	else
 	{
-		lua_pushstring(Luna::GlobalLState, Text.c_str());
-		lua_error(Luna::GlobalLState);
+		lua_pushstring(LUNA_STATE, Text.c_str());
+		lua_error(LUNA_STATE);
 	}
 }
 
 void LunaIO::ThrowError(int StringCount, int Level)
 {
-	lua_concat(Luna::GlobalLState, StringCount);
-	luaL_traceback(Luna::GlobalLState, Luna::GlobalLState, lua_tostring(Luna::GlobalLState, -1), Level);
-	lua_error(Luna::GlobalLState);
+	lua_concat(LUNA_STATE, StringCount);
+	luaL_traceback(LUNA_STATE, LUNA_STATE, lua_tostring(LUNA_STATE, -1), Level);
+	lua_error(LUNA_STATE);
 }
 #pragma endregion
 

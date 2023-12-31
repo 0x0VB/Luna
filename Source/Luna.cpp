@@ -18,10 +18,10 @@ namespace Luna
 
 void Luna::InitiateLunaState()
 {
-	if (Luna::GlobalLState)
-		lua_close(Luna::GlobalLState);
-	Luna::GlobalLState = luaL_newstate();
-	luaL_openlibs(Luna::GlobalLState);
+	if (LUNA_STATE)
+		lua_close(LUNA_STATE);
+	LUNA_STATE = luaL_newstate();
+	luaL_openlibs(LUNA_STATE);
 }
 
 std::filesystem::path ModsPath = "./Mods";
@@ -55,18 +55,18 @@ void Luna::LoadMods()
 			continue;
 		Luna::FoundMods++;
 
-		if (luaL_loadfile(Luna::GlobalLState, ModPath.string().c_str()) == LUA_ERRFILE)
+		if (luaL_loadfile(LUNA_STATE, ModPath.string().c_str()) == LUA_ERRFILE)
 		{
 			std::cout << "LUA_ERRFILE on " << ModPath.string() << "\n";
-			LunaIO::Print(lua_tostring(Luna::GlobalLState, -1), LunaIO::Error);
+			LunaIO::Print(lua_tostring(LUNA_STATE, -1), LunaIO::Error);
 			return;
 		}
 
-		if (lua_pcall(Luna::GlobalLState, 0, 0, 0) != LUA_OK)
+		if (lua_pcall(LUNA_STATE, 0, 0, 0) != LUA_OK)
 		{
 			std::string ErrorMsg = std::format("[{}] ERROR MESSAGE:", ModPath.filename().string());
 			LunaIO::Print(ErrorMsg.c_str(), LunaIO::Error);
-			LunaIO::Print(lua_tostring(Luna::GlobalLState, -1), LunaIO::Error);
+			LunaIO::Print(lua_tostring(LUNA_STATE, -1), LunaIO::Error);
 			Luna::App->Popup(
 				std::format("There was an error while executing {} the mod! Please send the error message to the mod creator.", ModsPath.filename().string())
 			);
@@ -108,10 +108,10 @@ void Luna::DebugMain()
 
 	std::cout << "Mod Function Loaded." << "\n"; // system("cls");
 	std::cout << "Luna Developer Mode Loaded\t\tV0.2.2\n\n";
-	if (lua_pcall(Luna::GlobalLState, 0, 0, 0) != LUA_OK)
+	if (lua_pcall(LUNA_STATE, 0, 0, 0) != LUA_OK)
 	{
 		LunaIO::Print("ERROR MESSAGE:", LunaIO::Error);
-		LunaIO::Print(lua_tostring(Luna::GlobalLState, -1), LunaIO::Error);
+		LunaIO::Print(lua_tostring(LUNA_STATE, -1), LunaIO::Error);
 		Luna::App->Popup("There was an error while executing the mod! Please send the error message to the mod creator.");
 	}
 

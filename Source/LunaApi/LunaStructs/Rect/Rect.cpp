@@ -20,13 +20,13 @@ void Rect<T>::Push() { NewRect(X, Y, W, H); }
 IRect GetRect(int Idx)
 {
 	AssertType(Idx, "Rect", "arg#" + std::to_string(Idx));
-	return *(IRect*)lua_touserdata(Luna::GlobalLState, Idx);
+	return *(IRect*)lua_touserdata(LUNA_STATE, Idx);
 }
 IRect* NewRect(int X, int Y, int W, int H)
 {
-	auto New = (IRect*)lua_newuserdata(Luna::GlobalLState, sizeof(IRect));
+	auto New = (IRect*)lua_newuserdata(LUNA_STATE, sizeof(IRect));
 	LunaUtil::Local("RectMeta");
-	lua_setmetatable(Luna::GlobalLState, -2);
+	lua_setmetatable(LUNA_STATE, -2);
 
 	New->X = X;
 	New->Y = Y;
@@ -35,7 +35,7 @@ IRect* NewRect(int X, int Y, int W, int H)
 
 	return New;
 }
-IRect* GetRectSelf() { return (IRect*)lua_touserdata(Luna::GlobalLState, 1); }
+IRect* GetRectSelf() { return (IRect*)lua_touserdata(LUNA_STATE, 1); }
 #pragma endregion
 
 #pragma region Lua Functions

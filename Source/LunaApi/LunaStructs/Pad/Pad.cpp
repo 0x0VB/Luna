@@ -13,13 +13,13 @@ void Pad::Push() { NewPad(L, T, B, R); }
 Pad GetPad(int Idx)
 {
 	AssertType(Idx, "Pad", "arg#" + std::to_string(Idx));
-	return *(Pad*)lua_touserdata(Luna::GlobalLState, Idx);
+	return *(Pad*)lua_touserdata(LUNA_STATE, Idx);
 }
 Pad* NewPad(int X, int Y, int W, int H)
 {
-	auto New = (Pad*)lua_newuserdata(Luna::GlobalLState, sizeof(Pad));
+	auto New = (Pad*)lua_newuserdata(LUNA_STATE, sizeof(Pad));
 	LunaUtil::Local("PadMeta");
-	lua_setmetatable(Luna::GlobalLState, -2);
+	lua_setmetatable(LUNA_STATE, -2);
 
 	New->L = X;
 	New->T = Y;
@@ -30,9 +30,9 @@ Pad* NewPad(int X, int Y, int W, int H)
 }
 Pad* NewPad(int H, int V)
 {
-	auto New = (Pad*)lua_newuserdata(Luna::GlobalLState, sizeof(Pad));
+	auto New = (Pad*)lua_newuserdata(LUNA_STATE, sizeof(Pad));
 	LunaUtil::Local("PadMeta");
-	lua_setmetatable(Luna::GlobalLState, -2);
+	lua_setmetatable(LUNA_STATE, -2);
 
 	New->L = H;
 	New->T = V;
@@ -43,9 +43,9 @@ Pad* NewPad(int H, int V)
 }
 Pad* NewPad(int P)
 {
-	auto New = (Pad*)lua_newuserdata(Luna::GlobalLState, sizeof(Pad));
+	auto New = (Pad*)lua_newuserdata(LUNA_STATE, sizeof(Pad));
 	LunaUtil::Local("PadMeta");
-	lua_setmetatable(Luna::GlobalLState, -2);
+	lua_setmetatable(LUNA_STATE, -2);
 
 	New->L = P;
 	New->T = P;
@@ -54,7 +54,7 @@ Pad* NewPad(int P)
 
 	return New;
 }
-Pad* GetPadSelf() { return (Pad*)lua_touserdata(Luna::GlobalLState, 1); }
+Pad* GetPadSelf() { return (Pad*)lua_touserdata(LUNA_STATE, 1); }
 #pragma endregion
 
 #pragma region Lua Functions

@@ -13,13 +13,13 @@ void Color::Push() { NewRGB(R, G, B, A); }
 Color GetColor(int Idx)
 {
 	AssertType(Idx, "Color", "arg#" + std::to_string(Idx));
-	return *(Color*)lua_touserdata(Luna::GlobalLState, Idx);
+	return *(Color*)lua_touserdata(LUNA_STATE, Idx);
 }
 Color* NewRGB(int R, int G, int B, int A)
 {
-	auto New = (Color*)lua_newuserdata(Luna::GlobalLState, sizeof(Color));
+	auto New = (Color*)lua_newuserdata(LUNA_STATE, sizeof(Color));
 	LunaUtil::Local("ColorMeta");
-	lua_setmetatable(Luna::GlobalLState, -2);
+	lua_setmetatable(LUNA_STATE, -2);
 
 	New->R = R;
 	New->G = G;
@@ -31,9 +31,9 @@ Color* NewRGB(int R, int G, int B, int A)
 Color* NewHSV(int H, int S, int V, int A)
 {
 	auto RGBA = Color::FromHSVA(H, S, V, 0);
-	auto New = (Color*)lua_newuserdata(Luna::GlobalLState, sizeof(Color));
+	auto New = (Color*)lua_newuserdata(LUNA_STATE, sizeof(Color));
 	LunaUtil::Local("ColorMeta");
-	lua_setmetatable(Luna::GlobalLState, -2);
+	lua_setmetatable(LUNA_STATE, -2);
 
 	New->R = RGBA.R;
 	New->G = RGBA.G;
@@ -45,9 +45,9 @@ Color* NewHSV(int H, int S, int V, int A)
 Color* NewHex(std::string Hex)
 {
 	auto RGBA = Color::FromHex(Hex);
-	auto New = (Color*)lua_newuserdata(Luna::GlobalLState, sizeof(Color));
+	auto New = (Color*)lua_newuserdata(LUNA_STATE, sizeof(Color));
 	LunaUtil::Local("ColorMeta");
-	lua_setmetatable(Luna::GlobalLState, -2);
+	lua_setmetatable(LUNA_STATE, -2);
 
 	New->R = RGBA.R;
 	New->G = RGBA.G;
@@ -56,7 +56,7 @@ Color* NewHex(std::string Hex)
 
 	return New;
 }
-Color* GetColorSelf() { return (Color*)lua_touserdata(Luna::GlobalLState, 1); }
+Color* GetColorSelf() { return (Color*)lua_touserdata(LUNA_STATE, 1); }
 #pragma endregion
 
 #pragma region Lua Functions

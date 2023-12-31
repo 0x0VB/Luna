@@ -39,52 +39,52 @@ void Luna::Event::LunaEvent::Setup(const char* EventName, void* EventHandler, CO
 	if (AutoHook) Hook();
 
 	LunaUtil::Local("EventConnections");
-	lua_pushlightuserdata(Luna::GlobalLState, this);
-	lua_newtable(Luna::GlobalLState);
-	lua_settable(Luna::GlobalLState, -3);
-	lua_pop(Luna::GlobalLState, 1);
+	lua_pushlightuserdata(LUNA_STATE, this);
+	lua_newtable(LUNA_STATE);
+	lua_settable(LUNA_STATE, -3);
+	lua_pop(LUNA_STATE, 1);
 }
 
 void Luna::Event::LunaEvent::Push() {
 	LunaUtil::Local("EventMeta");
-	lua_pushlightuserdata(Luna::GlobalLState, this);
-	lua_gettable(Luna::GlobalLState, -2);
+	lua_pushlightuserdata(LUNA_STATE, this);
+	lua_gettable(LUNA_STATE, -2);
 }
 
 void Luna::Event::LunaEvent::Call(int ArgCount)
 {
-	int T = lua_gettop(Luna::GlobalLState);
+	int T = lua_gettop(LUNA_STATE);
 	int RT = T - ArgCount;
 	int GConn = T + 1;
 	int Conn = T + 2;
 	int K = T + 3;
-	if (!Hooked) { lua_settop(Luna::GlobalLState, RT); return; }
+	if (!Hooked) { lua_settop(LUNA_STATE, RT); return; }
 	LunaUtil::Local("EventConnections");
-	lua_pushlightuserdata(Luna::GlobalLState, this);
-	lua_gettable(Luna::GlobalLState, GConn);
+	lua_pushlightuserdata(LUNA_STATE, this);
+	lua_gettable(LUNA_STATE, GConn);
 
-	lua_pushnil(Luna::GlobalLState);
-	while (lua_next(Luna::GlobalLState, Conn))
+	lua_pushnil(LUNA_STATE);
+	while (lua_next(LUNA_STATE, Conn))
 	{
-		lua_copy(Luna::GlobalLState, -2, -1);
-		for (int i = 1; i <= ArgCount; i++) lua_pushvalue(Luna::GlobalLState, RT + i);
-		if (lua_pcall(Luna::GlobalLState, ArgCount, 0, 0) != LUA_OK) LunaIO::Print("[" + std::string(Name) + "]: " + lua_tostring(Luna::GlobalLState, -1), LunaIO::Error);
-		lua_settop(Luna::GlobalLState, K);
+		lua_copy(LUNA_STATE, -2, -1);
+		for (int i = 1; i <= ArgCount; i++) lua_pushvalue(LUNA_STATE, RT + i);
+		if (lua_pcall(LUNA_STATE, ArgCount, 0, 0) != LUA_OK) LunaIO::Print("[" + std::string(Name) + "]: " + lua_tostring(LUNA_STATE, -1), LunaIO::Error);
+		lua_settop(LUNA_STATE, K);
 	}
-	lua_settop(Luna::GlobalLState, RT);
+	lua_settop(LUNA_STATE, RT);
 }
 
 Luna::Event::LunaEvent* Luna::Event::LunaEvent::New(const char* Name, void* Handler, DWORD Entries[], size_t EntryCount, bool AutoHook)
 {
-	int T = lua_gettop(Luna::GlobalLState);
-	auto self = (LunaEvent*)lua_newuserdata(Luna::GlobalLState, sizeof(LunaEvent));// 1
+	int T = lua_gettop(LUNA_STATE);
+	auto self = (LunaEvent*)lua_newuserdata(LUNA_STATE, sizeof(LunaEvent));// 1
 	self->Setup(Name, Handler, Entries, EntryCount, AutoHook);
 	LunaUtil::Local("EventMeta");// 2
-	lua_pushlightuserdata(Luna::GlobalLState, self);// 3
-	lua_pushvalue(Luna::GlobalLState, T + 1);
-	lua_settable(Luna::GlobalLState, T + 2);
-	lua_setmetatable(Luna::GlobalLState, T + 1);
-	lua_settop(Luna::GlobalLState, T);
+	lua_pushlightuserdata(LUNA_STATE, self);// 3
+	lua_pushvalue(LUNA_STATE, T + 1);
+	lua_settable(LUNA_STATE, T + 2);
+	lua_setmetatable(LUNA_STATE, T + 1);
+	lua_settop(LUNA_STATE, T);
 	return self;
 }
 
