@@ -10,7 +10,7 @@ function LunaClass:IsA(SubClass) end;
 local SubClass = {
     UIContainer = "SubClass";
     SexyAppBase = "SubClass";
-    LunaClass = "SubClass";
+    LunaBase = "SubClass";
     SexyApp = "SubClass";
     LawnApp = "SubClass";
     UIBase = "SubClass";

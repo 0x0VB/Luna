@@ -1,14 +1,58 @@
 #include "stdafx.h"
+#include "LunaBase.h"
 #include "SexyAppClass.h"
+#include "PvZ/LawnApp.h"
+#include "LunaApi/LunaUtil/LunaUtil.h"
+#include "LunaApi/LunaStructs/Rect/Rect.h"
 
-Luna::Class::LunaClass* Luna::Class::LunaAppBase::Source = nullptr;
+#include "UIContainerClass.h"
+using namespace Luna::Class;
+namespace
+{
+	class WindTitle : public Luna::Class::LunaField
+	{
+	public:
+		virtual void __index(lua_State* L) override
+		{
+			lua_pushstring(L, LawnApp::GetApp()->Title);
+		}
+		virtual void __newindex(lua_State* L) override
+		{
+			auto Value = GetString(3);
+			AssertType(3, "string", Name);
+			auto App = LawnApp::GetApp();
+			App->Title = Value;
+			if (App->MainWindowHandle) SetWindowTextA(App->MainWindowHandle, Value.c_str());
+		}
+		DefNewField(WindTitle)
+	};
+	class WindBounds : public Luna::Class::LunaField
+	{
+	public:
+		virtual void __index(lua_State* L) override
+		{
+			LawnApp::GetApp()->WindowBounds.Push();
+		}
+		virtual void __newindex(lua_State* L) override
+		{
+			AssertType(3, "Rect", Name);
+			auto Value = GetRect(3);
+			auto App = LawnApp::GetApp();
+			App->WindowBounds = Value;
+			if (App->MainWindowHandle) GetWindowRect(App->MainWindowHandle, Value.ToLPRECT());
+		}
+		DefNewField(WindBounds)
+	};
+}
+
+Luna::Class::LunaClass* Luna::Class::LunaAppBase::Source = new LunaClass();
 int Luna::Class::LunaAppBase::Init(lua_State* L)
 {
 	using namespace Fields;
-	Source = new LunaClass();
 	Source->AllowsInjection = true;
 	Source->SetName("SexyApp");
 	Source->AddSubClass("SexyAppBase");
+	Source->Inherit(LunaBase::Source);
 
 	WindTitle::New("WindowTitle", 0, Source);
 	WindBounds::New("WindowBounds", 0, Source);
@@ -40,6 +84,7 @@ int Luna::Class::LunaAppBase::Init(lua_State* L)
 	BlnField::New("AltDown", 0x5AF, Source);
 	BlnField::New("AllowAltEnter", 0x5B0, Source);
 
+	UIObjectField::New("UIRoot", offsetof(Sexy::SexyAppBase, UIRoot), Source);
 	// TODO: register class to the lua state?
 
 	return 0;

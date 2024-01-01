@@ -28,23 +28,3 @@ public:
 	static LawnStoneButton* __stdcall New(int ID, Sexy::ButtonListener* Listener, const PopString& Text);
 	static void __stdcall Draw(Sexy::Graphics* G, int X, int Y, int W, int H, bool Down, bool Highlighted, const PopString& Text);
 };
-
-namespace Disp::StoneButton
-{
-	inline void __declspec(naked) StoneButtonDrawHandler()
-	{
-		__asm
-		{
-			push[esp + 0x1C]
-			push[esp + 0x1C]
-			push[esp + 0x1C]
-			push[esp + 0x1C]
-			push[esp + 0x1C]
-			push[esp + 0x1C]
-			push eax
-			push[esp + 0x20]
-			call LawnStoneButton::Draw
-			ret
-		}
-	};
-}

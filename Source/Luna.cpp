@@ -40,8 +40,6 @@ void Luna::Setup(bool DebugMode)
 
 	if (DebugMode)
 		DebugMain();				// Run DebugMain
-	std::cout << "LawnApp: " << Luna::App << "\n";
-
 	if (std::filesystem::is_directory(ModsPath))
 		LoadMods();
 }
@@ -51,7 +49,7 @@ void Luna::LoadMods()
 	for (const auto& entry : std::filesystem::directory_iterator(ModsPath))
 	{
 		const std::filesystem::path ModPath = ModsPath / entry.path().filename();
-		if (ModPath.extension() != ".lua")
+		if (ModPath.extension() != ".lua" && ModPath.extension() != ".luna")
 			continue;
 		Luna::FoundMods++;
 
@@ -106,7 +104,7 @@ void Luna::DebugMain()
 	}
 	else LunaIO::Print("Unable to write to Mod.luna. Debug information not stripped.", LunaIO::Error);
 
-	std::cout << "Mod Function Loaded." << "\n"; // system("cls");
+	std::cout << "Mod Function Loaded." << "\n";
 	std::cout << "Luna Developer Mode Loaded\t\tV0.2.2\n\n";
 	if (lua_pcall(LUNA_STATE, 0, 0, 0) != LUA_OK)
 	{
@@ -114,18 +112,5 @@ void Luna::DebugMain()
 		LunaIO::Print(lua_tostring(LUNA_STATE, -1), LunaIO::Error);
 		Luna::App->Popup("There was an error while executing the mod! Please send the error message to the mod creator.");
 	}
-
-	std::cout << "[MOD]: Execution has halted!" << std::endl;
 }
-
-
-/*
-class LunaListener : public Sexy::ButtonListener
-{
-	virtual void ButtonClick(int ID, int ClickType)
-	{
-
-	}
-};
-*/
 #pragma endregion
