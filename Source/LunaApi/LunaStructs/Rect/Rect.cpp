@@ -280,7 +280,6 @@ int Luna::Structs::Rect::Init(lua_State* L)
 	SetMeta(__div);
 	SetMeta(__unm);
 	SetMeta(__eq);
-	SetMeta(__gc);
 
 	SetMeta(Lerp);
 	SetMeta(GetArea);

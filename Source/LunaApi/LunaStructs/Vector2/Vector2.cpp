@@ -32,7 +32,7 @@ int Luna::Structs::Vector2::Constructor(lua_State* L)
 {
 	auto X = GetDouble(1);
 	auto Y = GetDouble(2);
-	NewVector2(X, Y);
+		NewVector2(X, Y);
 	return 1;
 }
 
@@ -269,7 +269,6 @@ int Luna::Structs::Vector2::Init(lua_State* L)
 	SetMeta(__div);
 	SetMeta(__unm);
 	SetMeta(__eq);
-	SetMeta(__gc);
 
 	SetMeta(SetMagnitude);
 	SetMeta(DistanceFrom);

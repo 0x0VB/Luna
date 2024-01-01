@@ -225,7 +225,6 @@ int Luna::Structs::Pad::Init(lua_State* L)
 	SetMeta(__mul);
 	SetMeta(__div);
 	SetMeta(__eq);
-	SetMeta(__gc);
 	SetMeta(Lerp);
 
 	LunaUtil::Local("PadMeta", -1);

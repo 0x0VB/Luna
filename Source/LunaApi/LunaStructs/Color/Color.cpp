@@ -272,7 +272,6 @@ int Luna::Structs::Color::Init(lua_State* L)
 	SetMeta(__sub);
 	SetMeta(__unm);
 	SetMeta(__eq);
-	SetMeta(__gc);
 
 	SetMeta(Lerp);
 	SetMeta(GetHex);

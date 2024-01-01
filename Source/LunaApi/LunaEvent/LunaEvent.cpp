@@ -68,7 +68,8 @@ void Luna::Event::LunaEvent::Call(int ArgCount)
 	{
 		lua_copy(LUNA_STATE, -2, -1);
 		for (int i = 1; i <= ArgCount; i++) lua_pushvalue(LUNA_STATE, RT + i);
-		if (lua_pcall(LUNA_STATE, ArgCount, 0, 0) != LUA_OK) LunaIO::Print("[" + std::string(Name) + "]: " + lua_tostring(LUNA_STATE, -1), LunaIO::Error);
+		if (lua_pcall(LUNA_STATE, ArgCount, 0, 0) != LUA_OK)
+			LunaIO::Print("[" + std::string(Name) + "]: " + lua_tostring(LUNA_STATE, -1), LunaIO::Error);
 		lua_settop(LUNA_STATE, K);
 	}
 	lua_settop(LUNA_STATE, RT);

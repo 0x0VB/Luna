@@ -23,6 +23,7 @@ namespace // Events
 	Sexy::Image* MyImg = nullptr;
 }
 
+#include "LunaApi/LunaStructs/Vector2/Vector2.h"
 namespace // Event Bodies
 {
 	DWORD __stdcall UpdateCaller()
