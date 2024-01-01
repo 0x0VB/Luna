@@ -1,5 +1,5 @@
 #pragma once
-#include "Include/lua.h"
+#include "Luau/lua.h"
 
 #define LunaStruct Luna::Structs
 namespace LunaStruct {

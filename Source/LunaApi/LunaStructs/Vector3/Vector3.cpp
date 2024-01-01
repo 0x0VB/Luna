@@ -248,7 +248,6 @@ int Luna::Structs::Vector3::__gc(lua_State* L)
 
 int Luna::Structs::Vector3::Init(lua_State* L)
 {
-#define SetMeta(Function) lua_pushstring(L, #Function); lua_pushcclosure(L, Function, 0); lua_settable(L, -3)
 	lua_newtable(L);
 
 	lua_pushstring(L, "__type");
@@ -282,6 +281,5 @@ int Luna::Structs::Vector3::Init(lua_State* L)
 
 
 	LunaUtil::Local("Vector3Meta", -1);
-	lua_register(L, "Vector3", Constructor);
 	return 0;
 }

@@ -209,7 +209,6 @@ int Luna::Structs::Pad::__gc(lua_State* L)
 
 int Luna::Structs::Pad::Init(lua_State* L)
 {
-#define SetMeta(Function) lua_pushstring(L, #Function); lua_pushcclosure(L, Function, 0); lua_settable(L, -3)
 	lua_newtable(L);
 
 	lua_pushstring(L, "__type");
@@ -228,6 +227,5 @@ int Luna::Structs::Pad::Init(lua_State* L)
 	SetMeta(Lerp);
 
 	LunaUtil::Local("PadMeta", -1);
-	lua_register(L, "Pad", Constructor);
 	return 0;
 }

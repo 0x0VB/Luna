@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Luna.h"
 
+#include <fstream>
+
 #include "LunaApi/LunaIO/LunaIO.h"
 #include "LunaApi/LunaUtil/LunaUtil.h"
 #include "LunaApi/LunaStructs/LunaStructs.h"
@@ -14,22 +16,15 @@ namespace Luna
 	LawnApp* App = nullptr;
 	size_t FoundMods = 0;
 	size_t LoadedMods = 0;
-}
-
-void Luna::InitiateLunaState()
-{
-	if (LUNA_STATE)
-		lua_close(LUNA_STATE);
-	LUNA_STATE = luaL_newstate();
-	luaL_openlibs(LUNA_STATE);
+	Luau::CompileOptions CompileOptions = {};
 }
 
 std::filesystem::path ModsPath = "./Mods";
-
 void Luna::Setup(bool DebugMode)
 {
 	Luna::DebugMode = DebugMode;	// Set DebugMode
 	Luna::InitiateLunaState();		// Create Lua State at L
+	Luna::InitializeCompileOptions();
 	Luna::App = LawnApp::GetApp();	// Get LawnApp
 
 	LunaInit(LunaIO);				// Responsible for print/warn/info functions.
@@ -44,6 +39,26 @@ void Luna::Setup(bool DebugMode)
 		LoadMods();
 }
 
+std::string ReadMod(std::filesystem::path ModPath)
+{
+	std::ifstream File;
+	std::string Source;
+	File.open(ModPath.c_str());
+	File >> Source;
+	return Source;
+}
+
+bool Luna::LoadFile(lua_State* L, std::filesystem::path ModPath)
+{
+	std::string Source = ReadMod(ModPath);
+
+	std::string chunkname = "=" + ModPath.filename().string();
+	std::string bytecode = Luau::compile(Source.c_str(), Luna::CompileOptions);
+
+	return luau_load(LUNA_STATE, chunkname.c_str(), bytecode.data(), bytecode.size(), 0) == 0;
+}
+
+
 void Luna::LoadMods()
 {
 	for (const auto& entry : std::filesystem::directory_iterator(ModsPath))
@@ -51,9 +66,13 @@ void Luna::LoadMods()
 		const std::filesystem::path ModPath = ModsPath / entry.path().filename();
 		if (ModPath.extension() != ".lua" && ModPath.extension() != ".luna")
 			continue;
+
 		Luna::FoundMods++;
 
-		if (luaL_loadfile(LUNA_STATE, ModPath.string().c_str()) == LUA_ERRFILE)
+		lua_State* L = lua_newthread(LUNA_STATE);	// module needs to run in a new thread, isolated from the rest
+		luaL_sandboxthread(L);						// new thread needs to have the globals sandboxed
+
+		if (!LoadFile(L, ModPath))
 		{
 			std::cout << "LUA_ERRFILE on " << ModPath.string() << "\n";
 			LunaIO::Print(lua_tostring(LUNA_STATE, -1), LunaIO::Error);
@@ -74,6 +93,25 @@ void Luna::LoadMods()
 	}
 }
 
+void Luna::InitiateLunaState()
+{
+	if (LUNA_STATE)
+		lua_close(LUNA_STATE);
+	LUNA_STATE = luaL_newstate();
+	luaL_openlibs(LUNA_STATE);
+}
+
+void Luna::InitializeCompileOptions()
+{
+	if (Luna::DebugMode)
+	{
+		Luna::CompileOptions.debugLevel = 2;
+	}
+	else
+	{
+		Luna::CompileOptions.optimizationLevel = 2;
+	}
+}
 
 #pragma region LunaDebugIO
 std::ofstream LUNA_BYTECODE;
@@ -87,30 +125,8 @@ void Luna::DebugMain()
 	LunaIO::AllocateConsole();
 	SetConsoleTitleA("LunaDebugIO");
 
-	if (luaL_loadfile(GlobalLState, "LunaDev/Mod.lua") == LUA_ERRFILE)
-	{
-		std::cout << "LUA_ERRFILE" << "\n";
-		LunaIO::Print(lua_tostring(GlobalLState, -1), LunaIO::Error);
-		return;
-	}
-	
-	// Dump Mod.luna (LuaC file 
-	std::remove("Mod.luna");// Delete the old bytecode.
-	LUNA_BYTECODE = std::ofstream("Mod.luna", std::ios::app | std::ios::binary);
-	if (LUNA_BYTECODE.good()) {
-		LUNA_BYTECODE.flush();
-		lua_dump(GlobalLState, ModWriter, NULL, true);
-		LUNA_BYTECODE.close();
-	}
-	else LunaIO::Print("Unable to write to Mod.luna. Debug information not stripped.", LunaIO::Error);
-
 	std::cout << "Mod Function Loaded." << "\n";
 	std::cout << "Luna Developer Mode Loaded\t\tV0.2.2\n\n";
-	if (lua_pcall(LUNA_STATE, 0, 0, 0) != LUA_OK)
-	{
-		LunaIO::Print("ERROR MESSAGE:", LunaIO::Error);
-		LunaIO::Print(lua_tostring(LUNA_STATE, -1), LunaIO::Error);
-		Luna::App->Popup("There was an error while executing the mod! Please send the error message to the mod creator.");
-	}
+
 }
 #pragma endregion

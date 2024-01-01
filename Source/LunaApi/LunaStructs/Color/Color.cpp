@@ -257,7 +257,6 @@ int Luna::Structs::Color::__gc(lua_State* L)
 
 int Luna::Structs::Color::Init(lua_State* L)
 {
-#define SetMeta(Function) lua_pushstring(L, #Function); lua_pushcclosure(L, Function, 0); lua_settable(L, -3)
 	lua_newtable(L);
 
 	lua_pushstring(L, "__type");
@@ -281,10 +280,6 @@ int Luna::Structs::Color::Init(lua_State* L)
 	SetMeta(Desaturate);
 
 	LunaUtil::Local("ColorMeta", -1);
-	lua_register(L, "Color", RGBConstructor);
-	lua_register(L, "RGB", RGBConstructor);
-	lua_register(L, "HSV", HSVConstructor);
-	lua_register(L, "Hex", HexConstructor);
 
 	return 0;
 }

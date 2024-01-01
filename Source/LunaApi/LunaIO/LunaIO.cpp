@@ -47,7 +47,7 @@ void LunaIO::ThrowError(std::string Text, bool AppendTraceback, int Level)
 {
 	if (AppendTraceback)
 	{
-		luaL_traceback(LUNA_STATE, LUNA_STATE, Text.c_str(), Level);
+		//luaL_traceback(LUNA_STATE, LUNA_STATE, Text.c_str(), Level);
 		lua_error(LUNA_STATE);
 	}
 	else
@@ -60,7 +60,7 @@ void LunaIO::ThrowError(std::string Text, bool AppendTraceback, int Level)
 void LunaIO::ThrowError(int StringCount, int Level)
 {
 	lua_concat(LUNA_STATE, StringCount);
-	luaL_traceback(LUNA_STATE, LUNA_STATE, lua_tostring(LUNA_STATE, -1), Level);
+	//luaL_traceback(LUNA_STATE, LUNA_STATE, lua_tostring(LUNA_STATE, -1), Level);
 	lua_error(LUNA_STATE);
 }
 #pragma endregion
@@ -115,11 +115,16 @@ int LunaIO::lua_core(lua_State* L)
 }
 #pragma endregion
 
+luaL_Reg IOFuncs[] = {
+	{"print", LunaIO::lua_print},
+	{"warn",  LunaIO::lua_warn},
+	{"info",  LunaIO::lua_info},
+	{"core",  LunaIO::lua_core},
+	{NULL, NULL},
+};
+
 int LunaIO::Init(lua_State* L)
 {
-	lua_register(L, "print", lua_print);
-	lua_register(L, "warn", lua_warn);
-	lua_register(L, "info", lua_info);
-	lua_register(L, "core", lua_core);
+	luaL_register(L, "_G", IOFuncs);
 	return 0;
 }

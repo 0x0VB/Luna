@@ -1,5 +1,5 @@
 #pragma once
-#include "Include/lua.h"
+#include "Luau/lua.h"
 #include "PvZ/Definitions.h"
 
 namespace Luna::Structs::Vector3

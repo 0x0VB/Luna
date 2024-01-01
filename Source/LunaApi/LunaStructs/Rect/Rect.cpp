@@ -263,7 +263,6 @@ int Luna::Structs::Rect::__gc(lua_State* L)
 
 int Luna::Structs::Rect::Init(lua_State* L)
 {
-#define SetMeta(Function) lua_pushstring(L, #Function); lua_pushcclosure(L, Function, 0); lua_settable(L, -3)
 	lua_newtable(L);
 
 	lua_pushstring(L, "__type");
@@ -292,6 +291,5 @@ int Luna::Structs::Rect::Init(lua_State* L)
 	SetMeta(GetIntersection);
 
 	LunaUtil::Local("RectMeta", -1);
-	lua_register(L, "Rect", Constructor);
 	return 0;
 }

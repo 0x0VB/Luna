@@ -19,14 +19,14 @@ DWORD JMP_TARGET;
 
 void LunaUtil::Initiate(lua_CFunction InitFunc)
 {
-	lua_pushcclosure(GlobalLState, InitFunc, 0);
+	lua_pushcclosure(GlobalLState, InitFunc, "InitFunc", 0);
 	if (lua_pcall(GlobalLState, 0, 0, 0) == LUA_OK) return;
 	LunaIO::Print(lua_tostring(GlobalLState, -1), LunaIO::Error);
 }
 
 void LunaUtil::FPCall(lua_CFunction Func)
 {
-	lua_pushcclosure(GlobalLState, Func, 0);
+	lua_pushcclosure(GlobalLState, Func, "FPCall", 0);
 	if (lua_pcall(GlobalLState, 0, 0, 0) != LUA_OK)
 		LunaIO::Print(lua_tostring(GlobalLState, -1), LunaIO::Error);
 }
@@ -72,7 +72,7 @@ void __declspec(naked) LunaUtil::LoadRegisters()
 std::string LunaUtil::Type(int Index)
 {
 	int T = lua_gettop(GlobalLState);
-	lua_pushcclosure(GlobalLState, lua_type, 0);
+	lua_pushcclosure(GlobalLState, lua_type, "Type", 0);
 	lua_pushvalue(GlobalLState, (Index > 0) ? Index : Index - 1);
 	lua_call(GlobalLState, 1, 1);
 	
@@ -136,14 +136,16 @@ VanillaType:
 int LunaUtil::lua_Sleep(lua_State* L) { Sleep(GetInt(1, 1)); return 0; }
 int LunaUtil::lua_Wait(lua_State* L) { Sleep(GetInt(1, 1) * 1000); return 0; }
 
+luaL_Reg UtilFuncs[] = {
+	{ "Sleep", LunaUtil::lua_Sleep },
+	{ "Wait",  LunaUtil::lua_Wait },
+	{ "Type",  LunaUtil::lua_type }, // TODO: check how luau type and typeof work and in case replace this accordingly
+	{ NULL, NULL }
+};
+
 int LunaUtil::Init(lua_State* L)
 {
-	lua_getglobal(L, "type");
-	Local("Type", -1);
-	lua_register(L, "Sleep", lua_Sleep);
-	lua_register(L, "Wait", lua_Wait);
-	lua_register(L, "type", lua_type);
-
+	luaL_register(L, "_G", UtilFuncs);
 	return 0;
 }
 #pragma endregion

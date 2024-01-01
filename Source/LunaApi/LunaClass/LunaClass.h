@@ -1,7 +1,7 @@
 #pragma once
 #include "framework.h"
 #include "PvZ/Definitions.h"
-#include "Include/lua.h"
+#include "Luau/lua.h"
 
 #include "LunaApi/LunaEvent/LunaEvent.h"
 

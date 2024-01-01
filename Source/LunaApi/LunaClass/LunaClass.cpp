@@ -56,7 +56,7 @@ LunaInstance* LunaClass::New(lua_State* L, void* Param)
 	{
 		auto self = (LunaInstance*)lua_touserdata(L, -1);
 		self->Class = this;
-		lua_copy(L, -1, T + 1);
+		//lua_copy(L, -1, T + 1); // TODO implement lua_copy
 		lua_settop(L, T + 1);
 		return self;
 	}
@@ -95,7 +95,7 @@ void LunaClass::PushInjected(lua_State* L)
 	LunaUtil::Local("Injected");
 	lua_pushvalue(L, 1);
 	lua_gettable(L, -2);
-	lua_copy(L, -1, -2);
+	//lua_copy(L, -1, -2); // TODO implement lua_copy, here a lua_xpush is enought
 	lua_pop(L, 1);
 }
 void LunaClass::GetInjected(lua_State* L)
@@ -103,7 +103,7 @@ void LunaClass::GetInjected(lua_State* L)
 	PushInjected(L);
 	lua_pushvalue(L, 2);
 	lua_gettable(L, -2);
-	lua_copy(L, -1, -2);
+	//lua_copy(L, -1, -2);
 	lua_pop(L, 1);
 }
 void LunaClass::Inject(lua_State* L)
@@ -151,7 +151,7 @@ int Luna::Class::__index(lua_State* L)
 
 	if (self->Base == NULL) lua_pushboolean(L, Field == "Destroyed");
 	else if (!lua_isstring(L, 2)) LunaIO::ThrowError("Expected a string field, got " + LunaUtil::Type(2));// Only string fields allowed
-	else if (Class->Methods.contains(Field)) lua_pushcclosure(L, Class->Methods[Field], 0);// Get Method
+	else if (Class->Methods.contains(Field)) lua_pushcclosure(L, Class->Methods[Field], Field.c_str(), 0);// Get Method
 	else if (Class->Fields.contains(Field)) Class->Fields[Field]->__index(L);// Get Field
 	else if (!Class->AllowsInjection) LunaIO::ThrowError(Field + " is not a valid member of " + Class->Name);// Check if Field Injection is allowed
 	else Class->GetInjected(L);// Get Injected Field
@@ -185,7 +185,6 @@ int Luna::Class::__gc(lua_State* L)
 {
 	auto self = GetSelf(L);
 	CLASS_VALIDATE.erase(self);
-	delete self;
 	return 0;
 }
 #pragma endregion
@@ -358,6 +357,9 @@ LunaInstance* Luna::Class::GetSelf(lua_State* L) { return (LunaInstance*)lua_tou
 #include "Classes/LawnAppClass.h"
 #include "Classes/UIContainerClass.h"
 #include "Classes/UIRootClass.h"
+
+#include "LunaApi/LunaUtil/LunaUtil.h"
+
 int Luna::Class::Init(lua_State* L)
 {
 	FIELDS = new LunaField[MAX_FIELD_CAPACITY];
@@ -375,28 +377,22 @@ int Luna::Class::Init(lua_State* L)
 	lua_setmetatable(L, -2);
 
 	lua_newtable(L);// Luna Meta
-	lua_pushstring(L, "__gc");
-	lua_pushcclosure(L, __gc, 0);
+	SetMeta(__gc);
 	lua_settable(L, -3);
 
-	lua_pushstring(L, "__type");
-	lua_pushcclosure(L, __type, 0);
+	SetMeta(__type);
 	lua_settable(L, -3);
 
-	lua_pushstring(L, "__call");
-	lua_pushcclosure(L, __call, 0);
+	SetMeta(__call);
 	lua_settable(L, -3);
 
-	lua_pushstring(L, "__index");
-	lua_pushcclosure(L, __index, 0);
+	SetMeta(__index);
 	lua_settable(L, -3);
 
-	lua_pushstring(L, "__newindex");
-	lua_pushcclosure(L, __newindex, 0);
+	SetMeta(__newindex);
 	lua_settable(L, -3);
 
-	lua_pushstring(L, "__tostring");
-	lua_pushcclosure(L, __tostring, 0);
+	SetMeta(__tostring);
 	lua_settable(L, -3);
 
 	LunaUtil::Local("ClassMeta", -1);

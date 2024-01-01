@@ -11,9 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="Dependencies\liblua54.a" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Source\Luna.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\LawnAppClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\LunaBase.cpp" />
@@ -37,11 +34,25 @@
     <ClInclude Include="Source\Enums\GameResult.h" />
     <ClInclude Include="Source\Enums\GameScenes.h" />
     <ClInclude Include="Source\framework.h" />
-    <ClInclude Include="Source\Include\lauxlib.h" />
-    <ClInclude Include="Source\Include\lua.h" />
-    <ClInclude Include="Source\Include\lua.hpp" />
-    <ClInclude Include="Source\Include\luaconf.h" />
-    <ClInclude Include="Source\Include\lualib.h" />
+    <ClInclude Include="Source\Include\Luau\Ast.h" />
+    <ClInclude Include="Source\Include\Luau\Bytecode.h" />
+    <ClInclude Include="Source\Include\Luau\BytecodeBuilder.h" />
+    <ClInclude Include="Source\Include\Luau\BytecodeUtils.h" />
+    <ClInclude Include="Source\Include\Luau\Common.h" />
+    <ClInclude Include="Source\Include\Luau\Compiler.h" />
+    <ClInclude Include="Source\Include\Luau\Confusables.h" />
+    <ClInclude Include="Source\Include\Luau\DenseHash.h" />
+    <ClInclude Include="Source\Include\Luau\ExperimentalFlags.h" />
+    <ClInclude Include="Source\Include\Luau\Lexer.h" />
+    <ClInclude Include="Source\Include\Luau\Location.h" />
+    <ClInclude Include="Source\Include\Luau\lua.h" />
+    <ClInclude Include="Source\Include\Luau\luaconf.h" />
+    <ClInclude Include="Source\Include\Luau\lualib.h" />
+    <ClInclude Include="Source\Include\Luau\ParseOptions.h" />
+    <ClInclude Include="Source\Include\Luau\Parser.h" />
+    <ClInclude Include="Source\Include\Luau\ParseResult.h" />
+    <ClInclude Include="Source\Include\Luau\StringUtils.h" />
+    <ClInclude Include="Source\Include\Luau\TimeTrace.h" />
     <ClInclude Include="Source\Luna.h" />
     <ClCompile Include="Source\LunaApi\LunaIO\LunaIO.cpp" />
     <ClCompile Include="Source\LunaApi\LunaEvent\LunaEvent.cpp" />
@@ -139,12 +150,12 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source;$(ProjectDir)Source\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Dependencies\liblua54.a;Dependencies\Luau.Ast.lib;Dependencies\Luau.Compiler.lib;Dependencies\Luau.VM.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Dependencies\Luau.Ast.lib;Dependencies\Luau.Compiler.lib;Dependencies\Luau.VM.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -157,14 +168,14 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source;$(ProjectDir)Source\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Dependencies\liblua54.a;Dependencies\Luau.Ast.lib;Dependencies\Luau.Compiler.lib;Dependencies\Luau.VM.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Dependencies\Luau.Ast.lib;Dependencies\Luau.Compiler.lib;Dependencies\Luau.VM.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

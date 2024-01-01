@@ -1,9 +1,10 @@
 #pragma once
 #include "framework.h"
-#include "Include/lua.h"
 
 #define LunaUtil Luna::Util
 #define LunaInit(Library) LunaUtil::Initiate(Library::Init)
+
+#define SetMeta(Function) lua_pushstring(L, #Function); lua_pushcclosure(L, Function, #Function, 0); lua_settable(L, -3)
 
 #define AssertType LunaUtil::AssertLuaType
 #define GetString LunaUtil::GetLuaString
