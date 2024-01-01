@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LawnAppClass.h"
 
+#include "LunaBase.h"
 #include "SexyAppClass.h"
 
 #include "LunaApi/LunaUtil/LunaUtil.h"
@@ -9,7 +10,8 @@
 #include "PvZ/Graphics.h"
 #include "PvZ/DialogButton.h"
 
-namespace Disp::LunaApp {
+namespace // Events
+{
 	DWORD StoneButtonEntries[1] = { 0x447B00 };
 	LunaEvent* StoneButtonDraw;
 
@@ -21,37 +23,42 @@ namespace Disp::LunaApp {
 	Sexy::Image* MyImg = nullptr;
 }
 
-DWORD __stdcall Disp::LunaApp::UpdateCaller()
+namespace // Event Bodies
 {
-	OnUpdate->Call(0);
-	return 0x539148;
+	DWORD __stdcall UpdateCaller()
+	{
+		OnUpdate->Call(0);
+		return 0x539148;
+	}
+
+	DWORD __stdcall FinalDrawCaller(Sexy::Graphics* G)
+	{
+
+		return 0x5390E1;
+	}
 }
 
-DWORD __stdcall Disp::LunaApp::FinalDrawCaller(Sexy::Graphics* G)
+namespace // Methods
 {
-	if (MyImg == nullptr) MyImg = (Sexy::Image*)Luna::App->GetImage("images/coolpic.jpg", true);
-	G->DrawImage(MyImg, 0, 0, 800, 600);
-	return 0x5390E1;
-}
+	int MsgBox(lua_State* L)
+	{
+		AssertType(2, "string", "Message");
+		Luna::App->MsgBox(GetString(2, "Luna!"), GetString(3, "Luna!"), 0);
+		return 0;
+	}
 
-int Disp::LunaApp::MsgBox(lua_State* L)
-{
-	AssertType(2, "string", "Message");
-	Luna::App->MsgBox(GetString(2, "Luna!"), GetString(3, "Luna!"), 0);
-	return 0;
-}
-void Disp::LunaApp::SetupEvents()
-{
-	StoneButtonDraw = Luna::Event::LunaEvent::New("OnStoneButtonDraw", StoneButton::StoneButtonDrawHandler, StoneButtonEntries, 1, true);
-	OnUpdate = LunaEvent::New("OnUpdate", UpdateHandler, UpdateEntries, 1, false);
-	OnFinalDraw = LunaEvent::New("OnFinalDraw", FinalDrawHandler, FinalDrawEntries, 1, true);
+	void SetupEvents()
+	{
+		StoneButtonDraw = Luna::Event::LunaEvent::New("OnStoneButtonDraw", StoneButtonDrawHandler, StoneButtonEntries, 1, true);
+		OnFinalDraw = LunaEvent::New("OnFinalDraw", FinalDrawHandler, FinalDrawEntries, 1, true);
+		OnUpdate = LunaEvent::New("OnUpdate", UpdateHandler, UpdateEntries, 1, false);
+	}
 }
 
 using namespace Luna::Class::Fields;
-Luna::Class::LunaClass* Luna::Class::LunaApp::Source = nullptr;
+Luna::Class::LunaClass* Luna::Class::LunaApp::Source = new LunaClass();
 int Luna::Class::LunaApp::Init(lua_State* L)
 {
-	Source = new LunaClass();
 	Source->AllowsInjection = true;
 	Source->SetName("LawnApp");
 	Source->Inherit(Luna::Class::LunaAppBase::Source);
@@ -71,10 +78,10 @@ int Luna::Class::LunaApp::Init(lua_State* L)
 	BlnField::New("DaisyMode", 0x8BD, Source);
 	BlnField::New("SukhbirMode", 0x8BE, Source);
 
-	Disp::LunaApp::SetupEvents();
-	EventField::New("OnUpdate", Disp::LunaApp::OnUpdate, Source);
+	SetupEvents();
+	EventField::New("OnUpdate", OnUpdate, Source);
 
-	Source->Methods["MessageBox"] = Disp::LunaApp::MsgBox;
+	Source->Methods["MessageBox"] = MsgBox;
 
 	Source->New(L, LawnApp::GetApp());
 	lua_setglobal(L, "LawnApp");

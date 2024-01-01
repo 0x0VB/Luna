@@ -78,6 +78,15 @@
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIContainerClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\LunaBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIRootClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Include\lauxlib.h">
@@ -191,5 +200,17 @@
     <ClInclude Include="Source\LunaApi\LunaClass\LunaClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIContainerClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\LunaBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIRootClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

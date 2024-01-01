@@ -7,9 +7,9 @@
 
 namespace Luna::Class
 {
+	class LunaInstance;
 	class LunaClass;
 	class LunaField;
-	class LunaInstance;
 
 	extern std::map<void*, bool> CLASS_VALIDATE;
 	extern CONST SIZE_T MAX_FIELD_CAPACITY;
@@ -70,16 +70,22 @@ namespace Luna::Class
 
 	};
 
+	class LunaBase;
 	class LunaAppBase;
 	class LunaApp;
+	class LunaUIContainer;
+	class LunaUIRoot;
 
+	int __gc(lua_State* L);
 	int __call(lua_State* L);
 	int __type(lua_State* L);
 	int __index(lua_State* L);
 	int __newindex(lua_State* L);
 	int __tostring(lua_State* L);
 
-	LunaInstance* GetAndAssert(lua_State* L);
+	// Makes sure the value at the given Index is a LunaInstance userdata.
+	LunaInstance* GetAndAssert(lua_State* L, int Index = 1);
+	// Returns the userdata at index 1 cast as a LunaInstance.
 	LunaInstance* GetSelf(lua_State* L);
 
 	int Init(lua_State* L);
@@ -90,21 +96,6 @@ namespace Luna::Class::Fields
 #define DefNewField(T) static T* New(const char* Name, DWORD Offset, LunaClass* Class) \
 	{ return LunaField::New<T>(Name, Offset, Class); }
 #define FBase(T) auto self = GetSelf(L); auto Base = (T*)GetBase(self);
-	class WindTitle : public LunaField
-	{
-	public:
-		virtual void __index(lua_State* L) override;
-		virtual void __newindex(lua_State* L) override;
-		DefNewField(WindTitle)
-	};
-	class WindBounds : public LunaField
-	{
-	public:
-		virtual void __index(lua_State* L);
-		virtual void __newindex(lua_State* L);
-		DefNewField(WindBounds)
-	};
-
 	class BytField : public LunaField
 	{
 		virtual void __index(lua_State* L) override;

@@ -49,6 +49,19 @@ void LunaClass::Inherit(LunaClass* Other)
 LunaInstance* LunaClass::New(lua_State* L, void* Param)
 {
 	int T = lua_gettop(L);
+	LunaUtil::Local("ClassRef");
+	lua_pushlightuserdata(L, Param);
+	lua_gettable(L, -2);
+	if (!lua_isnil(L, -1))
+	{
+		auto self = (LunaInstance*)lua_touserdata(L, -1);
+		self->Class = this;
+		lua_copy(L, -1, T + 1);
+		lua_settop(L, T + 1);
+		return self;
+	}
+	lua_settop(L, T);
+
 	auto self = (LunaInstance*)lua_newuserdata(L, sizeof(LunaInstance));
 	self->Base = Param;
 	self->Class = this;
@@ -82,19 +95,25 @@ void LunaClass::PushInjected(lua_State* L)
 	LunaUtil::Local("Injected");
 	lua_pushvalue(L, 1);
 	lua_gettable(L, -2);
+	lua_copy(L, -1, -2);
+	lua_pop(L, 1);
 }
 void LunaClass::GetInjected(lua_State* L)
 {
 	PushInjected(L);
 	lua_pushvalue(L, 2);
 	lua_gettable(L, -2);
+	lua_copy(L, -1, -2);
+	lua_pop(L, 1);
 }
 void LunaClass::Inject(lua_State* L)
 {
+	int T = lua_gettop(L);
 	PushInjected(L);
 	lua_pushvalue(L, 2);
 	lua_pushvalue(L, 3);
 	lua_settable(L, -3);
+	lua_settop(L, T);
 }
 #pragma endregion
 
@@ -120,6 +139,7 @@ int Luna::Class::__type(lua_State* L)
 int Luna::Class::__call(lua_State* L)
 {
 	auto self = GetAndAssert(L);
+	if (self->Base == NULL) LunaIO::ThrowError("This object has been destroyed.");
 	return self->Class->__call(L);
 }
 
@@ -129,7 +149,8 @@ int Luna::Class::__index(lua_State* L)
 	auto Field = GetString(2);
 	auto Class = self->Class;
 
-	if (!lua_isstring(L, 2)) LunaIO::ThrowError("Expected a string field, got " + LunaUtil::Type(2));// Only string fields allowed
+	if (self->Base == NULL) lua_pushboolean(L, Field == "Destroyed");
+	else if (!lua_isstring(L, 2)) LunaIO::ThrowError("Expected a string field, got " + LunaUtil::Type(2));// Only string fields allowed
 	else if (Class->Methods.contains(Field)) lua_pushcclosure(L, Class->Methods[Field], 0);// Get Method
 	else if (Class->Fields.contains(Field)) Class->Fields[Field]->__index(L);// Get Field
 	else if (!Class->AllowsInjection) LunaIO::ThrowError(Field + " is not a valid member of " + Class->Name);// Check if Field Injection is allowed
@@ -143,7 +164,8 @@ int Luna::Class::__newindex(lua_State* L)
 	auto Field = GetString(2);
 	auto Class = self->Class;
 
-	if (!lua_isstring(L, 2)) LunaIO::ThrowError("Expected a string field, got " + LunaUtil::Type(2));// Only string fields allowed
+	if (self->Base == NULL) LunaIO::ThrowError("This object has been destroyed.");
+	else if (!lua_isstring(L, 2)) LunaIO::ThrowError("Expected a string field, got " + LunaUtil::Type(2));// Only string fields allowed
 	else if (Class->Methods.contains(Field)) LunaIO::ThrowError(Field + " is read-only.");// Error: Methods are read-only.
 	else if (Class->Fields.contains(Field)) Class->Fields[Field]->__newindex(L);// Set Field
 	else if (!Class->AllowsInjection) LunaIO::ThrowError(Field + " is not a valid member of " + Class->Name);// Check Injection
@@ -154,36 +176,21 @@ int Luna::Class::__newindex(lua_State* L)
 int Luna::Class::__tostring(lua_State* L)
 {
 	auto self = GetAndAssert(L);
-	self->Class->__tostring(L);
+	if (self->Base == NULL) lua_pushstring(L, "[DELETED_OBJECT]");
+	else self->Class->__tostring(L);
 	return 1;
+}
+
+int Luna::Class::__gc(lua_State* L)
+{
+	auto self = GetSelf(L);
+	CLASS_VALIDATE.erase(self);
+	delete self;
+	return 0;
 }
 #pragma endregion
 
 #pragma region LunaFields
-void  Luna::Class::Fields::WindTitle::__index(lua_State* L)
-{
-	lua_pushstring(L, Luna::App->Title);
-}
-void Luna::Class::Fields::WindTitle::__newindex(lua_State* L)
-{
-	auto Value = GetString(3);
-	AssertType(3, "string", Name);
-	App->Title = Value;
-	if (App->MainWindowHandle) SetWindowTextA(App->MainWindowHandle, Value.c_str());
-}
-
-void Luna::Class::Fields::WindBounds::__index(lua_State* L)
-{
-	App->WindowBounds.Push();
-}
-void Luna::Class::Fields::WindBounds::__newindex(lua_State* L)
-{
-	AssertType(3, "Rect", Name);
-	auto Value = GetRect(3);
-	App->WindowBounds = Value;
-	if (App->MainWindowHandle) GetWindowRect(App->MainWindowHandle, Value.ToLPRECT());
-}
-
 void Luna::Class::Fields::BytField::__index(lua_State* L)
 {
 	FBase(BYTE);
@@ -336,18 +343,21 @@ void Luna::Class::Fields::EventField::__index(lua_State* L)
 }
 #pragma endregion
 
-LunaInstance* Luna::Class::GetAndAssert(lua_State* L)
+LunaInstance* Luna::Class::GetAndAssert(lua_State* L, int Index)
 {
-	void* self = lua_touserdata(L, 1);
-	if (!lua_isuserdata(L, 1)) LunaIO::ThrowError("Unable to get self.");
+	void* self = lua_touserdata(L, Index);
+	if (!lua_isuserdata(L, Index)) LunaIO::ThrowError("Unable to get self. This object may have been destroyed.");
 	if (CLASS_VALIDATE.contains(self)) return (LunaInstance*)self;
 	LunaIO::ThrowError("Self is not a valid LunaInstance.");
 }
 
 LunaInstance* Luna::Class::GetSelf(lua_State* L) { return (LunaInstance*)lua_touserdata(L, 1); }
 
+#include "Classes/LunaBase.h"
 #include "Classes/SexyAppClass.h"
 #include "Classes/LawnAppClass.h"
+#include "Classes/UIContainerClass.h"
+#include "Classes/UIRootClass.h"
 int Luna::Class::Init(lua_State* L)
 {
 	FIELDS = new LunaField[MAX_FIELD_CAPACITY];
@@ -359,6 +369,15 @@ int Luna::Class::Init(lua_State* L)
 	LunaUtil::Local("Injected", -1);
 
 	lua_newtable(L);
+	lua_pushstring(L, "__mode");
+	lua_pushstring(L, "k");
+	lua_settable(L, -3);
+	lua_setmetatable(L, -2);
+
+	lua_newtable(L);// Luna Meta
+	lua_pushstring(L, "__gc");
+	lua_pushcclosure(L, __gc, 0);
+	lua_settable(L, -3);
 
 	lua_pushstring(L, "__type");
 	lua_pushcclosure(L, __type, 0);
@@ -381,8 +400,11 @@ int Luna::Class::Init(lua_State* L)
 	lua_settable(L, -3);
 
 	LunaUtil::Local("ClassMeta", -1);
+	LunaInit(Class::LunaBase);
 	LunaInit(Class::LunaAppBase);
 	LunaInit(Class::LunaApp);
+	LunaInit(Class::LunaUIContainer);
+	LunaInit(Class::LunaUIRoot);
 
 	return 0;
 }

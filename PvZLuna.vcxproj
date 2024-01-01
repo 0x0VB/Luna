@@ -16,7 +16,9 @@
   <ItemGroup>
     <ClCompile Include="Source\Luna.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\LawnAppClass.cpp" />
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\LunaBase.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.cpp" />
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIContainerClass.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\PvZ\DialogButton.cpp" />
     <ClCompile Include="Source\PvZ\Font.cpp" />
@@ -27,6 +29,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIRootClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Enums\Enums.h" />
@@ -43,8 +46,10 @@
     <ClCompile Include="Source\LunaApi\LunaIO\LunaIO.cpp" />
     <ClCompile Include="Source\LunaApi\LunaEvent\LunaEvent.cpp" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\LawnAppClass.h" />
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\LunaBase.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.h" />
     <ClCompile Include="Source\LunaApi\LunaClass\LunaClass.cpp" />
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIContainerClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\LunaClass.h" />
     <ClInclude Include="Source\LunaApi\LunaEvent\LunaEvent.h" />
     <ClInclude Include="Source\LunaApi\LunaIO\LunaIO.h" />
@@ -76,6 +81,10 @@
     <ClInclude Include="Source\PvZ\UIElement.h" />
     <ClInclude Include="Source\PvZ\UIRoot.h" />
     <ClInclude Include="Source\stdafx.h" />
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIRootClass.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

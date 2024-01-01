@@ -1,9 +1,11 @@
 #pragma once
 #include "PvZ/Definitions.h"
+#include "PvZ/DialogButton.h"
 #include "LunaApi/LunaEvent/LunaEvent.h"
 #include "LunaApi/LunaClass/LunaClass.h"
 
-namespace Disp::LunaApp
+using namespace Luna::Event;
+namespace // Events
 {
 	using Luna::Event::LunaEvent;
 
@@ -30,7 +32,7 @@ namespace Disp::LunaApp
 			pop ecx
 			sub esp, 0xC
 			push esi
-			lea esi, [esp+04]
+			lea esi, [esp + 04]
 			jmp eax
 		}
 	}
@@ -50,6 +52,23 @@ namespace Disp::LunaApp
 			jmp eax
 		}
 	}
+
+	inline void __declspec(naked) StoneButtonDrawHandler()
+	{
+		__asm
+		{
+			push[esp + 0x1C]
+			push[esp + 0x1C]
+			push[esp + 0x1C]
+			push[esp + 0x1C]
+			push[esp + 0x1C]
+			push[esp + 0x1C]
+			push eax
+			push[esp + 0x20]
+			call LawnStoneButton::Draw
+			ret
+		}
+	};
 
 
 	int MsgBox(lua_State* L);
