@@ -72,21 +72,24 @@ void Luna::LoadMods()
 		lua_State* L = lua_newthread(LUNA_STATE);	// module needs to run in a new thread, isolated from the rest
 		luaL_sandboxthread(L);						// new thread needs to have the globals sandboxed
 
+		lua_getglobal(LUNA_STATE, "print");
+		lua_getglobal(LUNA_STATE, "LawnApp");
+		lua_call(LUNA_STATE, 1, 0);
+
+		std::cout << "Pre-Call Stack: " << lua_gettop(L) << "\n";
 		if (!LoadFile(L, ModPath))
 		{
 			std::cout << "LUA_ERRFILE on " << ModPath.string() << "\n";
-			LunaIO::Print(lua_tostring(LUNA_STATE, -1), LunaIO::Error);
+			LunaIO::Print(lua_tostring(L, -1), LunaIO::Error);
 			return;
 		}
+		else std::cout << "Loaded " << ModPath << " Post-Load Stack: " << lua_gettop(L) << "\n";
 
-		if (lua_pcall(LUNA_STATE, 0, 0, 0) != LUA_OK)
+		if (lua_pcall(L, 0, 0, 0) != LUA_OK)
 		{
 			std::string ErrorMsg = std::format("[{}] ERROR MESSAGE:", ModPath.filename().string());
 			LunaIO::Print(ErrorMsg.c_str(), LunaIO::Error);
-			LunaIO::Print(lua_tostring(LUNA_STATE, -1), LunaIO::Error);
-			Luna::App->Popup(
-				std::format("There was an error while executing {} the mod! Please send the error message to the mod creator.", ModsPath.filename().string())
-			);
+			LunaIO::Print(lua_tostring(L, -1), LunaIO::Error);
 		}
 		else
 			Luna::LoadedMods++;
@@ -124,8 +127,6 @@ void Luna::DebugMain()
 {
 	LunaIO::AllocateConsole();
 	SetConsoleTitleA("LunaDebugIO");
-
-	std::cout << "Mod Function Loaded." << "\n";
 	std::cout << "Luna Developer Mode Loaded\t\tV0.2.2\n\n";
 
 }
