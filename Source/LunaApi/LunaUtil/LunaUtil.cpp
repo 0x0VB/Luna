@@ -20,7 +20,8 @@ DWORD JMP_TARGET;
 void LunaUtil::Initiate(lua_CFunction InitFunc)
 {
 	lua_pushcclosure(LUNA_STATE, InitFunc, "InitFunc", 0);
-	if (lua_pcall(LUNA_STATE, 0, 0, 0) == LUA_OK) return;
+	if (lua_pcall(LUNA_STATE, 0, 0, 0) == LUA_OK)
+		return;
 	LunaIO::Print(lua_tostring(LUNA_STATE, -1), LunaIO::Error);
 }
 

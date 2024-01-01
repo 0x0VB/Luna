@@ -1,15 +1,16 @@
 #pragma once
 
-#include <corecrt_math_defines.h>
-#include <filesystem>
 #include <Windows.h>
+#include <corecrt_math_defines.h>
 #include <iostream>
+#include <filesystem>
+#include <string>
 #include <fstream>
+#include <streambuf>
 #include <stdio.h>
 #include <iomanip>
 #include <sstream>
 #include <format>
-#include <string>
 #include <vector>
 #include <thread>
 #include <cmath>

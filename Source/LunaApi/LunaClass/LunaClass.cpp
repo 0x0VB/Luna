@@ -378,22 +378,11 @@ int Luna::Class::Init(lua_State* L)
 
 	lua_newtable(L);// Luna Meta
 	SetMeta(__gc);
-	lua_settable(L, -3);
-
 	SetMeta(__type);
-	lua_settable(L, -3);
-
 	SetMeta(__call);
-	lua_settable(L, -3);
-
 	SetMeta(__index);
-	lua_settable(L, -3);
-
 	SetMeta(__newindex);
-	lua_settable(L, -3);
-
 	SetMeta(__tostring);
-	lua_settable(L, -3);
 
 	LunaUtil::Local("ClassMeta", -1);
 	LunaInit(Class::LunaBase);
