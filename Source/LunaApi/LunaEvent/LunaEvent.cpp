@@ -66,8 +66,8 @@ void Luna::Event::LunaEvent::Call(int ArgCount)
 	lua_pushnil(LUNA_STATE);
 	while (lua_next(LUNA_STATE, Conn))
 	{
-		// TODO: implement lua_copy
-		//lua_copy(LUNA_STATE, -2, -1);
+		lua_settop(LUNA_STATE, K);
+		lua_pushvalue(LUNA_STATE, K);
 		for (int i = 1; i <= ArgCount; i++)
 			lua_pushvalue(LUNA_STATE, RT + i);
 		if (lua_pcall(LUNA_STATE, ArgCount, 0, 0) != LUA_OK)

@@ -146,7 +146,11 @@ luaL_Reg UtilFuncs[] = {
 
 int LunaUtil::Init(lua_State* L)
 {
+	lua_getglobal(L, "type");
+	Local("Type", -1);
 	luaL_register(L, "_G", UtilFuncs);
+	lua_pushcclosure(L, lua_type, "Type", 0);
+	lua_setglobal(L, "type");
 	return 0;
 }
 #pragma endregion

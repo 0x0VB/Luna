@@ -56,7 +56,7 @@ LunaInstance* LunaClass::New(lua_State* L, void* Param)
 	{
 		auto self = (LunaInstance*)lua_touserdata(L, -1);
 		self->Class = this;
-		//lua_copy(L, -1, T + 1); // TODO implement lua_copy
+		lua_replace(L, T + 1);
 		lua_settop(L, T + 1);
 		return self;
 	}
@@ -95,16 +95,14 @@ void LunaClass::PushInjected(lua_State* L)
 	LunaUtil::Local("Injected");
 	lua_pushvalue(L, 1);
 	lua_gettable(L, -2);
-	//lua_copy(L, -1, -2); // TODO implement lua_copy, here a lua_xpush is enought
-	lua_pop(L, 1);
+	lua_replace(L, -2);
 }
 void LunaClass::GetInjected(lua_State* L)
 {
 	PushInjected(L);
 	lua_pushvalue(L, 2);
 	lua_gettable(L, -2);
-	//lua_copy(L, -1, -2);
-	lua_pop(L, 1);
+	lua_replace(L, -2);
 }
 void LunaClass::Inject(lua_State* L)
 {
