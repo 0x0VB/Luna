@@ -149,12 +149,18 @@ int Luna::Class::__index(lua_State* L)
 	auto Field = GetString(2);
 	auto Class = self->Class;
 
-	if (self->Base == NULL) lua_pushboolean(L, Field == "Destroyed");
-	else if (!lua_isstring(L, 2)) LunaIO::ThrowError("Expected a string field, got " + LunaUtil::Type(2));// Only string fields allowed
-	else if (Class->Methods.contains(Field)) lua_pushcclosure(L, Class->Methods[Field], Field.c_str(), 0);// Get Method
-	else if (Class->Fields.contains(Field)) Class->Fields[Field]->__index(L);// Get Field
-	else if (!Class->AllowsInjection) LunaIO::ThrowError(Field + " is not a valid member of " + Class->Name);// Check if Field Injection is allowed
-	else Class->GetInjected(L);// Get Injected Field
+	if (self->Base == NULL)
+		lua_pushboolean(L, Field == "Destroyed");
+	else if (!lua_isstring(L, 2))
+		LunaIO::ThrowError("Expected a string field, got " + LunaUtil::Type(2));// Only string fields allowed
+	else if (Class->Methods.contains(Field))
+		lua_pushcclosure(L, Class->Methods[Field], Field.c_str(), 0);// Get Method
+	else if (Class->Fields.contains(Field))
+		Class->Fields[Field]->__index(L);// Get Field
+	else if (!Class->AllowsInjection)
+		LunaIO::ThrowError(Field + " is not a valid member of " + Class->Name);// Check if Field Injection is allowed
+	else
+		Class->GetInjected(L);// Get Injected Field
 	return 1;
 }
 
@@ -164,11 +170,16 @@ int Luna::Class::__newindex(lua_State* L)
 	auto Field = GetString(2);
 	auto Class = self->Class;
 
-	if (self->Base == NULL) LunaIO::ThrowError("This object has been destroyed.");
-	else if (!lua_isstring(L, 2)) LunaIO::ThrowError("Expected a string field, got " + LunaUtil::Type(2));// Only string fields allowed
-	else if (Class->Methods.contains(Field)) LunaIO::ThrowError(Field + " is read-only.");// Error: Methods are read-only.
-	else if (Class->Fields.contains(Field)) Class->Fields[Field]->__newindex(L);// Set Field
-	else if (!Class->AllowsInjection) LunaIO::ThrowError(Field + " is not a valid member of " + Class->Name);// Check Injection
+	if (self->Base == NULL)
+		LunaIO::ThrowError("This object has been destroyed.");
+	else if (!lua_isstring(L, 2))
+		LunaIO::ThrowError("Expected a string field, got " + LunaUtil::Type(2));// Only string fields allowed
+	else if (Class->Methods.contains(Field))
+		LunaIO::ThrowError(Field + " is read-only.");// Error: Methods are read-only.
+	else if (Class->Fields.contains(Field))
+		Class->Fields[Field]->__newindex(L);// Set Field
+	else if (!Class->AllowsInjection)
+		LunaIO::ThrowError(Field + " is not a valid member of " + Class->Name);// Check Injection
 	else Class->Inject(L);// Inject a new field
 	return 0;
 }
