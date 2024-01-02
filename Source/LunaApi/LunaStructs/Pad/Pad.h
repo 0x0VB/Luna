@@ -21,8 +21,8 @@ namespace Luna::Structs::Pad
 	int Init(lua_State* L);
 }
 
-Pad GetPad(int Idx);
-Pad* NewPad(int L, int T, int R, int B);
-Pad* NewPad(int H, int V);
-Pad* NewPad(int P);
-Pad* GetPadSelf();
+Pad GetPad(lua_State* L, int Idx);
+Pad* NewPad(lua_State* L, int, int T, int R, int B);
+Pad* NewPad(lua_State* L, int H, int V);
+Pad* NewPad(lua_State* L, int P);
+Pad* GetPadSelf(lua_State* L);

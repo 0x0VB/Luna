@@ -31,6 +31,6 @@ namespace Luna::Structs::Rect
 	int Init(lua_State* L);
 };
 
-IRect GetRect(int Idx);
-IRect* NewRect(int X = 0, int Y = 0, int W = 0, int H = 0);
-IRect* GetRectSelf();
+IRect GetRect(lua_State* L, int Idx);
+IRect* NewRect(lua_State* L, int X = 0, int Y = 0, int W = 0, int H = 0);
+IRect* GetRectSelf(lua_State* L);

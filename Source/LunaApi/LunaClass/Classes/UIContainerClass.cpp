@@ -29,7 +29,7 @@ LunaInstance* GetUIObject(lua_State* L, int Index, std::string ParamName)
 {
 	auto self = GetAndAssert(L, Index);
 	ParamName = (ParamName == "NO_PARAM_NAME") ? "arg#" + std::to_string(Index) : ParamName;
-	if (!self->Class->IsA("UIBase")) LunaIO::ThrowError("Expected a UIBase for " + ParamName + ", got " + LunaUtil::Type(Index));
+	if (!self->Class->IsA("UIBase")) LunaIO::ThrowError(L, "Expected a UIBase for " + ParamName + ", got " + LunaUtil::Type(L, Index));
 	return self;
 }
 

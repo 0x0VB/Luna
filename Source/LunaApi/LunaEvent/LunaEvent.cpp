@@ -38,43 +38,35 @@ void Luna::Event::LunaEvent::Setup(const char* EventName, void* EventHandler, CO
 	Hooked = false;
 	if (AutoHook) Hook();
 
-	LunaUtil::Local("EventConnections");
+	LunaUtil::Local(LUNA_STATE, "EventConnections");
 	lua_pushlightuserdata(LUNA_STATE, this);
 	lua_newtable(LUNA_STATE);
 	lua_settable(LUNA_STATE, -3);
 	lua_pop(LUNA_STATE, 1);
 }
 
-void Luna::Event::LunaEvent::Push() {
-	LunaUtil::Local("EventMeta");
-	lua_pushlightuserdata(LUNA_STATE, this);
-	lua_gettable(LUNA_STATE, -2);
+void Luna::Event::LunaEvent::Push(lua_State* L)
+{
+	LunaUtil::Local(L, "EventMeta");
+	lua_pushlightuserdata(L, this);
+	lua_gettable(L, -2);
 }
 
-void Luna::Event::LunaEvent::Call(int ArgCount)
+void Luna::Event::LunaEvent::Call(lua_State* L, int ArgCount)
 {
-	int T = lua_gettop(LUNA_STATE);
+	int T = lua_gettop(L);
 	int RT = T - ArgCount;
-	int GConn = T + 1;
-	int Conn = T + 2;
-	int K = T + 3;
-	if (!Hooked) { lua_settop(LUNA_STATE, RT); return; }
-	LunaUtil::Local("EventConnections");
-	lua_pushlightuserdata(LUNA_STATE, this);
-	lua_gettable(LUNA_STATE, GConn);
-
-	lua_pushnil(LUNA_STATE);
-	while (lua_next(LUNA_STATE, Conn))
-	{
-		lua_settop(LUNA_STATE, K);
-		lua_pushvalue(LUNA_STATE, K);
+	
+	for (auto const& Connection : Connections) {
+		lua_f Func = Connection.ConnectedFunction;
+		lua_State* C = Connection.ConnectionState;
+		Func.Push(C);
 		for (int i = 1; i <= ArgCount; i++)
-			lua_pushvalue(LUNA_STATE, RT + i);
-		if (lua_pcall(LUNA_STATE, ArgCount, 0, 0) != LUA_OK)
-			LunaIO::Print("[" + std::string(Name) + "]: " + lua_tostring(LUNA_STATE, -1), LunaIO::Error);
-		lua_settop(LUNA_STATE, K);
+			lua_xpush(L, C, RT + i);
+		lua_call(C, ArgCount, 0);
 	}
-	lua_settop(LUNA_STATE, RT);
+
+	lua_settop(L, RT);
 }
 
 Luna::Event::LunaEvent* Luna::Event::LunaEvent::New(const char* Name, void* Handler, DWORD Entries[], size_t EntryCount, bool AutoHook)
@@ -82,7 +74,7 @@ Luna::Event::LunaEvent* Luna::Event::LunaEvent::New(const char* Name, void* Hand
 	int T = lua_gettop(LUNA_STATE);
 	auto self = (LunaEvent*)lua_newuserdata(LUNA_STATE, sizeof(LunaEvent));// 1
 	self->Setup(Name, Handler, Entries, EntryCount, AutoHook);
-	LunaUtil::Local("EventMeta");// 2
+	LunaUtil::Local(LUNA_STATE, "EventMeta");// 2
 	lua_pushlightuserdata(LUNA_STATE, self);// 3
 	lua_pushvalue(LUNA_STATE, T + 1);
 	lua_settable(LUNA_STATE, T + 2);
@@ -93,48 +85,41 @@ Luna::Event::LunaEvent* Luna::Event::LunaEvent::New(const char* Name, void* Hand
 
 int Luna::Event::Call(lua_State* L)
 {
-	AssertType(1, "LunaEvent", "self");
+	AssertType(L, 1, "LunaEvent", "self");
 	auto self = (LunaEvent*)lua_touserdata(L, 1);
-	self->Call(lua_gettop(L) - 1);
+	self->Call(L, lua_gettop(L) - 1);
 	return 0;
 }
 
 int Luna::Event::Connect(lua_State* L)
 {
-	AssertType(1, "LunaEvent", "self");
-	AssertType(2, "function", "Connection");
-	LunaUtil::Local("EventConnections");
+	AssertType(L, 1, "LunaEvent", "self");
+	AssertType(L, 2, "function", "Connection");
 	auto self = (LunaEvent*)lua_touserdata(L, 1);
-	if (!self->Hooked) self->Hook();
-	lua_pushlightuserdata(L, self);
-	lua_gettable(L, -2);
-	lua_pushvalue(L, 2);
-	lua_pushboolean(L, 1);
-	lua_settable(L, -3);
+	self->Connections.push_front(LunaConnection(L, 2));
 	return 0;
 }
 
 int Luna::Event::Disconnect(lua_State* L)
 {
-	AssertType(1, "LunaEvent", "self");
-	AssertType(2, "function", "Connection");
-	LunaUtil::Local("EventConnections");
-	lua_pushlightuserdata(L, lua_touserdata(L, 1));
-	lua_gettable(L, -2);
-	lua_pushvalue(L, 2);
-	lua_pushnil(L);
-	lua_settable(L, -3);
+	AssertType(L, 1, "LunaEvent", "self");
+	AssertType(L, 2, "function", "Connection");
+	auto self = (LunaEvent*)lua_touserdata(L, 1);
+	lua_f Function = lua_f(L, 2);
+	for (auto it = self->Connections.begin(); it != self->Connections.end(); ) {
+		if ((*it).ConnectedFunction == Function)
+			it = self->Connections.erase(it);
+		else ++it;
+	}
 	return 0;
 }
 
 int Luna::Event::DisconnectAll(lua_State* L)
 {
-	AssertType(1, "LunaEvent", "self");
-	AssertType(2, "function", "Connection");
-	LunaUtil::Local("EventConnections");
-	lua_pushlightuserdata(L, lua_touserdata(L, 1));
-	lua_newtable(L);
-	lua_settable(L, -3);
+	AssertType(L, 1, "LunaEvent", "self");
+	AssertType(L, 2, "function", "Connection");
+	LunaEvent* self = (LunaEvent*)lua_touserdata(L, 1);
+	self->Connections.clear();
 	return 0;
 }
 #pragma endregion
@@ -143,15 +128,15 @@ int Luna::Event::DisconnectAll(lua_State* L)
 int Luna::Event::__index(lua_State* L)
 {
 	auto FieldString = lua_tostring(L, 2);
-	if (!lua_isstring(L, 2)) LunaIO::ThrowError(LunaUtil::Type(2) + " is not a valid member of LunaEvent.");
-	if (FieldString[0] == '_') LunaIO::ThrowError(std::string(FieldString) + " is not a valid member of LunaEvent.");
-	LunaUtil::Local("EventMeta");
+	if (!lua_isstring(L, 2)) LunaIO::ThrowError(L, LunaUtil::Type(L, 2) + " is not a valid member of LunaEvent.");
+	if (FieldString[0] == '_') LunaIO::ThrowError(L, std::string(FieldString) + " is not a valid member of LunaEvent.");
+	LunaUtil::Local(L, "EventMeta");
 	lua_pushvalue(L, 2);
 	lua_gettable(L, -2);
-	if (lua_isnil(L, -1)) LunaIO::ThrowError(std::string(FieldString) + " is not a valid member of LunaEvent.");
+	if (lua_isnil(L, -1)) LunaIO::ThrowError(L, std::string(FieldString) + " is not a valid member of LunaEvent.");
 	return 1;
 }
-int Luna::Event::__newindex(lua_State* L) { LunaIO::ThrowError("LunaEvents cannot be modified."); return 0; }
+int Luna::Event::__newindex(lua_State* L) { LunaIO::ThrowError(L, "LunaEvents cannot be modified."); return 0; }
 int Luna::Event::__tostring(lua_State* L)
 {
 	auto self = (LunaEvent*)lua_touserdata(L, 1);
@@ -163,8 +148,6 @@ int Luna::Event::__call(lua_State* L) { Call(L); return 0; }
 
 int Luna::Event::Init(lua_State* L)
 {
-	lua_newtable(L);
-	LunaUtil::Local("EventConnections", -1, true);
 	lua_newtable(L);
 	lua_pushstring(L, "__type");
 	lua_pushstring(L, "LunaEvent");
@@ -180,6 +163,6 @@ int Luna::Event::Init(lua_State* L)
 	SetMeta(Disconnect);
 	SetMeta(DisconnectAll);
 
-	LunaUtil::Local("EventMeta", -1, true);
+	LunaUtil::Local(L, "EventMeta", -1, true);
 	return 0;
 }

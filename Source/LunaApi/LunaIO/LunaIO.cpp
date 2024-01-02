@@ -43,25 +43,23 @@ void LunaIO::Print(std::string Text, IOColor Color, bool NewLine)
 	if (NewLine) std::cout << "\n";
 }
 
-void LunaIO::ThrowError(std::string Text, bool AppendTraceback, int Level)
+void LunaIO::ThrowError(lua_State* L, std::string Text, bool AppendTraceback, int Level)
 {
 	if (AppendTraceback)
 	{
-		//luaL_traceback(LUNA_STATE, LUNA_STATE, Text.c_str(), Level);
-		lua_error(LUNA_STATE);
+		lua_error(L);
 	}
 	else
 	{
-		lua_pushstring(LUNA_STATE, Text.c_str());
-		lua_error(LUNA_STATE);
+		lua_pushstring(L, Text.c_str());
+		lua_error(L);
 	}
 }
 
-void LunaIO::ThrowError(int StringCount, int Level)
+void LunaIO::ThrowError(lua_State* L, int StringCount, int Level)
 {
-	lua_concat(LUNA_STATE, StringCount);
-	//luaL_traceback(LUNA_STATE, LUNA_STATE, lua_tostring(LUNA_STATE, -1), Level);
-	lua_error(LUNA_STATE);
+	lua_concat(L, StringCount);
+	lua_error(L);
 }
 #pragma endregion
 

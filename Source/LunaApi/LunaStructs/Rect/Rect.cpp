@@ -9,24 +9,24 @@
 
 #pragma region Struct Functions
 template <typename T>
-void Rect<T>::PushPosition() { NewVector2(X, Y); }
+void Rect<T>::PushPosition(lua_State* L) { NewVector2(L, X, Y); }
 template <typename T>
-void Rect<T>::PushSize() { NewVector2(W, H); }
+void Rect<T>::PushSize(lua_State* L) { NewVector2(L, W, H); }
 template <typename T>
-void Rect<T>::Push() { NewRect(X, Y, W, H); }
+void Rect<T>::Push(lua_State* L) { NewRect(L, X, Y, W, H); }
 #pragma endregion
 
 #pragma region C++ Functions
-IRect GetRect(int Idx)
+IRect GetRect(lua_State* L, int Idx)
 {
-	AssertType(Idx, "Rect", "arg#" + std::to_string(Idx));
-	return *(IRect*)lua_touserdata(LUNA_STATE, Idx);
+	AssertType(L, Idx, "Rect", "arg#" + std::to_string(Idx));
+	return *(IRect*)lua_touserdata(L, Idx);
 }
-IRect* NewRect(int X, int Y, int W, int H)
+IRect* NewRect(lua_State* L, int X, int Y, int W, int H)
 {
-	auto New = (IRect*)lua_newuserdata(LUNA_STATE, sizeof(IRect));
-	LunaUtil::Local("RectMeta");
-	lua_setmetatable(LUNA_STATE, -2);
+	auto New = (IRect*)lua_newuserdata(L, sizeof(IRect));
+	LunaUtil::Local(L, "RectMeta");
+	lua_setmetatable(L, -2);
 
 	New->X = X;
 	New->Y = Y;
@@ -35,93 +35,93 @@ IRect* NewRect(int X, int Y, int W, int H)
 
 	return New;
 }
-IRect* GetRectSelf() { return (IRect*)lua_touserdata(LUNA_STATE, 1); }
+IRect* GetRectSelf(lua_State* L) { return (IRect*)lua_touserdata(L, 1); }
 #pragma endregion
 
 #pragma region Lua Functions
 int Luna::Structs::Rect::Constructor(lua_State* L)
 {
-	auto X = GetInt(1);
-	auto Y = GetInt(2);
-	auto W = GetInt(3);
-	auto H = GetInt(4);
+	auto X = GetInt(L, 1);
+	auto Y = GetInt(L, 2);
+	auto W = GetInt(L, 3);
+	auto H = GetInt(L, 4);
 	NewRect(X, Y, W, H);
 	return 1;
 }
 
 int Luna::Structs::Rect::GetIntersection(lua_State* L)
 {
-	auto self = GetRect(1);
-	auto Other = GetRect(2);
-	self.GetIntersection(Other).Push();
+	auto self = GetRect(L, 1);
+	auto Other = GetRect(L, 2);
+	self.GetIntersection(Other).Push(L);
 	return 1;
 }
 int Luna::Structs::Rect::SetPosition(lua_State* L)
 {
-	auto self = GetRect(1);
-	auto NewPos = GetVector2(2).ToInt();
-	self.SetPosition(NewPos).Push();
+	auto self = GetRect(L, 1);
+	auto NewPos = GetVector2(L, 2).ToInt();
+	self.SetPosition(NewPos).Push(L);
 	return 1;
 }
 int Luna::Structs::Rect::Intersects(lua_State* L)
 {
-	auto self = GetRect(1);
-	auto Other = GetRect(2);
+	auto self = GetRect(L, 1);
+	auto Other = GetRect(L, 2);
 	lua_pushboolean(L, self.Intersects(Other));
 	return 1;
 }
 int Luna::Structs::Rect::GetCenter(lua_State* L)
 {
-	auto self = GetRect(1);
+	auto self = GetRect(L, 1);
 	self.GetCenter().Push();
 	return 1;
 }
 int Luna::Structs::Rect::SetCenter(lua_State* L)
 {
-	AssertType(2, "Vector2", "NewCenter");
-	auto self = GetRect(1);
-	auto NewCenter = GetVector2(2);
-	self.SetCenter(NewCenter.ToInt()).Push();
+	AssertType(L, 2, "Vector2", "NewCenter");
+	auto self = GetRect(L, 1);
+	auto NewCenter = GetVector2(L, 2);
+	self.SetCenter(NewCenter.ToInt()).Push(L);
 	return 1;
 }
 int Luna::Structs::Rect::Contains(lua_State* L)
 {
-	std::string OType = LunaUtil::Type(2);
-	auto self = GetRect(1);
+	std::string OType = LunaUtil::Type(L, 2);
+	auto self = GetRect(L, 1);
 	
 	if (OType == "Rect")
 	{
-		auto Other = GetRect(2);
+		auto Other = GetRect(L, 2);
 		lua_pushboolean(L, self.Contains(Other));
 	}
 	else if (OType == "Vector2")
 	{
-		auto Other = GetVector2(2).ToInt();
+		auto Other = GetVector2(L, 2).ToInt();
 		lua_pushboolean(L, self.Contains(Other));
 	}
-	else LunaIO::ThrowError("Expected a Rect or Vector2 value for arg#2, got " + OType + ".");
+	else LunaIO::ThrowError(L, "Expected a Rect or Vector2 value for arg#2, got " + OType + ".");
 
 	return 1;
 }
 int Luna::Structs::Rect::GetArea(lua_State* L)
 {
-	auto self = GetRect(1);
+	auto self = GetRect(L, 1);
 	lua_pushinteger(L, self.GetArea());
 	return 1;
 }
 int Luna::Structs::Rect::SetSize(lua_State* L)
 {
-	auto self = GetRect(1);
+	auto self = GetRect(L, 1);
 	auto NewSize = GetVector2(2).ToInt();
 	self.SetSize(NewSize).Push();
 	return 1;
 }
 int Luna::Structs::Rect::Lerp(lua_State* L)
 {
-	auto self = GetRect(1);
-	auto Other = GetRect(2);
-	auto Alpha = GetFloat(3, 0.5);
-	self.Lerp(Other, Alpha).Push();
+	auto self = GetRect(L, 1);
+	auto Other = GetRect(L, 2);
+	auto Alpha = GetFloat(L, 3, 0.5);
+	self.Lerp(Other, Alpha).Push(L);
 	return 1;
 }
 #pragma endregion
@@ -129,8 +129,8 @@ int Luna::Structs::Rect::Lerp(lua_State* L)
 #pragma region Meta Methods
 int Luna::Structs::Rect::__index(lua_State* L)
 {
-	auto self = GetRectSelf();
-	auto Field = GetString(2);
+	auto self = GetRectSelf(L);
+	auto Field = GetString(L, 2);
 
 	if (Field.length() != 1) goto FIDX;
 	switch (Field[0])
@@ -154,22 +154,22 @@ int Luna::Structs::Rect::__index(lua_State* L)
 		self->PushSize();
 		return 1;
 	default:
-		LunaIO::ThrowError(Field + " is not a valid member of Rect.");
+		LunaIO::ThrowError(L, Field + " is not a valid member of Rect.");
 	}
 FIDX:
-	LunaUtil::Local("RectMeta");
+	LunaUtil::Local(L, "RectMeta");
 	lua_pushvalue(L, 2);
 	lua_gettable(L, -2);
-	if (lua_isnil(L, -1)) LunaIO::ThrowError(Field + " is not a valid member of Rect.");
+	if (lua_isnil(L, -1)) LunaIO::ThrowError(L, Field + " is not a valid member of Rect.");
 	return 1;
 }
 int Luna::Structs::Rect::__newindex(lua_State* L)
 {
-	if (!lua_isnumber(L, 3)) LunaIO::ThrowError("Rect only accepts number fields.");
+	if (!lua_isnumber(L, 3)) LunaIO::ThrowError(L, "Rect only accepts number fields.");
 	auto self = GetRectSelf();
 	auto Field = GetString(2);
 	auto Value = GetInt(3);
-	if (Field.length() != 1) LunaIO::ThrowError(Field + " is not a valid member of Rect or is read-only.");
+	if (Field.length() != 1) LunaIO::ThrowError(L, Field + " is not a valid member of Rect or is read-only.");
 	switch (Field[0])
 	{
 	case 'X':

@@ -32,20 +32,32 @@ void LunaUtil::FPCall(lua_CFunction Func)
 		LunaIO::Print(lua_tostring(GlobalLState, -1), LunaIO::Error);
 }
 
-void LunaUtil::Local(const char* LocalName, int Index, bool Pop)
-{
-	lua_pushstring(GlobalLState, LocalName);
-	lua_pushvalue(GlobalLState, (Index > 0) ? Index : Index - 1);
-	lua_settable(GlobalLState, LUA_REGISTRYINDEX);
+int LunaUtil::GetParamIndex(lua_State* L, int Index)
+{ return (Index > 0) ? Index : lua_gettop(L) + Index; }
 
-	if (Pop && Index == -1) lua_pop(GlobalLState, 1);
-	else if (Pop) lua_remove(GlobalLState, Index);
+void LunaUtil::Local(lua_State* L, std::string LocalName, int Index, bool Pop)
+{
+	// Move value to LocalState
+	lua_pushvalue(L, Index);
+	lua_xmove(L, LocalState, 1);
+
+	// Set the local value if it exists
+	if (LocalDictionary.contains(LocalName))
+		lua_replace(LocalState, LocalDictionary[LocalName]);
+	else// Register the local value if it doesn't
+		LocalDictionary[LocalName] = lua_gettop(LocalState);
+
+	// Pop the value if Pop is true
+	if (Pop && Index == -1) lua_pop(L, 1);
+	else if (Pop) lua_remove(L, Index);
 }
 
-void LunaUtil::Local(const char* LocalName)
+void LunaUtil::Local(lua_State* L, std::string LocalName)
 {
-	lua_pushstring(GlobalLState, LocalName);
-	lua_gettable(GlobalLState, LUA_REGISTRYINDEX);
+	// Retrieve the value from LocalState
+	lua_pushvalue(LocalState, LocalDictionary[LocalName]);
+	// Move it onto the current state
+	lua_xmove(LocalState, L, 1);
 }
 
 void __declspec(naked) LunaUtil::SaveRegisters()
@@ -70,45 +82,92 @@ void __declspec(naked) LunaUtil::LoadRegisters()
 	}
 }
 
-std::string LunaUtil::Type(int Index)
+std::string LunaUtil::Type(lua_State* L, int Index)
 {
-	int T = lua_gettop(GlobalLState);
-	lua_pushcclosure(GlobalLState, lua_type, "Type", 0);
-	lua_pushvalue(GlobalLState, (Index > 0) ? Index : Index - 1);
-	lua_call(GlobalLState, 1, 1);
-	
-	auto Type = std::string(lua_tostring(GlobalLState, -1));
-	lua_settop(GlobalLState, T);
+	int T = lua_gettop(L);
+	Index = (Index > 0) ? Index : T + Index;
+	std::string Type;
+
+	lua_getmetatable(L, Index);
+	if (lua_istable(L, -1))
+	{
+		// __type valid
+		lua_pushstring(L, "__type");
+		lua_gettable(L, -2);
+		if (lua_isstring(L, -1))
+		{
+			Type = lua_tostring(L, -1);
+			lua_settop(L, T);
+			return Type;
+		}
+		else if (lua_isfunction(L, -1))
+		{
+			lua_pushvalue(L, Index);
+			lua_call(L, 1, 1);
+			Type = lua_tostring(L, -1);
+			lua_settop(L, T);
+			return Type;
+		}
+	}
+
+	Local(L, "Type");
+	lua_pushvalue(L, Index);
+	lua_call(L, 1, 1);
+	Type = lua_tostring(L, -1);
+	lua_settop(L, T);
 	return Type;
 }
 #pragma endregion
 
+#pragma region lua_f lib
+LunaUtil::lua_f::lua_f(lua_State* L, int Idx)
+{
+	Idx = GetParamIndex(L, Idx);
+	if (!lua_isfunction(L, Idx)) LunaIO::ThrowError(L, "Function expected. Unable to construct lua_f.");
+	Pointer = (void*)lua_topointer(L, Idx);
+	Local(L, "LuaFunctions");
+	lua_pushlightuserdata(L, Pointer);
+	lua_pushvalue(L, Idx);
+	lua_settable(L, -3);
+	lua_pop(L, 1);
+}
+	
+void LunaUtil::lua_f::Push(lua_State* L)
+{
+	Local(L, "LuaFunctions");
+	lua_pushlightuserdata(L, Pointer);
+	lua_gettable(L, -2);
+	lua_replace(L, -2);
+}
+#pragma endregion
+
+
 #pragma region Quick Cast Functions
-int LunaUtil::GetLuaInt(int I, int D)
+int LunaUtil::GetLuaInt(lua_State* L, int I, int D)
 {
-	if (!lua_isnumber(GlobalLState, I)) return D;
-	return (int)lua_tonumber(GlobalLState, I);
+	if (!lua_isnumber(L, I)) return D;
+	return (int)lua_tonumber(L, I);
 }
-float LunaUtil::GetLuaFloat(int I, float D)
+float LunaUtil::GetLuaFloat(lua_State* L, int I, float D)
 {
-	if (!lua_isnumber(GlobalLState, I)) return D;
-	return (float)lua_tonumber(GlobalLState, I);
+	if (!lua_isnumber(L, I)) return D;
+	return (float)lua_tonumber(L, I);
 }
-double LunaUtil::GetLuaDouble(int I, double D)
+double LunaUtil::GetLuaDouble(lua_State* L, int I, double D)
 {
-	if (!lua_isnumber(GlobalLState, I)) return D;
-	return (double)lua_tonumber(GlobalLState, I);
+	if (!lua_isnumber(L, I)) return D;
+	return (double)lua_tonumber(L, I);
 }
-std::string LunaUtil::GetLuaString(int I, std::string D)
+std::string LunaUtil::GetLuaString(lua_State* L, int I, std::string D)
 {
-	if (!lua_isstring(GlobalLState, I)) return D;
-	return std::string(lua_tostring(GlobalLState, I));
+	if (!lua_isstring(L, I)) return D;
+	return std::string(lua_tostring(L, I));
 }
-void LunaUtil::AssertLuaType(int Index, std::string WantedType, std::string ParamName)
+void LunaUtil::AssertLuaType(lua_State* L, int Index, std::string WantedType, std::string ParamName)
 {
-	std::string ValueType = Type(Index);
+	std::string ValueType = Type(L, Index);
 	if (WantedType == ValueType) return;
-	LunaIO::ThrowError("Expected a " + WantedType + " for " + ParamName + ", got " + ValueType + ".");
+	LunaIO::ThrowError(L, "Expected a " + WantedType + " for " + ParamName + ", got " + ValueType + ".");
 }
 #pragma endregion
 
@@ -128,14 +187,14 @@ int LunaUtil::lua_type(lua_State* L)
 	}
 
 VanillaType:
-	Local("Type");
+	Local(L, "Type");
 	lua_pushvalue(L, 1);
 	lua_call(L, 1, 1);
 	return 1;
 }
 
-int LunaUtil::lua_Sleep(lua_State* L) { Sleep(GetInt(1, 1)); return 0; }
-int LunaUtil::lua_Wait(lua_State* L) { Sleep(GetInt(1, 1) * 1000); return 0; }
+int LunaUtil::lua_Sleep(lua_State* L) { Sleep(GetInt(L, 1, 1)); return 0; }
+int LunaUtil::lua_Wait(lua_State* L) { Sleep(GetInt(L, 1, 1) * 1000); return 0; }
 
 luaL_Reg UtilFuncs[] = {
 	{ "Sleep", LunaUtil::lua_Sleep },
@@ -146,8 +205,15 @@ luaL_Reg UtilFuncs[] = {
 
 int LunaUtil::Init(lua_State* L)
 {
-	lua_getglobal(L, "type");
-	Local("Type", -1);
+	lua_newtable(L);
+	Local(L, "LuaFunctions", -1);// Create the function table
+
+	LocalState = lua_newthread(LUNA_STATE);// Setup local state
+	luaL_sandboxthread(LocalState);
+
+	lua_getglobal(L, "type");// Save type function
+	Local(L, "Type", -1);
+
 	luaL_register(L, "_G", UtilFuncs);
 	lua_pushcclosure(L, lua_type, "Type", 0);
 	lua_setglobal(L, "type");

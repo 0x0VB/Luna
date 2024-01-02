@@ -18,8 +18,8 @@ namespace
 		}
 		virtual void __newindex(lua_State* L) override
 		{
-			auto Value = GetString(3);
-			AssertType(3, "string", Name);
+			auto Value = GetString(L, 3);
+			AssertType(L, 3, "string", Name);
 			auto App = LawnApp::GetApp();
 			App->Title = Value;
 			if (App->MainWindowHandle) SetWindowTextA(App->MainWindowHandle, Value.c_str());
@@ -35,7 +35,7 @@ namespace
 		}
 		virtual void __newindex(lua_State* L) override
 		{
-			AssertType(3, "Rect", Name);
+			AssertType(L, 3, "Rect", Name);
 			auto Value = GetRect(3);
 			auto App = LawnApp::GetApp();
 			App->WindowBounds = Value;

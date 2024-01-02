@@ -6,20 +6,20 @@
 #include "Luna.h"
 
 #pragma region Struct Functions
-void Pad::Push() { NewPad(L, T, B, R); }
+void Pad::Push(lua_State* Ls) { NewPad(Ls, T, B, R, L); }
 #pragma endregion
 
 #pragma region C++ Functions
-Pad GetPad(int Idx)
+Pad GetPad(lua_State* L, int Idx)
 {
-	AssertType(Idx, "Pad", "arg#" + std::to_string(Idx));
-	return *(Pad*)lua_touserdata(LUNA_STATE, Idx);
+	AssertType(L, Idx, "Pad", "arg#" + std::to_string(Idx));
+	return *(Pad*)lua_touserdata(L, Idx);
 }
-Pad* NewPad(int X, int Y, int W, int H)
+Pad* NewPad(lua_State* L, int X, int Y, int W, int H)
 {
-	auto New = (Pad*)lua_newuserdata(LUNA_STATE, sizeof(Pad));
-	LunaUtil::Local("PadMeta");
-	lua_setmetatable(LUNA_STATE, -2);
+	auto New = (Pad*)lua_newuserdata(L, sizeof(Pad));
+	LunaUtil::Local(L, "PadMeta");
+	lua_setmetatable(L, -2);
 
 	New->L = X;
 	New->T = Y;
@@ -28,11 +28,11 @@ Pad* NewPad(int X, int Y, int W, int H)
 
 	return New;
 }
-Pad* NewPad(int H, int V)
+Pad* NewPad(lua_State* L, int H, int V)
 {
-	auto New = (Pad*)lua_newuserdata(LUNA_STATE, sizeof(Pad));
-	LunaUtil::Local("PadMeta");
-	lua_setmetatable(LUNA_STATE, -2);
+	auto New = (Pad*)lua_newuserdata(L, sizeof(Pad));
+	LunaUtil::Local(L, "PadMeta");
+	lua_setmetatable(L, -2);
 
 	New->L = H;
 	New->T = V;
@@ -41,11 +41,11 @@ Pad* NewPad(int H, int V)
 
 	return New;
 }
-Pad* NewPad(int P)
+Pad* NewPad(lua_State* L, int P)
 {
-	auto New = (Pad*)lua_newuserdata(LUNA_STATE, sizeof(Pad));
-	LunaUtil::Local("PadMeta");
-	lua_setmetatable(LUNA_STATE, -2);
+	auto New = (Pad*)lua_newuserdata(L, sizeof(Pad));
+	LunaUtil::Local(L, "PadMeta");
+	lua_setmetatable(L, -2);
 
 	New->L = P;
 	New->T = P;
@@ -54,7 +54,7 @@ Pad* NewPad(int P)
 
 	return New;
 }
-Pad* GetPadSelf() { return (Pad*)lua_touserdata(LUNA_STATE, 1); }
+Pad* GetPadSelf(lua_State* L) { return (Pad*)lua_touserdata(L, 1); }
 #pragma endregion
 
 #pragma region Lua Functions
@@ -65,21 +65,21 @@ int Luna::Structs::Pad::Constructor(lua_State* L)
 	{
 	case 0:
 	case 1:
-		NewPad(GetInt(1));
+		NewPad(L, GetInt(L, 1));
 		return 1;
 	case 2:
-		NewPad(GetInt(1), GetInt(2));
+		NewPad(L, GetInt(L, 1), GetInt(L, 2));
 		return 1;
 	}
-	NewPad(GetInt(1), GetInt(2), GetInt(3), GetInt(4));
+	NewPad(L, GetInt(L, 1), GetInt(L, 2), GetInt(L, 3), GetInt(L, 4));
 	return 1;
 }
 int Luna::Structs::Pad::Lerp(lua_State* L)
 {
-	auto self = GetPad(1);
-	auto Other = GetPad(2);
-	auto Alpha = GetFloat(3, 0.5);
-	self.Lerp(Other, Alpha).Push();
+	auto self = GetPad(L, 1);
+	auto Other = GetPad(L, 2);
+	auto Alpha = GetFloat(L, 3, 0.5);
+	self.Lerp(Other, Alpha).Push(L);
 	return 1;
 }
 #pragma endregion
@@ -87,8 +87,8 @@ int Luna::Structs::Pad::Lerp(lua_State* L)
 #pragma region Meta Methods
 int Luna::Structs::Pad::__index(lua_State* L)
 {
-	auto self = GetPadSelf();
-	auto Field = GetString(2);
+	auto self = GetPadSelf(L);
+	auto Field = GetString(L, 2);
 
 	if (Field.length() != 1) goto FIDX;
 	switch (Field[0])
@@ -106,22 +106,22 @@ int Luna::Structs::Pad::__index(lua_State* L)
 		lua_pushinteger(L, self->B);
 		return 1;
 	default:
-		LunaIO::ThrowError(Field + " is not a valid member of Pad.");
+		LunaIO::ThrowError(L, Field + " is not a valid member of Pad.");
 	}
 FIDX:
-	LunaUtil::Local("PadMeta");
+	LunaUtil::Local(L, "PadMeta");
 	lua_pushvalue(L, 2);
 	lua_gettable(L, -2);
-	if (lua_isnil(L, -1)) LunaIO::ThrowError(Field + " is not a valid member of Pad.");
+	if (lua_isnil(L, -1)) LunaIO::ThrowError(L, Field + " is not a valid member of Pad.");
 	return 1;
 }
 int Luna::Structs::Pad::__newindex(lua_State* L)
 {
-	if (!lua_isnumber(L, 3)) LunaIO::ThrowError("Pad only accepts number fields.");
-	auto self = GetPadSelf();
-	auto Field = GetString(2);
-	auto Value = GetInt(3);
-	if (Field.length() != 1) LunaIO::ThrowError(Field + " is not a valid member of Pad or is read-only.");
+	if (!lua_isnumber(L, 3)) LunaIO::ThrowError(L, "Pad only accepts number fields.");
+	auto self = GetPadSelf(L);
+	auto Field = GetString(L, 2);
+	auto Value = GetInt(L, 3);
+	if (Field.length() != 1) LunaIO::ThrowError(L, Field + " is not a valid member of Pad or is read-only.");
 	switch (Field[0])
 	{
 	case 'L':
@@ -137,12 +137,12 @@ int Luna::Structs::Pad::__newindex(lua_State* L)
 		self->B = Value;
 		return 0;
 	}
-	LunaIO::ThrowError(Field + " is not a valid member of Pad or is read-only.");
+	LunaIO::ThrowError(L, Field + " is not a valid member of Pad or is read-only.");
 	return 0;
 }
 int Luna::Structs::Pad::__tostring(lua_State* L)
 {
-	auto self = GetPadSelf();
+	auto self = GetPadSelf(L);
 	std::string ToStr =
 		"Left: " + std::to_string(self->L) + 
 		" Top: " + std::to_string(self->T) +
@@ -154,54 +154,54 @@ int Luna::Structs::Pad::__tostring(lua_State* L)
 
 int Luna::Structs::Pad::__add(lua_State* L)
 {
-	auto OType = LunaUtil::Type(2);
-	if (OType != "Pad") LunaIO::ThrowError("Unable to add Pad and " + OType + ".");
+	auto OType = LunaUtil::Type(L, 2);
+	if (OType != "Pad") LunaIO::ThrowError(L, "Unable to add Pad and " + OType + ".");
 
-	auto self = GetPad(1);
-	auto Other = GetPad(2);
-	(self + Other).Push();
+	auto self = GetPad(L, 1);
+	auto Other = GetPad(L, 2);
+	(self + Other).Push(L);
 	return 1;
 }
 int Luna::Structs::Pad::__sub(lua_State* L)
 {
-	auto OType = LunaUtil::Type(2);
-	if (OType != "Pad") LunaIO::ThrowError("Unable to subtract " + OType + " from Pad.");
+	auto OType = LunaUtil::Type(L, 2);
+	if (OType != "Pad") LunaIO::ThrowError(L, "Unable to subtract " + OType + " from Pad.");
 
-	auto self = GetPad(1);
-	auto Other = GetPad(2);
-	(self - Other).Push();
+	auto self = GetPad(L, 1);
+	auto Other = GetPad(L, 2);
+	(self - Other).Push(L);
 	return 1;
 }
 int Luna::Structs::Pad::__mul(lua_State* L)
 {
-	if (!lua_isnumber(L, 2)) LunaIO::ThrowError("Unable to multiply Pad by " + LunaUtil::Type(2) + ".");
+	if (!lua_isnumber(L, 2)) LunaIO::ThrowError(L, "Unable to multiply Pad by " + LunaUtil::Type(L, 2) + ".");
 
-	auto self = GetPad(1);
+	auto self = GetPad(L,  1);
 	auto Factor = (float)lua_tonumber(L, 2);
-	(self * Factor).Push();
+	(self * Factor).Push(L);
 	return 1;
 }
 int Luna::Structs::Pad::__div(lua_State* L)
 {
-	if (!lua_isnumber(L, 2)) LunaIO::ThrowError("Unable to divide Pad by " + LunaUtil::Type(2) + ".");
+	if (!lua_isnumber(L, 2)) LunaIO::ThrowError(L, "Unable to divide Pad by " + LunaUtil::Type(L, 2) + ".");
 
-	auto self = GetPad(1);
+	auto self = GetPad(L, 1);
 	auto Factor = (float)lua_tonumber(L, 2);
-	(self / Factor).Push();
+	(self / Factor).Push(L);
 	return 1;
 }
 int Luna::Structs::Pad::__eq(lua_State* L)
 {
-	if (LunaUtil::Type(2) != "Pad") { lua_pushboolean(L, false); return 1; }
+	if (LunaUtil::Type(L, 2) != "Pad") { lua_pushboolean(L, false); return 1; }
 
-	auto self = GetPad(1);
-	auto Other = GetPad(2);
+	auto self = GetPad(L, 1);
+	auto Other = GetPad(L, 2);
 	lua_pushboolean(L, self == Other);
 	return 1;
 }
 int Luna::Structs::Pad::__gc(lua_State* L)
 {
-	auto self = GetPadSelf();
+	auto self = GetPadSelf(L);
 	delete self;
 	return 0;
 }
@@ -226,6 +226,6 @@ int Luna::Structs::Pad::Init(lua_State* L)
 	SetMeta(__eq);
 	SetMeta(Lerp);
 
-	LunaUtil::Local("PadMeta", -1);
+	LunaUtil::Local(L, "PadMeta", -1);
 	return 0;
 }

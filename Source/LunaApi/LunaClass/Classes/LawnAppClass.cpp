@@ -28,7 +28,7 @@ namespace // Event Bodies
 {
 	DWORD __stdcall UpdateCaller()
 	{
-		OnUpdate->Call(0);
+		OnUpdate->Call(LUNA_STATE, 0);
 		return 0x539148;
 	}
 
@@ -43,8 +43,8 @@ namespace // Methods
 {
 	int MsgBox(lua_State* L)
 	{
-		AssertType(2, "string", "Message");
-		Luna::App->MsgBox(GetString(2, "Luna!"), GetString(3, "Luna!"), 0);
+		AssertType(L, 2, "string", "Message");
+		Luna::App->MsgBox(GetString(L, 2, "Luna!"), GetString(L, 3, "Luna!"), 0);
 		return 0;
 	}
 

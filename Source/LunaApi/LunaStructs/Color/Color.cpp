@@ -6,19 +6,19 @@
 #include "Luna.h"
 
 #pragma region Struct Functions
-void Color::Push() { NewRGB(R, G, B, A); }
+void Color::Push(lua_State* L) { NewRGB(L, R, G, B, A); }
 #pragma endregion
 
 #pragma region C++ Functions
-Color GetColor(int Idx)
+Color GetColor(lua_State* L, int Idx)
 {
-	AssertType(Idx, "Color", "arg#" + std::to_string(Idx));
-	return *(Color*)lua_touserdata(LUNA_STATE, Idx);
+	AssertType(L, Idx, "Color", "arg#" + std::to_string(Idx));
+	return *(Color*)lua_touserdata(L, Idx);
 }
-Color* NewRGB(int R, int G, int B, int A)
+Color* NewRGB(lua_State* L, int R, int G, int B, int A)
 {
 	auto New = (Color*)lua_newuserdata(LUNA_STATE, sizeof(Color));
-	LunaUtil::Local("ColorMeta");
+	LunaUtil::Local(L, "ColorMeta");
 	lua_setmetatable(LUNA_STATE, -2);
 
 	New->R = R;
@@ -28,12 +28,12 @@ Color* NewRGB(int R, int G, int B, int A)
 
 	return New;
 }
-Color* NewHSV(int H, int S, int V, int A)
+Color* NewHSV(lua_State* L, int H, int S, int V, int A)
 {
 	auto RGBA = Color::FromHSVA(H, S, V, 0);
-	auto New = (Color*)lua_newuserdata(LUNA_STATE, sizeof(Color));
-	LunaUtil::Local("ColorMeta");
-	lua_setmetatable(LUNA_STATE, -2);
+	auto New = (Color*)lua_newuserdata(L, sizeof(Color));
+	LunaUtil::Local(L, "ColorMeta");
+	lua_setmetatable(L, -2);
 
 	New->R = RGBA.R;
 	New->G = RGBA.G;
@@ -42,12 +42,12 @@ Color* NewHSV(int H, int S, int V, int A)
 
 	return New;
 }
-Color* NewHex(std::string Hex)
+Color* NewHex(lua_State* L, std::string Hex)
 {
 	auto RGBA = Color::FromHex(Hex);
-	auto New = (Color*)lua_newuserdata(LUNA_STATE, sizeof(Color));
-	LunaUtil::Local("ColorMeta");
-	lua_setmetatable(LUNA_STATE, -2);
+	auto New = (Color*)lua_newuserdata(L, sizeof(Color));
+	LunaUtil::Local(L, "ColorMeta");
+	lua_setmetatable(L, -2);
 
 	New->R = RGBA.R;
 	New->G = RGBA.G;
@@ -56,58 +56,58 @@ Color* NewHex(std::string Hex)
 
 	return New;
 }
-Color* GetColorSelf() { return (Color*)lua_touserdata(LUNA_STATE, 1); }
+Color* GetColorSelf(lua_State* L) { return (Color*)lua_touserdata(L, 1); }
 #pragma endregion
 
 #pragma region Lua Functions
 int Luna::Structs::Color::RGBConstructor(lua_State* L)
 {
-	auto R = GetInt(1, 0);
-	auto G = GetInt(2, 0);
-	auto B = GetInt(3, 0);
-	auto A = GetInt(4, 255);
-	NewRGB(R, G, B, A);
+	auto R = GetInt(L, 1, 0);
+	auto G = GetInt(L, 2, 0);
+	auto B = GetInt(L, 3, 0);
+	auto A = GetInt(L, 4, 255);
+	NewRGB(L, R, G, B, A);
 	return 1;
 }
 int Luna::Structs::Color::HSVConstructor(lua_State* L)
 {
-	auto H = GetInt(1, 0);
-	auto S = GetInt(2, 0);
-	auto V = GetInt(3, 0);
-	auto A = GetInt(4, 255);
-	NewHSV(H, S, V, A);
+	auto H = GetInt(L, 1, 0);
+	auto S = GetInt(L, 2, 0);
+	auto V = GetInt(L, 3, 0);
+	auto A = GetInt(L, 4, 255);
+	NewHSV(L, H, S, V, A);
 	return 1;
 }
 int Luna::Structs::Color::HexConstructor(lua_State* L)
 {
-	auto Hex = GetString(1, "#000");
-	NewHex(Hex);
+	auto Hex = GetString(L, 1, "000");
+	NewHex(L, Hex);
 	return 1;
 }
 
 int Luna::Structs::Color::Lerp(lua_State* L)
 {
-	auto self = GetColor(1);
-	auto Other = GetColor(2);
-	auto Alpha = GetFloat(3, 0.5);
-	self.Lerp(Other, Alpha).Push();
+	auto self = GetColor(L, 1);
+	auto Other = GetColor(L, 2);
+	auto Alpha = GetFloat(L, 3, 0.5);
+	self.Lerp(Other, Alpha).Push(L);
 	return 1;
 }
 int Luna::Structs::Color::GetHex(lua_State* L)
 {
-	auto self = GetColor(1);
+	auto self = GetColor(L, 1);
 	lua_pushstring(L, self.GetHex().c_str());
 	return 1;
 }
 int Luna::Structs::Color::Negate(lua_State* L)
 {
-	auto self = GetColor(1);
-	self.Negate().Push();
+	auto self = GetColor(L, 1);
+	self.Negate().Push(L);
 	return 1;
 }
 int Luna::Structs::Color::GetHSVA(lua_State* L)
 {
-	auto self = GetColor(1);
+	auto self = GetColor(L, 1);
 	auto HSVA = self.GetHSVA();
 	lua_pushinteger(L, HSVA.R);
 	lua_pushinteger(L, HSVA.G);
@@ -117,15 +117,15 @@ int Luna::Structs::Color::GetHSVA(lua_State* L)
 }
 int Luna::Structs::Color::ShiftHue(lua_State* L)
 {
-	auto self = GetColor(1);
-	auto Amount = GetInt(2);
-	self.ShiftHue(Amount).Push();
+	auto self = GetColor(L, 1);
+	auto Amount = GetInt(L, 2);
+	self.ShiftHue(Amount).Push(L);
 	return 1;
 }
 int Luna::Structs::Color::Desaturate(lua_State* L)
 {
-	auto self = GetColor(1);
-	self.Desaturate().Push();
+	auto self = GetColor(L, 1);
+	self.Desaturate().Push(L);
 	return 1;
 }
 #pragma endregion
@@ -134,8 +134,8 @@ int Luna::Structs::Color::Desaturate(lua_State* L)
 #pragma region Meta Methods
 int Luna::Structs::Color::__index(lua_State* L)
 {
-	auto self = GetColorSelf();
-	auto Field = GetString(2);
+	auto self = GetColorSelf(L);
+	auto Field = GetString(L, 2);
 
 	if (Field.length() != 1) goto FIDX;
 	switch (Field[0])
@@ -162,22 +162,22 @@ int Luna::Structs::Color::__index(lua_State* L)
 		lua_pushinteger(L, self->GetValue());
 		return 1;
 	default:
-		LunaIO::ThrowError(Field + " is not a valid member of Color.");
+		LunaIO::ThrowError(L, Field + " is not a valid member of Color.");
 	}
 FIDX:
-	LunaUtil::Local("ColorMeta");
+	LunaUtil::Local(L, "ColorMeta");
 	lua_pushvalue(L, 2);
 	lua_gettable(L, -2);
-	if (lua_isnil(L, -1)) LunaIO::ThrowError(Field + " is not a valid member of Color.");
+	if (lua_isnil(L, -1)) LunaIO::ThrowError(L, Field + " is not a valid member of Color.");
 	return 1;
 }
 int Luna::Structs::Color::__newindex(lua_State* L)
 {
-	if (!lua_isnumber(L, 3)) LunaIO::ThrowError("Color only accepts number fields.");
-	auto self = GetColorSelf();
-	auto Field = GetString(2);
-	auto Value = GetInt(3);
-	if (Field.length() != 1) LunaIO::ThrowError(Field + " is not a valid member of Color or is read-only.");
+	if (!lua_isnumber(L, 3)) LunaIO::ThrowError(L, "Color only accepts number fields.");
+	auto self = GetColorSelf(L);
+	auto Field = GetString(L, 2);
+	auto Value = GetInt(L, 3);
+	if (Field.length() != 1) LunaIO::ThrowError(L,  Field + " is not a valid member of Color or is read-only.");
 	switch (Field[0])
 	{
 	case 'R':
@@ -195,14 +195,14 @@ int Luna::Structs::Color::__newindex(lua_State* L)
 	case 'H':
 	case 'S':
 	case 'V':
-		LunaIO::ThrowError("HSV values are read-only.");
+		LunaIO::ThrowError(L, "HSV values are read-only.");
 	}
-	LunaIO::ThrowError(Field + " is not a valid member of Color or is read-only.");
+	LunaIO::ThrowError(L, Field + " is not a valid member of Color or is read-only.");
 	return 0;
 }
 int Luna::Structs::Color::__tostring(lua_State* L)
 {
-	auto self = GetColorSelf();
+	auto self = GetColorSelf(L);
 	std::string ToStr =
 		"Color(" + std::to_string(self->R) + ", " +
 		std::to_string(self->G) + ", " +
@@ -214,42 +214,42 @@ int Luna::Structs::Color::__tostring(lua_State* L)
 
 int Luna::Structs::Color::__add(lua_State* L)
 {
-	auto OType = LunaUtil::Type(2);
-	if (OType != "Color") LunaIO::ThrowError("Unable to add Color and " + OType + ".");
+	auto OType = LunaUtil::Type(L, 2);
+	if (OType != "Color") LunaIO::ThrowError(L, "Unable to add Color and " + OType + ".");
 
-	auto self = GetColor(1);
-	auto Other = GetColor(2);
-	(self + Other).Push();
+	auto self = GetColor(L, 1);
+	auto Other = GetColor(L, 2);
+	(self + Other).Push(L);
 	return 1;
 }
 int Luna::Structs::Color::__sub(lua_State* L)
 {
-	auto OType = LunaUtil::Type(2);
-	if (OType != "Color") LunaIO::ThrowError("Unable to subtract " + OType + " from Color.");
+	auto OType = LunaUtil::Type(L, 2);
+	if (OType != "Color") LunaIO::ThrowError(L, "Unable to subtract " + OType + " from Color.");
 
-	auto self = GetColor(1);
-	auto Other = GetColor(2);
-	(self - Other).Push();
+	auto self = GetColor(L, 1);
+	auto Other = GetColor(L, 2);
+	(self - Other).Push(L);
 	return 1;
 }
 int Luna::Structs::Color::__unm(lua_State* L)
 {
-	auto self = GetColorSelf();
-	self->Negate().Push();
+	auto self = GetColorSelf(L);
+	self->Negate().Push(L);
 	return 1;
 }
 int Luna::Structs::Color::__eq(lua_State* L)
 {
-	if (LunaUtil::Type(2) != "Color") { lua_pushboolean(L, false); return 1; }
+	if (LunaUtil::Type(L, 2) != "Color") { lua_pushboolean(L, false); return 1; }
 
-	auto self = GetColor(1);
-	auto Other = GetColor(2);
+	auto self = GetColor(L, 1);
+	auto Other = GetColor(L, 2);
 	lua_pushboolean(L, self == Other);
 	return 1;
 }
 int Luna::Structs::Color::__gc(lua_State* L)
 {
-	auto self = GetColorSelf();
+	auto self = GetColorSelf(L);
 	delete self;
 	return 0;
 }
@@ -279,7 +279,7 @@ int Luna::Structs::Color::Init(lua_State* L)
 	SetMeta(ShiftHue);
 	SetMeta(Desaturate);
 
-	LunaUtil::Local("ColorMeta", -1);
+	LunaUtil::Local(L, "ColorMeta", -1);
 
 	return 0;
 }

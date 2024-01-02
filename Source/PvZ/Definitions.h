@@ -352,9 +352,9 @@ struct Rect
         return New;
     }
 
-    void PushPosition();
-    void PushSize();
-    void Push();
+    void PushPosition(lua_State* L);
+    void PushSize(lua_State* L);
+    void Push(lua_State* L);
 
     Rect<T> operator+(Rect<T> O) {
         return Rect<T>(
@@ -585,7 +585,7 @@ struct Color
     Color operator-(Color O) { return Color(min(R - O.R, 0), min(G - O.G, 0), min(B - O.B, 0), min(A - O.A, 0)); }
     bool operator==(Color O) { return (R == O.R) && (G == O.G) && (B == O.B) && (A == O.A); }
 
-    void Push();
+    void Push(lua_State* L);
 };
 
 struct Pad
@@ -609,7 +609,7 @@ struct Pad
             (B * RT) + (Other.B * Alpha)
         );
     }
-    void Push();
+    void Push(lua_State* L);
 
     Pad operator+(Pad O) { return Pad(L + O.L, T + O.T, R + O.R, B + O.B); }
     Pad operator-(Pad O) { return Pad(L - O.L, T - O.T, R - O.R, B - O.B); }

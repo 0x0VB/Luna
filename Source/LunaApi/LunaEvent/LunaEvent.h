@@ -1,9 +1,24 @@
 #pragma once
 #include "Luau/lua.h"
 #include "framework.h"
+#include "LunaApi/LunaUtil/LunaUtil.h"
 
 namespace Luna::Event
 {
+	using namespace LunaUtil;
+	class LunaConnection
+	{
+	public:
+		lua_f ConnectedFunction;
+		lua_State* ConnectionState;
+		LunaConnection() {}
+		LunaConnection(lua_State* L, int Function)
+		{
+			ConnectedFunction = lua_f(L, Function);
+			ConnectionState = L;
+		}
+	};
+
 	class LunaEvent
 	{
 		void SHook(DWORD Entry);
@@ -14,11 +29,13 @@ namespace Luna::Event
 		char Name[32];
 		size_t EntryCount;
 		bool Hooked;
+		std::list<LunaConnection> Connections;
+
 
 		void Hook();
 		void Setup(const char* EventName, void* EventHandler, CONST DWORD* EventEntries, size_t EventEntryCount = 1, bool AutoHook = false);
-		void Push();
-		void Call(int ArgCount);
+		void Push(lua_State* L);
+		void Call(lua_State* L, int ArgCount);
 
 		// Creates and returns a new event with the given parameters, pushes the lua userdata of this event onto the stack.
 		static LunaEvent* New(const char* Name, void* Handler, DWORD Entries[], size_t EntryCount = 1, bool AutoHook = false);

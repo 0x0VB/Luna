@@ -15,20 +15,33 @@
 
 namespace LunaUtil
 {
-	void Local(const char* LocalName, int ValueIndex, bool Pop = true);// Store the value at the given index in a local with the given name.
-	void Local(const char* LocalName);// Retrieve the value with the given name.
+	std::map<std::string, int> LocalDictionary;
+	lua_State* LocalState;
+	struct lua_f
+	{
+		void* Pointer;
+	public:
+		lua_f() { Pointer = nullptr; }
+		lua_f(lua_State* L, int Idx);
+		void Push(lua_State* L);
+
+		bool operator==(lua_f Other) { return Pointer == Other.Pointer; }
+	};
+	void Local(lua_State* L, std::string LocalName, int ValueIndex, bool Pop = true);// Store the value at the given index in a local with the given name.
+	void Local(lua_State* L, std::string LocalName);// Retrieve the value with the given name.
 
 	void SaveRegisters();
 	void LoadRegisters();
 
-	std::string Type(int Index = -1);
+	std::string Type(lua_State* L, int Index = -1);
 
-	int GetLuaInt(int Idx, int Default = 0);
-	float GetLuaFloat(int Idx, float Default = 0);
-	double GetLuaDouble(int Idx, double Default = 0);
-	std::string GetLuaString(int Idx, std::string Default = "");
+	int GetLuaInt(lua_State* L, int Idx, int Default = 0);
+	float GetLuaFloat(lua_State* L, int Idx, float Default = 0);
+	double GetLuaDouble(lua_State* L, int Idx, double Default = 0);
+	std::string GetLuaString(lua_State* L, int Idx, std::string Default = "");
+	int GetParamIndex(lua_State* L, int Index);
 
-	void AssertLuaType(int Index, std::string Type, std::string ParamName);
+	void AssertLuaType(lua_State* L, int Index, std::string Type, std::string ParamName);
 	void Initiate(lua_CFunction InitFunc);
 	void FPCall(lua_CFunction Func);
 

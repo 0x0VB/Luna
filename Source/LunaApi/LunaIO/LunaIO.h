@@ -17,8 +17,8 @@ namespace LunaIO
 	void Print(const char* Text, IOColor = None, bool NewLine = true);
 	void Print(std::string Text, IOColor = None, bool NewLine = true);
 
-	void ThrowError(std::string ErrorText, bool AppendTraceback = true, int Level = 1);
-	void ThrowError(int StringCount = 1, int Level = 1);
+	void ThrowError(lua_State* L, std::string ErrorText, bool AppendTraceback = true, int Level = 1);
+	void ThrowError(lua_State* L, int StringCount = 1, int Level = 1);
 
 	int lua_print(lua_State* L);
 	int lua_warn(lua_State* L);

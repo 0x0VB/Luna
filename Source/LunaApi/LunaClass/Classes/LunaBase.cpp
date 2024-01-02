@@ -26,7 +26,7 @@ namespace // Methods
 	int lua_IsA(lua_State* L)
 	{
 		auto self = GetAndAssert(L);
-		auto SubClass = GetString(2);
+		auto SubClass = GetString(L, 2);
 		lua_pushboolean(L, self->Class->IsA(SubClass));
 		return 1;
 	}
@@ -34,7 +34,7 @@ namespace // Methods
 	int GetAttribute(lua_State* L)
 	{
 		auto self = GetAndAssert(L);
-		AssertType(2, "string", "AttributeName");
+		AssertType(L, 2, "string", "AttributeName");
 		self->Class->GetInjected(L);
 		return 1;
 	}
@@ -42,7 +42,7 @@ namespace // Methods
 	int SetAttribute(lua_State* L)
 	{
 		auto self = GetAndAssert(L);
-		AssertType(2, "string", "AttributeName");
+		AssertType(L, 2, "string", "AttributeName");
 		self->Class->PushInjected(L);
 		lua_pushvalue(L, 2);
 		lua_pushvalue(L, 3);
@@ -64,7 +64,7 @@ LunaClass* LunaBase::Source = new LunaClass();
 int LunaBase::Flush(lua_State* L)
 {
 	auto self = GetAndAssert(L);
-	LunaUtil::Local("Injected");
+	LunaUtil::Local(L, "Injected");
 	lua_pushvalue(L, 1);
 	lua_newtable(L);
 	lua_settable(L, -3);
