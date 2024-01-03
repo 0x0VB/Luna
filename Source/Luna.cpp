@@ -59,8 +59,8 @@ void Luna::LoadMods()
 
 		Luna::FoundMods++;
 
-		lua_State* L = LUNA_STATE;//lua_newthread(LUNA_STATE);	// module needs to run in a new thread, isolated from the rest
-		//luaL_sandboxthread(L);						// new thread needs to have the globals sandboxed
+		lua_State* L = lua_newthread(LUNA_STATE);	// module needs to run in a new thread, isolated from the rest
+		luaL_sandboxthread(L);						// new thread needs to have the globals sandboxed
 
 		if (!LoadFile(L, ModPath))
 		{

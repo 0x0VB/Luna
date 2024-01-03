@@ -32,9 +32,9 @@ namespace Luna::Structs::Vector2
 	int Init(lua_State* L);
 };
 
-DVector2 GetVector2(int Idx);
-DVector2* NewVector2(double X = 0, double Y = 0);
-DVector2* GetV2Self();
+DVector2 GetVector2(lua_State* L, int Idx);
+DVector2* NewVector2(lua_State* L, double X = 0, double Y = 0);
+DVector2* GetV2Self(lua_State* L);
 
 template<typename T>
-void Vector2<T>::Push() { NewVector2((double)X, (double)Y); }
+void Vector2<T>::Push(lua_State* L) { NewVector2(L, (double)X, (double)Y); }

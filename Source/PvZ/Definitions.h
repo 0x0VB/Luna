@@ -157,7 +157,7 @@ struct Vector2
         X += Delta.X * Alpha;
         Y += Delta.Y * Alpha;
     }
-    void Push();
+    void Push(lua_State* L);
 
     Vector2<T> operator+(const Vector2<T> Other) { return Vector2<T>(X + Other.X, Y + Other.Y); }
     Vector2<T> operator-(const Vector2<T> Other) { return Vector2<T>(X - Other.X, Y - Other.Y); }
@@ -267,7 +267,7 @@ struct Vector3
     double DistanceFrom(Vector2<T> Other) { return (Other - *this).Magnitude(); }
     double DistanceFrom3D(Vector2<T> Other) { return (*this - Other).Magnitude(); }
     double DistanceFrom2D(Vector2<T> Other) { return this->Difference2D(Other).Magnitude(); }
-    void Push();
+    void Push(lua_State* L);
 };
 
 template <typename T>

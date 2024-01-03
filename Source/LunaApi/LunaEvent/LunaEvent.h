@@ -11,7 +11,7 @@ namespace Luna::Event
 	public:
 		lua_f ConnectedFunction;
 		lua_State* ConnectionState;
-		LunaConnection() {}
+		LunaConnection() { ConnectedFunction = lua_f(); ConnectionState = NULL; }
 		LunaConnection(lua_State* L, int Function)
 		{
 			ConnectedFunction = lua_f(L, Function);
@@ -19,6 +19,7 @@ namespace Luna::Event
 		}
 	};
 
+	CONST SIZE_T MAX_CONNECTIONS = 20;
 	class LunaEvent
 	{
 		void SHook(DWORD Entry);
@@ -29,7 +30,7 @@ namespace Luna::Event
 		char Name[32];
 		size_t EntryCount;
 		bool Hooked;
-		std::list<LunaConnection> Connections;
+		LunaConnection Connections[MAX_CONNECTIONS];
 
 
 		void Hook();

@@ -17,12 +17,14 @@ DWORD JMP_TARGET;
 
 #pragma region Functions
 
-void LunaUtil::Initiate(lua_CFunction InitFunc)
+void LunaUtil::Initiate(lua_CFunction InitFunc, const char* LibName)
 {
+	LunaIO::AllocateConsole();
 	lua_pushcclosure(LUNA_STATE, InitFunc, "InitFunc", 0);
 	if (lua_pcall(LUNA_STATE, 0, 0, 0) == LUA_OK)
 		return;
-	LunaIO::Print(lua_tostring(LUNA_STATE, -1), LunaIO::Error);
+	LunaIO::Print("[LUNA_CORE_ERROR]: ", LunaIO::Error, false);
+	std::cout << LibName << "\n" << lua_tostring(LUNA_STATE, -1) << "\n";
 }
 
 void LunaUtil::FPCall(lua_CFunction Func)
@@ -33,31 +35,36 @@ void LunaUtil::FPCall(lua_CFunction Func)
 }
 
 int LunaUtil::GetParamIndex(lua_State* L, int Index)
-{ return (Index > 0) ? Index : lua_gettop(L) + Index; }
+{ return (Index > 0) ? Index : lua_gettop(L) + Index + 1; }
 
-void LunaUtil::Local(lua_State* L, std::string LocalName, int Index, bool Pop)
+void LunaUtil::Local(lua_State* L, const char* LocalName, int Index, bool Pop)
 {
-	// Move value to LocalState
-	lua_pushvalue(L, Index);
-	lua_xmove(L, LocalState, 1);
+	// Save indexes and L->Top
+	Index = GetParamIndex(L, Index);
+	int T = lua_gettop(L);
 
-	// Set the local value if it exists
-	if (LocalDictionary.contains(LocalName))
-		lua_replace(LocalState, LocalDictionary[LocalName]);
-	else// Register the local value if it doesn't
-		LocalDictionary[LocalName] = lua_gettop(LocalState);
+	// Set the value
+	lua_pushstring(L, LocalName);
+	lua_pushvalue(L, Index);
+	lua_settable(L, LUA_REGISTRYINDEX);
 
 	// Pop the value if Pop is true
 	if (Pop && Index == -1) lua_pop(L, 1);
 	else if (Pop) lua_remove(L, Index);
 }
 
-void LunaUtil::Local(lua_State* L, std::string LocalName)
+void LunaUtil::PrintStack(lua_State* L)
 {
-	// Retrieve the value from LocalState
-	lua_pushvalue(LocalState, LocalDictionary[LocalName]);
-	// Move it onto the current state
-	lua_xmove(LocalState, L, 1);
+	int T = lua_gettop(L);
+	lua_getglobal(L, "print");
+	for (int i = 1; i <= T; i++) lua_pushvalue(L, i);
+	lua_call(L, T, 0);
+}
+
+void LunaUtil::Local(lua_State* L, const char* LocalName)
+{
+	lua_pushstring(L, LocalName);
+	lua_gettable(L, LUA_REGISTRYINDEX);
 }
 
 void __declspec(naked) LunaUtil::SaveRegisters()
@@ -207,9 +214,6 @@ int LunaUtil::Init(lua_State* L)
 {
 	lua_newtable(L);
 	Local(L, "LuaFunctions", -1);// Create the function table
-
-	LocalState = lua_newthread(LUNA_STATE);// Setup local state
-	luaL_sandboxthread(LocalState);
 
 	lua_getglobal(L, "type");// Save type function
 	Local(L, "Type", -1);

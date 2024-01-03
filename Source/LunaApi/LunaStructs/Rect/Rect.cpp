@@ -45,7 +45,7 @@ int Luna::Structs::Rect::Constructor(lua_State* L)
 	auto Y = GetInt(L, 2);
 	auto W = GetInt(L, 3);
 	auto H = GetInt(L, 4);
-	NewRect(X, Y, W, H);
+	NewRect(L, X, Y, W, H);
 	return 1;
 }
 
@@ -73,7 +73,7 @@ int Luna::Structs::Rect::Intersects(lua_State* L)
 int Luna::Structs::Rect::GetCenter(lua_State* L)
 {
 	auto self = GetRect(L, 1);
-	self.GetCenter().Push();
+	self.GetCenter().Push(L);
 	return 1;
 }
 int Luna::Structs::Rect::SetCenter(lua_State* L)
@@ -112,8 +112,8 @@ int Luna::Structs::Rect::GetArea(lua_State* L)
 int Luna::Structs::Rect::SetSize(lua_State* L)
 {
 	auto self = GetRect(L, 1);
-	auto NewSize = GetVector2(2).ToInt();
-	self.SetSize(NewSize).Push();
+	auto NewSize = GetVector2(L, 2).ToInt();
+	self.SetSize(NewSize).Push(L);
 	return 1;
 }
 int Luna::Structs::Rect::Lerp(lua_State* L)
@@ -148,10 +148,10 @@ int Luna::Structs::Rect::__index(lua_State* L)
 		lua_pushinteger(L, self->H);
 		return 1;
 	case 'P':
-		self->PushPosition();
+		self->PushPosition(L);
 		return 1;
 	case 'S':
-		self->PushSize();
+		self->PushSize(L);
 		return 1;
 	default:
 		LunaIO::ThrowError(L, Field + " is not a valid member of Rect.");
@@ -166,9 +166,9 @@ FIDX:
 int Luna::Structs::Rect::__newindex(lua_State* L)
 {
 	if (!lua_isnumber(L, 3)) LunaIO::ThrowError(L, "Rect only accepts number fields.");
-	auto self = GetRectSelf();
-	auto Field = GetString(2);
-	auto Value = GetInt(3);
+	auto self = GetRectSelf(L);
+	auto Field = GetString(L, 2);
+	auto Value = GetInt(L, 3);
 	if (Field.length() != 1) LunaIO::ThrowError(L, Field + " is not a valid member of Rect or is read-only.");
 	switch (Field[0])
 	{
@@ -185,12 +185,12 @@ int Luna::Structs::Rect::__newindex(lua_State* L)
 		self->H = Value;
 		return 0;
 	}
-	LunaIO::ThrowError(Field + " is not a valid member of Rect or is read-only.");
+	LunaIO::ThrowError(L, Field + " is not a valid member of Rect or is read-only.");
 	return 0;
 }
 int Luna::Structs::Rect::__tostring(lua_State* L)
 {
-	auto self = GetRectSelf();
+	auto self = GetRectSelf(L);
 	std::string ToStr =
 		"Rect(" + std::to_string(self->X) + ", " + 
 		std::to_string(self->Y) + ", " + 
@@ -202,60 +202,60 @@ int Luna::Structs::Rect::__tostring(lua_State* L)
 
 int Luna::Structs::Rect::__add(lua_State* L)
 {
-	auto OType = LunaUtil::Type(2);
-	if (OType != "Rect") LunaIO::ThrowError("Unable to add Rect and " + OType + ".");
+	auto OType = LunaUtil::Type(L, 2);
+	if (OType != "Rect") LunaIO::ThrowError(L, "Unable to add Rect and " + OType + ".");
 
-	auto self = GetRect(1);
-	auto Other = GetRect(2);
-	(self + Other).Push();
+	auto self = GetRect(L, 1);
+	auto Other = GetRect(L, 2);
+	(self + Other).Push(L);
 	return 1;
 }
 int Luna::Structs::Rect::__sub(lua_State* L)
 {
-	auto OType = LunaUtil::Type(2);
-	if (OType != "Rect") LunaIO::ThrowError("Unable to subtract " + OType + " from Rect.");
+	auto OType = LunaUtil::Type(L, 2);
+	if (OType != "Rect") LunaIO::ThrowError(L, "Unable to subtract " + OType + " from Rect.");
 
-	auto self = GetRect(1);
-	auto Other = GetRect(2);
-	(self - Other).Push();
+	auto self = GetRect(L, 1);
+	auto Other = GetRect(L, 2);
+	(self - Other).Push(L);
 	return 1;
 }
 int Luna::Structs::Rect::__mul(lua_State* L)
 {
-	if (!lua_isnumber(L, 2)) LunaIO::ThrowError("Unable to multiply Rect by " + LunaUtil::Type(2) + ".");
+	if (!lua_isnumber(L, 2)) LunaIO::ThrowError(L, "Unable to multiply Rect by " + LunaUtil::Type(L, 2) + ".");
 
-	auto self = GetRect(1);
+	auto self = GetRect(L, 1);
 	auto Factor = (float)lua_tonumber(L, 2);
-	(self * Factor).Push();
+	(self * Factor).Push(L);
 	return 1;
 }
 int Luna::Structs::Rect::__div(lua_State* L)
 {
-	if (!lua_isnumber(L, 2)) LunaIO::ThrowError("Unable to divide Rect by " + LunaUtil::Type(2) + ".");
+	if (!lua_isnumber(L, 2)) LunaIO::ThrowError(L, "Unable to divide Rect by " + LunaUtil::Type(L, 2) + ".");
 
-	auto self = GetRect(1);
+	auto self = GetRect(L, 1);
 	auto Factor = (float)lua_tonumber(L, 2);
-	(self / Factor).Push();
+	(self / Factor).Push(L);
 	return 1;
 }
 int Luna::Structs::Rect::__unm(lua_State* L)
 {
-	auto self = GetRect(1);
-	(-self).Push();
+	auto self = GetRect(L, 1);
+	(-self).Push(L);
 	return 1;
 }
 int Luna::Structs::Rect::__eq(lua_State* L)
 {
-	if (LunaUtil::Type(2) != "Rect") { lua_pushboolean(L, false); return 1; }
+	if (LunaUtil::Type(L, 2) != "Rect") { lua_pushboolean(L, false); return 1; }
 
-	auto self = GetRect(1);
-	auto Other = GetRect(2);
+	auto self = GetRect(L, 1);
+	auto Other = GetRect(L, 2);
 	lua_pushboolean(L, self == Other);
 	return 1;
 }
 int Luna::Structs::Rect::__gc(lua_State* L)
 {
-	auto self = GetRectSelf();
+	auto self = GetRectSelf(L);
 	delete self;
 	return 0;
 }
@@ -290,6 +290,6 @@ int Luna::Structs::Rect::Init(lua_State* L)
 	SetMeta(SetPosition);
 	SetMeta(GetIntersection);
 
-	LunaUtil::Local("RectMeta", -1);
+	LunaUtil::Local(L, "RectMeta", -1);
 	return 0;
 }

@@ -8,7 +8,6 @@
 #include "Luna.h"
 
 #include "PvZ/Graphics.h"
-#include "PvZ/DialogButton.h"
 
 namespace // Events
 {
@@ -50,7 +49,7 @@ namespace // Methods
 
 	void SetupEvents()
 	{
-		StoneButtonDraw = Luna::Event::LunaEvent::New("OnStoneButtonDraw", StoneButtonDrawHandler, StoneButtonEntries, 1, true);
+		StoneButtonDraw = LunaEvent::New("OnStoneButtonDraw", StoneButtonDrawHandler, StoneButtonEntries, 1, true);
 		OnFinalDraw = LunaEvent::New("OnFinalDraw", FinalDrawHandler, FinalDrawEntries, 1, true);
 		OnUpdate = LunaEvent::New("OnUpdate", UpdateHandler, UpdateEntries, 1, false);
 	}

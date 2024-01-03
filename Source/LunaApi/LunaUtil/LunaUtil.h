@@ -2,7 +2,7 @@
 #include "framework.h"
 
 #define LunaUtil Luna::Util
-#define LunaInit(Library) LunaUtil::Initiate(Library::Init)
+#define LunaInit(Library) LunaUtil::Initiate(Library::Init, #Library)
 
 #define SetMeta(Function) lua_pushstring(L, #Function); lua_pushcclosure(L, Function, #Function, 0); lua_settable(L, -3)
 
@@ -15,20 +15,18 @@
 
 namespace LunaUtil
 {
-	std::map<std::string, int> LocalDictionary;
-	lua_State* LocalState;
 	struct lua_f
 	{
 		void* Pointer;
 	public:
-		lua_f() { Pointer = nullptr; }
+		lua_f() { Pointer = NULL; }
 		lua_f(lua_State* L, int Idx);
 		void Push(lua_State* L);
 
 		bool operator==(lua_f Other) { return Pointer == Other.Pointer; }
 	};
-	void Local(lua_State* L, std::string LocalName, int ValueIndex, bool Pop = true);// Store the value at the given index in a local with the given name.
-	void Local(lua_State* L, std::string LocalName);// Retrieve the value with the given name.
+	void Local(lua_State* L, const char* LocalName, int ValueIndex, bool Pop = true);// Store the value at the given index in a local with the given name.
+	void Local(lua_State* L, const char* LocalName);// Retrieve the value with the given name.
 
 	void SaveRegisters();
 	void LoadRegisters();
@@ -42,8 +40,9 @@ namespace LunaUtil
 	int GetParamIndex(lua_State* L, int Index);
 
 	void AssertLuaType(lua_State* L, int Index, std::string Type, std::string ParamName);
-	void Initiate(lua_CFunction InitFunc);
+	void Initiate(lua_CFunction InitFunc, const char* LibName);
 	void FPCall(lua_CFunction Func);
+	void PrintStack(lua_State* L);
 
 	int lua_Sleep(lua_State* L);
 	int lua_Wait(lua_State* L);

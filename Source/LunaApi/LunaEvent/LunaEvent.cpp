@@ -37,12 +37,6 @@ void Luna::Event::LunaEvent::Setup(const char* EventName, void* EventHandler, CO
 	EntryCount = EventEntryCount;
 	Hooked = false;
 	if (AutoHook) Hook();
-
-	LunaUtil::Local(LUNA_STATE, "EventConnections");
-	lua_pushlightuserdata(LUNA_STATE, this);
-	lua_newtable(LUNA_STATE);
-	lua_settable(LUNA_STATE, -3);
-	lua_pop(LUNA_STATE, 1);
 }
 
 void Luna::Event::LunaEvent::Push(lua_State* L)
@@ -54,10 +48,15 @@ void Luna::Event::LunaEvent::Push(lua_State* L)
 
 void Luna::Event::LunaEvent::Call(lua_State* L, int ArgCount)
 {
+	std::cout << "Calling!" << "\n";
 	int T = lua_gettop(L);
 	int RT = T - ArgCount;
 	
-	for (auto const& Connection : Connections) {
+	for (int i = 0; i < MAX_CONNECTIONS; i++)
+	{
+		auto Connection = Connections[i];
+		if (Connection.ConnectedFunction.Pointer == 0) continue;
+
 		lua_f Func = Connection.ConnectedFunction;
 		lua_State* C = Connection.ConnectionState;
 		Func.Push(C);
@@ -75,8 +74,8 @@ Luna::Event::LunaEvent* Luna::Event::LunaEvent::New(const char* Name, void* Hand
 	auto self = (LunaEvent*)lua_newuserdata(LUNA_STATE, sizeof(LunaEvent));// 1
 	self->Setup(Name, Handler, Entries, EntryCount, AutoHook);
 	LunaUtil::Local(LUNA_STATE, "EventMeta");// 2
-	lua_pushlightuserdata(LUNA_STATE, self);// 3
-	lua_pushvalue(LUNA_STATE, T + 1);
+	lua_pushlightuserdata(LUNA_STATE, self);// Key
+	lua_pushvalue(LUNA_STATE, T + 1);// Real self (Value)
 	lua_settable(LUNA_STATE, T + 2);
 	lua_setmetatable(LUNA_STATE, T + 1);
 	lua_settop(LUNA_STATE, T);
@@ -96,7 +95,19 @@ int Luna::Event::Connect(lua_State* L)
 	AssertType(L, 1, "LunaEvent", "self");
 	AssertType(L, 2, "function", "Connection");
 	auto self = (LunaEvent*)lua_touserdata(L, 1);
-	self->Connections.push_front(LunaConnection(L, 2));
+	auto Connection = LunaConnection(L, 2);
+	
+	for (int i = 0; i < MAX_CONNECTIONS; i++)
+	{
+		auto Conn = self->Connections[i];
+		if (Conn.ConnectedFunction.Pointer == 0)
+		{
+			self->Connections[i] = Connection;
+			std::cout << i << "\n";
+			return 0;
+		}
+	}
+	self->Connections[MAX_CONNECTIONS - 1] = Connection;
 	return 0;
 }
 
@@ -106,11 +117,6 @@ int Luna::Event::Disconnect(lua_State* L)
 	AssertType(L, 2, "function", "Connection");
 	auto self = (LunaEvent*)lua_touserdata(L, 1);
 	lua_f Function = lua_f(L, 2);
-	for (auto it = self->Connections.begin(); it != self->Connections.end(); ) {
-		if ((*it).ConnectedFunction == Function)
-			it = self->Connections.erase(it);
-		else ++it;
-	}
 	return 0;
 }
 
@@ -119,7 +125,6 @@ int Luna::Event::DisconnectAll(lua_State* L)
 	AssertType(L, 1, "LunaEvent", "self");
 	AssertType(L, 2, "function", "Connection");
 	LunaEvent* self = (LunaEvent*)lua_touserdata(L, 1);
-	self->Connections.clear();
 	return 0;
 }
 #pragma endregion

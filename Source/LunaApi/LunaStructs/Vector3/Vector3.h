@@ -34,6 +34,6 @@ namespace Luna::Structs::Vector3
 	int Init(lua_State* L);
 };
 
-FVector3 GetVector3(int Idx);
-FVector3* NewVector3(float X = 0, float Y = 0, float Z = 0);
-FVector3* GetV3Self();
+FVector3 GetVector3(lua_State* L, int Idx);
+FVector3* NewVector3(lua_State* L, float X = 0, float Y = 0, float Z = 0);
+FVector3* GetV3Self(lua_State* L);

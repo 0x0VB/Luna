@@ -31,12 +31,12 @@ namespace
 	public:
 		virtual void __index(lua_State* L) override
 		{
-			LawnApp::GetApp()->WindowBounds.Push();
+			LawnApp::GetApp()->WindowBounds.Push(L);
 		}
 		virtual void __newindex(lua_State* L) override
 		{
 			AssertType(L, 3, "Rect", Name);
-			auto Value = GetRect(3);
+			auto Value = GetRect(L, 3);
 			auto App = LawnApp::GetApp();
 			App->WindowBounds = Value;
 			if (App->MainWindowHandle) GetWindowRect(App->MainWindowHandle, Value.ToLPRECT());
