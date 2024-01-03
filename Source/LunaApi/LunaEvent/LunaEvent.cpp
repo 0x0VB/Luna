@@ -5,9 +5,17 @@
 #include "LunaApi/LunaIO/LunaIO.h"
 #include "Luna.h"
 
-#pragma region Lua Functions
+using namespace Luna::Event;
 
-void Luna::Event::LunaEvent::SHook(DWORD Entry)
+void Luna::Event::LunaEvent::SetupHook()
+{
+	if (Hooked) return;
+	Hooked = true;
+	for (const auto& Entry : Entries)
+		Hook(Entry);
+}
+
+void Luna::Event::LunaEvent::Hook(DWORD Entry)
 {
 	BYTE* JmpInst = (BYTE*)Entry;
 	DWORD* JumpAddress = (DWORD*)(Entry + 1);
@@ -15,140 +23,189 @@ void Luna::Event::LunaEvent::SHook(DWORD Entry)
 	DWORD OldProtection;
 	VirtualProtect((LPVOID)Entry, 5, PAGE_EXECUTE_READWRITE, &OldProtection);
 
-	*JmpInst = 0xE9;// JMP OPCode
-	*JumpAddress = RelativeAddress;// Address to jump to
+	*JmpInst = 0xE9;	// JMP OPCode
+	*JumpAddress = RelativeAddress;	// Address to jump to
 
 	DWORD _;
 	VirtualProtect((LPVOID)Entry, 5, OldProtection, &_);
 }
 
-void Luna::Event::LunaEvent::Hook()
+void Luna::Event::LunaEvent::Call(lua_State* CL, size_t ArgCount)
 {
-	if (Hooked) return;
-	Hooked = true;
-	for (int i = 0; i < EntryCount; i++) SHook(Entries[i]);
-}
-
-void Luna::Event::LunaEvent::Setup(const char* EventName, void* EventHandler, CONST DWORD* EventEntries, size_t EventEntryCount, bool AutoHook)
-{
-	memcpy(Name, EventName, std::strlen(EventName) + 1);
-	Handler = EventHandler;
-	Entries = EventEntries;
-	EntryCount = EventEntryCount;
-	Hooked = false;
-	if (AutoHook) Hook();
-}
-
-void Luna::Event::LunaEvent::Push(lua_State* L)
-{
-	LunaUtil::Local(L, "EventMeta");
-	lua_pushlightuserdata(L, this);
-	lua_gettable(L, -2);
-}
-
-void Luna::Event::LunaEvent::Call(lua_State* L, int ArgCount)
-{
-	std::cout << "Calling!" << "\n";
-	int T = lua_gettop(L);
+	int T = lua_gettop(CL);
 	int RT = T - ArgCount;
-	
-	for (int i = 0; i < MAX_CONNECTIONS; i++)
-	{
-		auto Connection = Connections[i];
-		if (Connection.ConnectedFunction.Pointer == 0) continue;
 
-		lua_f Func = Connection.ConnectedFunction;
-		lua_State* C = Connection.ConnectionState;
-		Func.Push(C);
+	for (const auto& Connection : Connections)
+	{
+		lua_getref(Connection.L, Connection.RefIdx);
 		for (int i = 1; i <= ArgCount; i++)
-			lua_xpush(L, C, RT + i);
-		lua_call(C, ArgCount, 0);
+			lua_xpush(CL, Connection.L, RT + i);
+		lua_call(Connection.L, ArgCount, 0);
 	}
 
-	lua_settop(L, RT);
+	lua_settop(CL, RT);
 }
 
-Luna::Event::LunaEvent* Luna::Event::LunaEvent::New(const char* Name, void* Handler, DWORD Entries[], size_t EntryCount, bool AutoHook)
+LunaEvent* Luna::Event::LunaEvent::New(const char* Name, void* Handler, std::vector<DWORD> Entries, bool AutoHook)
 {
-	int T = lua_gettop(LUNA_STATE);
 	auto self = (LunaEvent*)lua_newuserdata(LUNA_STATE, sizeof(LunaEvent));// 1
-	self->Setup(Name, Handler, Entries, EntryCount, AutoHook);
-	LunaUtil::Local(LUNA_STATE, "EventMeta");// 2
-	lua_pushlightuserdata(LUNA_STATE, self);// Key
-	lua_pushvalue(LUNA_STATE, T + 1);// Real self (Value)
-	lua_settable(LUNA_STATE, T + 2);
-	lua_setmetatable(LUNA_STATE, T + 1);
-	lua_settop(LUNA_STATE, T);
+	// Setup
+	{
+		self->EventRef = lua_ref(LUNA_STATE, 1);
+		memcpy(self->Name, Name, 32);
+		self->Entries = Entries;
+		self->Handler = Handler;
+		self->Hooked = false;
+		if (AutoHook)
+			self->SetupHook();
+	}
+	LunaUtil::Local(LUNA_STATE, "EventMeta");
+	lua_setmetatable(LUNA_STATE, -2);
+	lua_pop(LUNA_STATE, 1);
+
 	return self;
 }
 
-int Luna::Event::Call(lua_State* L)
+
+#pragma region API Methods
+int Luna::Event::LunaEvent::Connect(lua_State* L)
+{
+	AssertType(L, 1, "LunaEvent", "self");
+	AssertType(L, 2, "function", "Connection");
+	auto self = (LunaEvent*)lua_touserdata(L, 1);
+
+	if (self->Connections.size() >= LUNA_MAX_CONNECTIONS)
+		LunaIO::ThrowError(L, "Cannot connect more than " + std::to_string(LUNA_MAX_CONNECTIONS) + " connections to a single event.");
+
+	if (self->Connections.size() == 0 && !self->Hooked)
+		self->SetupHook();
+	
+	auto Connection = (LunaConnection*)lua_newuserdata(L, sizeof(LunaConnection));
+	Connection->RefIdx = lua_ref(L, 2);			// create ref of the callback function;
+	Connection->L = L;
+	Connection->EventRef = self->EventRef;
+	self->Connections.push_back(*Connection);	// store new connection
+
+	LunaUtil::Local(L, "ConnectionMeta");
+	lua_setmetatable(L, -2);
+
+	return 1;
+}
+
+int Luna::Event::LunaEvent::Fire(lua_State* L)
 {
 	AssertType(L, 1, "LunaEvent", "self");
 	auto self = (LunaEvent*)lua_touserdata(L, 1);
 	self->Call(L, lua_gettop(L) - 1);
+
 	return 0;
 }
 
-int Luna::Event::Connect(lua_State* L)
+int Luna::Event::LunaEvent::DisconnectAll(lua_State* L)
 {
 	AssertType(L, 1, "LunaEvent", "self");
-	AssertType(L, 2, "function", "Connection");
-	auto self = (LunaEvent*)lua_touserdata(L, 1);
-	auto Connection = LunaConnection(L, 2);
-	
-	for (int i = 0; i < MAX_CONNECTIONS; i++)
+	LunaEvent* self = (LunaEvent*)lua_touserdata(L, 1);
+
+	for (const auto& Connection : self->Connections)
+		lua_unref(L, Connection.RefIdx);
+	self->Connections.clear();
+
+	return 0;
+}
+
+int Luna::Event::LunaConnection::Disconnect(lua_State* L)
+{
+	AssertType(L, 1, "LunaConnection", "self");
+	LunaConnection* self = (LunaConnection*)lua_touserdata(L, 1);
+	lua_getref(L, self->EventRef);
+	LunaEvent* Event = (LunaEvent*)lua_touserdata(L, -1);
+
+	for (const auto& Connection : Event->Connections)
 	{
-		auto Conn = self->Connections[i];
-		if (Conn.ConnectedFunction.Pointer == 0)
+		if (Connection.RefIdx == self->RefIdx && Connection.EventRef == self->EventRef)
 		{
-			self->Connections[i] = Connection;
-			std::cout << i << "\n";
-			return 0;
+			lua_unref(L, Connection.RefIdx);
+			Event->Connections.erase(std::remove(Event->Connections.begin(), Event->Connections.end(), Connection), Event->Connections.end());
+			break;
 		}
 	}
-	self->Connections[MAX_CONNECTIONS - 1] = Connection;
-	return 0;
-}
 
-int Luna::Event::Disconnect(lua_State* L)
-{
-	AssertType(L, 1, "LunaEvent", "self");
-	AssertType(L, 2, "function", "Connection");
-	auto self = (LunaEvent*)lua_touserdata(L, 1);
-	lua_f Function = lua_f(L, 2);
-	return 0;
-}
-
-int Luna::Event::DisconnectAll(lua_State* L)
-{
-	AssertType(L, 1, "LunaEvent", "self");
-	AssertType(L, 2, "function", "Connection");
-	LunaEvent* self = (LunaEvent*)lua_touserdata(L, 1);
 	return 0;
 }
 #pragma endregion
 
-#pragma region Meta Methods
-int Luna::Event::__index(lua_State* L)
+#pragma region LunaConnection Meta Methods
+int Luna::Event::LunaConnection::__index(lua_State* L)
 {
 	auto FieldString = lua_tostring(L, 2);
-	if (!lua_isstring(L, 2)) LunaIO::ThrowError(L, LunaUtil::Type(L, 2) + " is not a valid member of LunaEvent.");
-	if (FieldString[0] == '_') LunaIO::ThrowError(L, std::string(FieldString) + " is not a valid member of LunaEvent.");
+	if (!lua_isstring(L, 2))
+		LunaIO::ThrowError(L, LunaUtil::Type(L, 2) + " is not a valid member of LunaConnection.");
+	if (FieldString[0] == '_')
+		LunaIO::ThrowError(L, std::string(FieldString) + " is not a valid member of LunaConnection.");
+
+	LunaUtil::Local(L, "ConnectionMeta");
+	lua_pushvalue(L, 2);
+	lua_gettable(L, -2);
+
+	if (lua_isnil(L, -1))
+		LunaIO::ThrowError(L, std::string(FieldString) + " is not a valid member of LunaConnection.");
+
+	return 1;
+}
+
+int Luna::Event::LunaConnection::__newindex(lua_State* L)
+{
+	LunaIO::ThrowError(L, "LunaConnection cannot be modified.");
+	return 0;
+}
+
+int Luna::Event::LunaConnection::__tostring(lua_State* L)
+{
+	auto self = (LunaConnection*)lua_touserdata(L, 1);
+	lua_getref(L, self->EventRef);
+	LunaEvent* Event = (LunaEvent*)lua_touserdata(L, -1);
+	
+	std::string ToStr = std::format("{}#LunaConnection", Event->Name);
+	lua_pushstring(L, ToStr.c_str());
+	return 1;
+}
+#pragma endregion
+
+#pragma region LunaEvent Meta Methods
+int Luna::Event::LunaEvent::__index(lua_State* L)
+{
+	auto FieldString = lua_tostring(L, 2);
+	if (!lua_isstring(L, 2))
+		LunaIO::ThrowError(L, LunaUtil::Type(L, 2) + " is not a valid member of LunaEvent.");
+	if (FieldString[0] == '_')
+		LunaIO::ThrowError(L, std::string(FieldString) + " is not a valid member of LunaEvent.");
+
 	LunaUtil::Local(L, "EventMeta");
 	lua_pushvalue(L, 2);
 	lua_gettable(L, -2);
-	if (lua_isnil(L, -1)) LunaIO::ThrowError(L, std::string(FieldString) + " is not a valid member of LunaEvent.");
+
+	if (lua_isnil(L, -1))
+		LunaIO::ThrowError(L, std::string(FieldString) + " is not a valid member of LunaEvent.");
+
 	return 1;
 }
-int Luna::Event::__newindex(lua_State* L) { LunaIO::ThrowError(L, "LunaEvents cannot be modified."); return 0; }
-int Luna::Event::__tostring(lua_State* L)
+
+int Luna::Event::LunaEvent::__newindex(lua_State* L) {
+	LunaIO::ThrowError(L, "LunaEvent cannot be modified.");
+	return 0;
+}
+
+int Luna::Event::LunaEvent::__tostring(lua_State* L)
 {
 	auto self = (LunaEvent*)lua_touserdata(L, 1);
 	lua_pushstring(L, self->Name);
 	return 1;
 }
-int Luna::Event::__call(lua_State* L) { Call(L); return 0; }
+
+int Luna::Event::LunaEvent::__call(lua_State* L) {
+	Fire(L);
+	return 0;
+}
 #pragma endregion
 
 int Luna::Event::Init(lua_State* L)
@@ -158,16 +215,28 @@ int Luna::Event::Init(lua_State* L)
 	lua_pushstring(L, "LunaEvent");
 	lua_settable(L, -3);
 
-	SetMeta(__index);
-	SetMeta(__newindex);
-	SetMeta(__tostring);
-	SetMeta(__call);
+	SetMetaByName(LunaEvent::__index, "__index");
+	SetMetaByName(LunaEvent::__newindex, "__newindex");
+	SetMetaByName(LunaEvent::__tostring, "__tostring");
+	SetMetaByName(LunaEvent::__call, "__call");
 
-	SetMeta(Call);
-	SetMeta(Connect);
-	SetMeta(Disconnect);
-	SetMeta(DisconnectAll);
+	SetMetaByName(LunaEvent::Fire, "Fire");
+	SetMetaByName(LunaEvent::Connect, "Connect");
+	SetMetaByName(LunaEvent::DisconnectAll, "DisconnectAll");
 
 	LunaUtil::Local(L, "EventMeta", -1, true);
+	
+	lua_newtable(L);
+	lua_pushstring(L, "__type");
+	lua_pushstring(L, "LunaConnection");
+	lua_settable(L, -3);
+
+	SetMetaByName(LunaConnection::__index, "__index");
+	SetMetaByName(LunaConnection::__newindex, "__newindex");
+	SetMetaByName(LunaConnection::__tostring, "__tostring");
+
+	SetMetaByName(LunaConnection::Disconnect, "Disconnect");
+
+	LunaUtil::Local(L, "ConnectionMeta", -1, true);
 	return 0;
 }

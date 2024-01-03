@@ -4,21 +4,8 @@
 #include "LunaApi/LunaEvent/LunaEvent.h"
 #include "LunaApi/LunaClass/LunaClass.h"
 
-using namespace Luna::Event;
 namespace // Events
 {
-	using Luna::Event::LunaEvent;
-
-	extern DWORD StoneButtonEntries[1];
-	extern LunaEvent* StoneButtonDraw;
-
-	extern DWORD UpdateEntries[1];
-	extern LunaEvent* OnUpdate;
-
-	extern DWORD FinalDrawEntries[1];
-	extern LunaEvent* OnFinalDraw;
-	extern Sexy::Image* MyImg;
-
 	DWORD __stdcall UpdateCaller();
 	void UpdateHandler();
 

@@ -9,17 +9,19 @@
 
 #include "PvZ/Graphics.h"
 
-namespace // Events
+
+using Luna::Event::LunaEvent;
+
+namespace
 {
-	DWORD StoneButtonEntries[1] = { 0x447B00 };
+	std::vector<DWORD> StoneButtonEntries = { 0x447B00 };
 	LunaEvent* StoneButtonDraw;
 
-	DWORD UpdateEntries[1] = { 0x539140 };
+	std::vector<DWORD> UpdateEntries = { 0x539140 };
 	LunaEvent* OnUpdate;
 
-	DWORD FinalDrawEntries[1] = { 0x5390DC };
+	std::vector<DWORD> FinalDrawEntries = { 0x5390DC };
 	LunaEvent* OnFinalDraw;
-	Sexy::Image* MyImg = nullptr;
 }
 
 #include "LunaApi/LunaStructs/Vector2/Vector2.h"
@@ -49,9 +51,9 @@ namespace // Methods
 
 	void SetupEvents()
 	{
-		StoneButtonDraw = LunaEvent::New("OnStoneButtonDraw", StoneButtonDrawHandler, StoneButtonEntries, 1, true);
-		OnFinalDraw = LunaEvent::New("OnFinalDraw", FinalDrawHandler, FinalDrawEntries, 1, true);
-		OnUpdate = LunaEvent::New("OnUpdate", UpdateHandler, UpdateEntries, 1, false);
+		//StoneButtonDraw = LunaEvent::New("OnStoneButtonDraw", StoneButtonDrawHandler, StoneButtonEntries, true);
+		//OnFinalDraw = LunaEvent::New("OnFinalDraw", FinalDrawHandler, FinalDrawEntries, true);
+		OnUpdate = LunaEvent::New("OnUpdate", UpdateHandler, UpdateEntries, false);
 	}
 }
 

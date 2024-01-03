@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="Dependencies\liblua54.a" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -66,9 +63,6 @@
     <ClCompile Include="Source\LunaApi\LunaStructs\Vector3\Vector3.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\LunaApi\LunaEvent\LunaEvent.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\LunaApi\LunaClass\LunaClass.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
@@ -85,6 +79,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIRootClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaEvent\LunaEvent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -173,9 +170,6 @@
     <ClInclude Include="Source\LunaApi\LunaStructs\Vector3\Vector3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\LunaApi\LunaEvent\LunaEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\LawnAppClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -249,6 +243,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Include\Luau\TimeTrace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaEvent\LunaEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

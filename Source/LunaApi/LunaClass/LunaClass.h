@@ -183,9 +183,6 @@ namespace Luna::Class::Fields
 	{
 	public:
 		virtual void __index(lua_State* L) override;
-		static EventField* New(const char* Name, Luna::Event::LunaEvent* New, LunaClass* Class)
-		{
-			return LunaField::New<EventField>(Name, (DWORD)New, Class);
-		}
+		static EventField* New(const char* Name, Luna::Event::LunaEvent* New, LunaClass* Class);
 	};
 }

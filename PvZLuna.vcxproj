@@ -16,6 +16,7 @@
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\LunaBase.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIContainerClass.cpp" />
+    <ClCompile Include="Source\LunaApi\LunaEvent\LunaEvent.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\PvZ\DialogButton.cpp" />
     <ClCompile Include="Source\PvZ\Font.cpp" />
@@ -55,7 +56,6 @@
     <ClInclude Include="Source\Include\Luau\TimeTrace.h" />
     <ClInclude Include="Source\Luna.h" />
     <ClCompile Include="Source\LunaApi\LunaIO\LunaIO.cpp" />
-    <ClCompile Include="Source\LunaApi\LunaEvent\LunaEvent.cpp" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\LawnAppClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\LunaBase.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.h" />

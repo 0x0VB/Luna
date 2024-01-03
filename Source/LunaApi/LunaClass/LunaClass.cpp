@@ -144,15 +144,35 @@ int Luna::Class::__call(lua_State* L)
 int Luna::Class::__index(lua_State* L)
 {
 	auto self = GetAndAssert(L);
+
+	if (!lua_isstring(L, 2))
+		LunaIO::ThrowError(L, "Expected a string field, got " + LunaUtil::Type(L, 2));
+
 	auto Field = GetString(L, 2);
 	auto Class = self->Class;
 
-	if (self->Base == NULL) lua_pushboolean(L, Field == "Destroyed");
-	else if (!lua_isstring(L, 2)) LunaIO::ThrowError(L, "Expected a string field, got " + LunaUtil::Type(L, 2));// Only string fields allowed
-	else if (Class->Methods.contains(Field)) lua_pushcclosure(L, Class->Methods[Field], Field.c_str(), 0);// Get Method
-	else if (Class->Fields.contains(Field)) Class->Fields[Field]->__index(L);// Get Field
-	else if (!Class->AllowsInjection) LunaIO::ThrowError(L, Field + " is not a valid member of " + Class->Name);// Check if Field Injection is allowed
-	else Class->GetInjected(L);// Get Injected Field
+	if (Field == "Destroyed")
+	{
+		if (!self->Base)
+			lua_pushboolean(L, true);
+		else
+			lua_pushboolean(L, false);
+	}
+	// Get Method
+	else if (Class->Methods.contains(Field))
+		lua_pushcclosure(L, Class->Methods[Field], Field.c_str(), 0);
+	// Get Field
+	else if (Class->Fields.contains(Field))
+	{
+		Class->Fields[Field]->__index(L);
+	}
+		
+	// Check if Field Injection is allowed
+	else if (!Class->AllowsInjection)
+		LunaIO::ThrowError(L, Field + " is not a valid member of " + Class->Name);
+	// Get Injected Field
+	else
+		Class->GetInjected(L);
 	return 1;
 }
 
@@ -323,8 +343,8 @@ void Luna::Class::Fields::ColField::__newindex(lua_State* L)
 
 void Luna::Class::Fields::PadField::__index(lua_State* L)
 {
-	auto Event = (Luna::Event::LunaEvent*)Offset;
-	Event->Push(L);
+	FBase(Pad);
+	Base->Push(L);
 }
 void Luna::Class::Fields::PadField::__newindex(lua_State* L)
 {
@@ -335,16 +355,21 @@ void Luna::Class::Fields::PadField::__newindex(lua_State* L)
 
 void Luna::Class::Fields::EventField::__index(lua_State* L)
 {
-	auto Event = (Luna::Event::LunaEvent*)Offset;
-	Event->Push(L);
+	lua_getref(L, Offset);
+}
+Luna::Class::Fields::EventField* Luna::Class::Fields::EventField::New(const char* Name, Luna::Event::LunaEvent* Event, LunaClass* Class)
+{
+	return LunaField::New<Luna::Class::Fields::EventField>(Name, (DWORD)Event->EventRef, Class);
 }
 #pragma endregion
 
 LunaInstance* Luna::Class::GetAndAssert(lua_State* L, int Index)
 {
 	void* self = lua_touserdata(L, Index);
-	if (!lua_isuserdata(L, Index)) LunaIO::ThrowError(L, "Unable to get self. This object may have been destroyed.");
-	if (CLASS_VALIDATE.contains(self)) return (LunaInstance*)self;
+	if (!lua_isuserdata(L, Index))
+		LunaIO::ThrowError(L, "Unable to get self. This object may have been destroyed.");
+	if (CLASS_VALIDATE.contains(self))
+		return (LunaInstance*)self;
 	LunaIO::ThrowError(L, "Self is not a valid LunaInstance.");
 }
 

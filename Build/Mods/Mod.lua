@@ -2,12 +2,10 @@
 print(function() end);
 print(LawnApp);
 print(LawnApp.WindowTitle);
+print(LawnApp.OnUpdate)
 LawnApp.WindowTitle = "Luna!";
 LawnApp.Speed = 2;
 LawnApp.OnUpdate:Connect(function()
-    print("A");
-    for _, V in pairs(LawnApp.UIRoot:GetChildren()) do
-        V.Position += Vector2(math.random(-2, 2), math.random(-2, 2));
-    end;
+    print(LawnApp.Age)
 end);
 print("Passed!");

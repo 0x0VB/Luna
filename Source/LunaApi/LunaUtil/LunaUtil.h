@@ -4,6 +4,7 @@
 #define LunaUtil Luna::Util
 #define LunaInit(Library) LunaUtil::Initiate(Library::Init, #Library)
 
+#define SetMetaByName(Function, Name) lua_pushstring(L, Name); lua_pushcclosure(L, Function, Name, 0); lua_settable(L, -3)
 #define SetMeta(Function) lua_pushstring(L, #Function); lua_pushcclosure(L, Function, #Function, 0); lua_settable(L, -3)
 
 #define AssertType LunaUtil::AssertLuaType
