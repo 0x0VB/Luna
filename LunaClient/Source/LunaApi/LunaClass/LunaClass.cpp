@@ -18,6 +18,11 @@ namespace Luna::Class
 }
 
 #pragma region LunaClass
+void* LunaInstance::GetBase()
+{
+	return (this == NULL) ? NULL : Class->GetBase(this);
+}
+
 void LunaClass::SetName(const char* NewName)
 {
 	int Length = strlen(NewName);
@@ -363,17 +368,23 @@ Luna::Class::Fields::EventField* Luna::Class::Fields::EventField::New(const char
 }
 #pragma endregion
 
-LunaInstance* Luna::Class::GetAndAssert(lua_State* L, int Index)
+LunaInstance* Luna::Class::GetAndAssert(lua_State* L, int Index, std::string ParamName, std::string Expected)
 {
 	void* self = lua_touserdata(L, Index);
 	if (!lua_isuserdata(L, Index))
-		LunaIO::ThrowError(L, "Unable to get self. This object may have been destroyed.");
+		LunaIO::ThrowError(L, "Expected " + Expected + " for " + ParamName + ", got " + LunaUtil::Type(L, Index));
 	if (CLASS_VALIDATE.contains(self))
 		return (LunaInstance*)self;
-	LunaIO::ThrowError(L, "Self is not a valid LunaInstance.");
+	LunaIO::ThrowError(L, "Unable to get " + ParamName + ". This object might have been destroyed.");
 }
 
 LunaInstance* Luna::Class::GetSelf(lua_State* L) { return (LunaInstance*)lua_touserdata(L, 1); }
+LunaInstance* Luna::Class::AssertIsA(lua_State* L, int I, std::string SubClass, std::string ParamName)
+{
+	auto self = GetAndAssert(L, I, ParamName, SubClass);
+	if (self->Class->IsA(SubClass)) return self;
+	LunaIO::ThrowError(L, "Expected " + SubClass + " for " + ParamName + ", got " + self->Class->Name);
+}
 
 #include "Classes/LunaBase.h"
 #include "Classes/SexyAppClass.h"

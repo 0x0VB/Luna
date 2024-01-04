@@ -47,7 +47,9 @@ void LunaIO::ThrowError(lua_State* L, std::string Text, bool AppendTraceback, in
 {
 	if (AppendTraceback)
 	{
+		lua_pushstring(L, Text.c_str());
 		lua_error(L);
+		return;
 	}
 	else
 	{

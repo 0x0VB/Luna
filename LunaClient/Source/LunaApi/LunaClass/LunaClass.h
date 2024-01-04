@@ -24,6 +24,7 @@ namespace Luna::Class
 	public:
 		LunaClass* Class;
 		void* Base;
+		void* GetBase();
 	};
 	class LunaClass
 	{
@@ -41,7 +42,7 @@ namespace Luna::Class
 		virtual int __call(lua_State* L);
 		virtual bool IsA(std::string SubClass);
 		virtual void Inherit(LunaClass* Other);
-		virtual void* GetBase(LunaInstance* Instance) { return Instance->Base; };
+		virtual void* GetBase(LunaInstance* Instance) { return (Instance == NULL) ? NULL : Instance->Base; };
 		virtual void New(lua_State* L, void* Param);
 		virtual void PushInjected(lua_State* L);
 		virtual void GetInjected(lua_State* L);
@@ -51,11 +52,11 @@ namespace Luna::Class
 	class LunaField
 	{
 	public:
-		char Name[32];
-		DWORD Offset;
+		char Name[32] = {};
+		DWORD Offset = 0;
 		virtual void __index(lua_State* L) {}
 		virtual void __newindex(lua_State* L);
-		virtual void* GetBase(LunaInstance* self) { return (void*)((DWORD)self->Base + Offset); };
+		virtual void* GetBase(LunaInstance* self) { return (void*)((DWORD)self->Class->GetBase(self) + Offset); };
 		void SetName(const char* NewName);
 		void AddToClass(LunaClass* Class);
 
@@ -86,9 +87,11 @@ namespace Luna::Class
 	int __tostring(lua_State* L);
 
 	// Makes sure the value at the given Index is a LunaInstance userdata.
-	LunaInstance* GetAndAssert(lua_State* L, int Index = 1);
+	LunaInstance* GetAndAssert(lua_State* L, int Index = 1, std::string ParamName = "self", std::string Expected = "LunaInstance");
 	// Returns the userdata at index 1 cast as a LunaInstance.
 	LunaInstance* GetSelf(lua_State* L);
+	// Returns the userdata at the given index and throws an error if it doesn't belong to the given subclass.
+	LunaInstance* AssertIsA(lua_State* L, int Index, std::string SubClass, std::string ParamName = "self");
 
 	int Init(lua_State* L);
 };

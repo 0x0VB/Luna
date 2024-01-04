@@ -17,6 +17,7 @@ int LunaUIRoot::Init(lua_State* L)
 {
 	Source->AllowsInjection = true;
 	Source->SetName("UIRoot");
+	Source->AddSubClass("UIBase");
 	Source->AddSubClass("UIManager");
 	Source->Inherit(LunaUIContainer::Source);
 

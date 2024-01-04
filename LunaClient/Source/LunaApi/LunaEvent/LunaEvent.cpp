@@ -40,7 +40,11 @@ void Luna::Event::LunaEvent::Call(lua_State* CL, size_t ArgCount)
 		lua_getref(Connection.L, Connection.RefIdx);
 		for (int i = 1; i <= ArgCount; i++)
 			lua_xpush(CL, Connection.L, RT + i);
-		lua_call(Connection.L, ArgCount, 0);
+		if (lua_pcall(Connection.L, ArgCount, 0, 0) != LUA_OK)
+		{
+			auto ErrorMessage = lua_tostring(Connection.L, -1);
+			LunaIO::Print(std::string("[") + Name + "]: " + ErrorMessage, LunaIO::Error);
+		}
 	}
 
 	lua_settop(CL, RT);

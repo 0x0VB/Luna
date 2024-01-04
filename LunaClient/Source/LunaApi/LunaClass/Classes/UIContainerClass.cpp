@@ -25,11 +25,11 @@ void CreateUIObject(lua_State* L, void* At)
 	}
 	Class->New(L, At);
 }
-LunaInstance* GetUIObject(lua_State* L, int Index, std::string ParamName)
+LunaInstance* GetUIObject(lua_State* L, int Index, std::string ParamName, bool AcceptNil)
 {
-	auto self = GetAndAssert(L, Index);
-	ParamName = (ParamName == "NO_PARAM_NAME") ? "arg#" + std::to_string(Index) : ParamName;
-	if (!self->Class->IsA("UIBase")) LunaIO::ThrowError(L, "Expected a UIBase for " + ParamName + ", got " + LunaUtil::Type(L, Index));
+	if (AcceptNil && lua_isnil(L, Index)) return NULL;
+	ParamName = (ParamName == "NO_PARAM_NAME") ? std::string("arg#") + std::to_string(Index) : ParamName;
+	auto self = AssertIsA(L, Index, "UIBase", ParamName);
 	return self;
 }
 
@@ -49,6 +49,35 @@ void UIObjectField::__newindex(lua_State* L)
 
 namespace
 {
+	class ParentField : public UIObjectField
+	{
+	public:
+		virtual void __index(lua_State* L) override
+		{
+			auto self = GetSelf(L);
+			auto Base = GetBase(self);
+			CreateUIObject(L, *(void**)Base);
+		}
+		virtual void __newindex(lua_State* L) override
+		{
+			auto Proxy = GetSelf(L);
+			auto Value = GetUIObject(L, 3, "Parent", true);
+			auto self = (Sexy::UIElement*)Proxy->GetBase();
+			auto Parent = (Sexy::UIContainer*)(Value->GetBase());
+
+			if (self->Parent != NULL)
+				self->Parent->RemoveChild(self);
+			if (self->Parent == Parent) return;
+			if (Parent != NULL)
+				Parent->AddChild(self);
+			else if (self->Parent != NULL)
+			{
+				self->Parent->RemoveChild(self);
+			}
+		}
+		DefNewField(ParentField)
+	};
+
 	int GetChildren(lua_State* L)
 	{
 		auto self = GetUIObject(L, 1, "self");
@@ -66,11 +95,12 @@ namespace
 		}
 		return 1;
 	}
-
 	int Destroy(lua_State* L)
 	{
 		auto self = GetUIObject(L, 1, "self");
+		auto DeleteChildren = lua_toboolean(L, 2);
 		auto Element = (Sexy::UIContainer*)self->Class->GetBase(self);
+		if (DeleteChildren) Element->ClearChildren(true, true);
 		if (Element->Parent != NULL) Element->Parent->RemoveChild((Sexy::UIElement*)Element);
 		Element->~UIContainer();
 		LunaBase::Flush(L);
@@ -91,7 +121,7 @@ int LunaUIContainer::Init(lua_State* L)
 	Source->AddSubClass("UIBase");
 	Source->Inherit(LunaBase::Source);
 
-	UIObjectField::New("Parent", 0x14, Source);
+	ParentField::New("Parent", 0x14, Source);
 	IntField::New("Age", 0x28, Source);
 	BlnField::New("Dirty", 0x2C, Source);
 

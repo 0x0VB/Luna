@@ -18,7 +18,7 @@ void CreateUIObject(lua_State* L, void* At);
 /// <summary>
 /// Asserts the object at Index as a UIObject and returns it if so.
 /// </summary>
-LunaInstance* GetUIObject(lua_State* L, int Index = 1, std::string ParamName = "NO_PARAM_NAME");
+LunaInstance* GetUIObject(lua_State* L, int Index = 1, std::string ParamName = "NO_PARAM_NAME", bool AcceptNil = false);
 
 class UIObjectField : public LunaField
 {

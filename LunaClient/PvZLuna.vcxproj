@@ -97,9 +97,6 @@
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIRootClass.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="cpp.hint" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\LunaUtil\LunaUtil.vcxproj">
       <Project>{25f90689-8889-4099-a293-8bc9371cd633}</Project>
     </ProjectReference>

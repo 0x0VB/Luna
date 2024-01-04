@@ -4,8 +4,7 @@ LawnApp.Speed = 2;
 local Root = LawnApp.UIRoot;
 LawnApp.OnUpdate:Connect(function ()
     local Children = LawnApp.UIRoot:GetChildren();
-    for _, Element in pairs(Children) do
-        Element.InitPos = Element.InitPos or Element.Position;
-        Element.Position = Element.Position + Vector2(math.random(-2, 2), math.random(-2, 2));
+    if (#Children >= 2) then
+        Children[2].Parent = nil;
     end;
-end)
+end);
