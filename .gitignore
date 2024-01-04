@@ -1,6 +1,7 @@
 ## Luna Ignore Files
 Intermediates/
 Luna.dll
+LunaCLI.exe
 
 
 ## Ignore Visual Studio temporary files, build results, and
