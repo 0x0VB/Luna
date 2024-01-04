@@ -99,6 +99,11 @@
   <ItemGroup>
     <None Include="cpp.hint" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LunaUtil\LunaUtil.vcxproj">
+      <Project>{25f90689-8889-4099-a293-8bc9371cd633}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -133,14 +138,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>.\Build\</OutDir>
-    <IntDir>.\Intermediates\</IntDir>
+    <OutDir>$(SolutionDir)Build\</OutDir>
+    <IntDir>$(ProjectDir)Intermediates\</IntDir>
     <TargetExt>.dll</TargetExt>
     <TargetName>Luna</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\Build\</OutDir>
-    <IntDir>.\Intermediates\</IntDir>
+    <OutDir>$(SolutionDir)Build\</OutDir>
+    <IntDir>$(ProjectDir)Intermediates\</IntDir>
     <TargetExt>.dll</TargetExt>
     <TargetName>Luna</TargetName>
   </PropertyGroup>
