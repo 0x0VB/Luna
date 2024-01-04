@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "Luna.h"
 
+#include "LunaApi/LunaApi.h"
 #include "LunaApi/LunaIO/LunaIO.h"
 #include "LunaApi/LunaUtil/LunaUtil.h"
-#include "LunaApi/LunaStructs/LunaStructs.h"
-#include "LunaApi/LunaEvent/LunaEvent.h"
-#include "LunaApi/LunaClass/LunaClass.h"
 
 namespace Luna
 {
@@ -86,12 +84,7 @@ void Luna::InitiateLunaState()
 		lua_close(LUNA_STATE);
 	LUNA_STATE = luaL_newstate();
 
-	luaL_openlibs(LUNA_STATE);		// Open Luau Standard Libraries
-	LunaInit(LunaIO);				// Responsible for print/warn/info functions.
-	LunaInit(LunaUtil);				// General-purpose lua functions that make dealing with lua easier.
-	LunaInit(LunaStruct);			// Contains structs like Vector2, Rect, Color, etc.
-	LunaInit(Luna::Event);			// Ports events onto lua, is also the main hooking lib.
-	LunaInit(Luna::Class);			// Wraps C++ classes into lua, allowing user interaction.
+	LunaInit(LunaApi);
 }
 
 void Luna::InitializeCompileOptions()
@@ -102,7 +95,7 @@ void Luna::InitializeCompileOptions()
 	}
 	else
 	{
-		Luna::CompileOptions.optimizationLevel = 2;
+		Luna::CompileOptions.optimizationLevel = 0;
 	}
 }
 

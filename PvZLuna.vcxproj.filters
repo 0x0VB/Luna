@@ -84,6 +84,9 @@
     <ClCompile Include="Source\LunaApi\LunaEvent\LunaEvent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaApi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Enums\Enums.h">
@@ -246,6 +249,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\LunaApi\LunaEvent\LunaEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaApi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

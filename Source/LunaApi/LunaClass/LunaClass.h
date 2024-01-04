@@ -1,8 +1,10 @@
 #pragma once
 #include "framework.h"
-#include "PvZ/Definitions.h"
-#include "Luau/lua.h"
 
+#include "Luau/lua.h"
+#include "PvZ/Definitions.h"
+
+#include "LunaApi/LunaApi.h"
 #include "LunaApi/LunaEvent/LunaEvent.h"
 
 namespace Luna::Class
@@ -40,7 +42,7 @@ namespace Luna::Class
 		virtual bool IsA(std::string SubClass);
 		virtual void Inherit(LunaClass* Other);
 		virtual void* GetBase(LunaInstance* Instance) { return Instance->Base; };
-		virtual LunaInstance* New(lua_State* L, void* Param);
+		virtual void New(lua_State* L, void* Param);
 		virtual void PushInjected(lua_State* L);
 		virtual void GetInjected(lua_State* L);
 		virtual void Inject(lua_State* L);

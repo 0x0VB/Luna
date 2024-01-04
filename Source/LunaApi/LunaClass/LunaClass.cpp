@@ -46,7 +46,7 @@ void LunaClass::Inherit(LunaClass* Other)
 	}
 
 }
-LunaInstance* LunaClass::New(lua_State* L, void* Param)
+void LunaClass::New(lua_State* L, void* Param)
 {
 	int T = lua_gettop(L);
 	LunaUtil::Local(L, "ClassRef");
@@ -58,7 +58,7 @@ LunaInstance* LunaClass::New(lua_State* L, void* Param)
 		self->Class = this;
 		lua_replace(L, T + 1);
 		lua_settop(L, T + 1);
-		return self;
+		return;
 	}
 	lua_settop(L, T);
 
@@ -81,14 +81,14 @@ LunaInstance* LunaClass::New(lua_State* L, void* Param)
 	lua_setmetatable(L, T + 1);
 	CLASS_VALIDATE[self] = true;
 
-	if (!AllowsInjection) return self;
+	if (!AllowsInjection)
+		return;
+
 	LunaUtil::Local(L, "Injected");
 	lua_pushvalue(L, T + 1);
 	lua_newtable(L);
 	lua_settable(L, -3);
-	lua_settop(L, T + 1);
-
-	return self;
+	lua_pop(L, 1);
 }
 void LunaClass::PushInjected(lua_State* L)
 {
