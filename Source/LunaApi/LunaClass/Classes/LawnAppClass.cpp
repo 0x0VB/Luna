@@ -57,14 +57,7 @@ namespace // Methods
 	}
 }
 
-int LawnAppRef = 0;
-int GetLawnApp(lua_State* L)
-{
-	lua_getref(L, LawnAppRef);
-	return 1;
-}
-
-using namespace Luna::Class::Fields;
+int Luna::Class::LunaApp::LunaInstanceRef = 0;
 Luna::Class::LunaClass* Luna::Class::LunaApp::Source = new LunaClass();
 int Luna::Class::LunaApp::Init(lua_State* L)
 {
@@ -72,6 +65,7 @@ int Luna::Class::LunaApp::Init(lua_State* L)
 	Source->SetName("LawnApp");
 	Source->Inherit(Luna::Class::LunaAppBase::Source);
 
+	using namespace Luna::Class::Fields;
 	BlnField::New("ZombiesLoaded", 0x800, Source);
 	BlnField::New("NewUser", 0x801, Source);
 	IntField::New("GamePlayed", 0x804, Source);
@@ -93,10 +87,8 @@ int Luna::Class::LunaApp::Init(lua_State* L)
 	Source->Methods["MessageBox"] = MsgBox;
 
 	Source->New(L, LawnApp::GetApp());
-	LawnAppRef = lua_ref(L, -1);
+	LunaInstanceRef = lua_ref(L, -1);
 	lua_pop(L, 1);
 
-	lua_pushcclosure(L, GetLawnApp, "GetLawnApp", 0);
-	LunaApi::SetGlobal(L, "GetLawnApp");
 	return 0;
 }

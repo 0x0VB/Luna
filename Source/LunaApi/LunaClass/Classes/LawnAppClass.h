@@ -65,6 +65,7 @@ namespace // Events
 class Luna::Class::LunaApp : public Luna::Class::LunaClass
 {
 public:
+	static int LunaInstanceRef;
 	static LunaClass* Source;
 	static int Init(lua_State* L);
 };

@@ -47,6 +47,7 @@ bool Luna::LoadFile(lua_State* L, std::filesystem::path ModPath)
 }
 
 
+#include "LunaApi/LunaClass/Classes/LawnAppClass.h"
 void Luna::LoadMods()
 {
 	for (const auto& entry : std::filesystem::directory_iterator(ModsPath))
@@ -66,6 +67,10 @@ void Luna::LoadMods()
 			LunaIO::Print(lua_tostring(L, -1), LunaIO::Error);
 			return;
 		}
+
+		// register LawnApp
+		lua_getref(L, Luna::Class::LunaApp::LunaInstanceRef);
+		lua_setglobal(L, "LawnApp");
 
 		if (lua_pcall(L, 0, 0, 0) != LUA_OK)
 		{
