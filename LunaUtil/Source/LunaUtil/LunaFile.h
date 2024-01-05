@@ -8,24 +8,33 @@ namespace LunaUtil
 	LunaFile:
 		[LUNA_VERSION]
 		[LUNA_MINOR_VERSION]
-		[LUNA_COMPRESSED_BYTECODE_SIZE]
-		[LUNA_COMPRESSED_BYTECODE]
 		[LUNA_ASSETS_NUMBER]
 		...
 		[ASSET_IDENTIFIER_SIZE]
 		[ASSET_IDENTIFIER]
-		[ASSET_SIZE]
+		[COMPRESSED_ASSET_SIZE]
 		[COMPRESSED_ASSET_DATA]
 		...
-		[INTEGRITY_CHECK] // CRC32
+		[LUNA_SCRIPTS_NUMBER]	// first script is the main script
+		...
+		[LUNA_SCRIPT_IDENTIFIER_SIZE]
+		[LUNA_SCRIPT_IDENTIFIER]
+		[LUNA_COMPRESSED_BYTECODE_SIZE]
+		[LUNA_COMPRESSED_BYTECODE]
+		...
 	*/
 
+	class LunaScript
+	{
+	public:
+		std::string Identifier;
+		std::string Bytecode;
+	};
 	class LunaAsset
 	{
 	public:
 		std::string Identifier;
-		uint32_t CompressedSize;
-		std::string CompressedData;
+		std::string Data;
 	};
 
 	class LunaFile

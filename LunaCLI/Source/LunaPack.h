@@ -2,7 +2,24 @@
 #include <filesystem>
 #include <string>
 
-namespace LunaUtil
+namespace LunaCLI
 {
-	std::string LunaPack(std::string ScriptBytecode, std::filesystem::path AssetsPath, std::filesystem::path OutputPath);
+	enum PackStatus
+	{
+		Success, // must be first
+		FailedOpenScript,
+		FailedOpenOut,
+		FailedAssetsPathIsNotADirectory,
+		Unknown
+	};
+
+	struct PackSettings
+	{
+		std::filesystem::path ScriptPath;
+		std::filesystem::path ScriptsPath;
+		std::filesystem::path AssetsPath;
+		std::filesystem::path OutputPath;
+	};
+
+	PackStatus LunaPack(PackSettings Settings);
 }
