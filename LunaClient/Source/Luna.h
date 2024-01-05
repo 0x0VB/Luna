@@ -3,7 +3,7 @@
 
 #include "PvZ/LawnApp.h"
 
-#include "Include/luau/Compiler.h"
+#include "Luau/Compiler.h"
 
 #define LUNA_STATE Luna::GlobalLState
 

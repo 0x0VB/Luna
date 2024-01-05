@@ -2,8 +2,6 @@
 
 #include "framework.h"
 
-#include "Include/luau/lua.h"
-#include "Include/luau/lualib.h"
-#include "Include/Luau/Compiler.h"
-
-//#include "Include/lua.hpp"
+#include "Luau/lua.h"
+#include "Luau/lualib.h"
+#include "Luau/Compiler.h"
