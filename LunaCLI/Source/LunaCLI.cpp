@@ -37,8 +37,19 @@ void StartPacking()
 	if (PackSettings.OutputPath == "")
 		PackSettings.OutputPath = "Mod.luna";
 	std::cout << "\n";
-	std::cout << "Packing " << PackSettings.ScriptPath << " script file ...\n\n";
-	LunaCLI::LunaPack(PackSettings);
+	std::cout << "Packing " << PackSettings.ScriptPath << " script file ...\n";
+
+	const auto Status = LunaCLI::LunaPack(PackSettings);
+	switch (Status)
+	{
+	case LunaCLI::PackStatus::Success:
+		std::cout << "Successfully packed into " << PackSettings.OutputPath << std::endl;
+		break;
+	// TODO: Add more error messages based on the status
+	default:
+		std::cout << "Failed to pack into " << PackSettings.OutputPath << std::endl;
+		break;
+	}
 }
 
 int main(int argc, char* argv[])

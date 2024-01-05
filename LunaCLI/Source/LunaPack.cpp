@@ -36,8 +36,8 @@ public:
 		const auto AssetName = Path.filename().string();
 		WriteVarInt(AssetName.size()); 		        // [ASSET_IDENTIFIER_SIZE]
 		stream_ << AssetName;                       // [ASSET_IDENTIFIER]
-		const auto AssetData = LunaUtil::ReadFile(Path);
-		const auto CompressedAssetData = Res->CompressData(AssetData);
+		auto AssetData = LunaUtil::ReadFile(Path);
+		const auto CompressedAssetData = Res->CompressData(AssetData.data(), AssetData.size());
 		WriteVarInt(CompressedAssetData.size());    // [COMPRESSED_ASSET_SIZE]
 		stream_ << CompressedAssetData;             // [COMPRESSED_ASSET_DATA]
 	}
@@ -47,7 +47,8 @@ public:
         const auto ScriptName = std::get<0>(Data).filename().string();
         WriteVarInt(ScriptName.size()); 		    // [LUNA_SCRIPT_IDENTIFIER_SIZE]
         stream_ << ScriptName;                      // [LUNA_SCRIPT_IDENTIFIER]
-        const auto CompressedBytecode = Res->CompressData(std::get<1>(Data));
+        auto Bytecode = std::get<1>(Data);
+        const auto CompressedBytecode = Res->CompressData(Bytecode.c_str(), Bytecode.size());
         WriteVarInt(CompressedBytecode.size());     // [LUNA_COMPRESSED_BYTECODE_SIZE]
         stream_ << CompressedBytecode;              // [LUNA_COMPRESSED_BYTECODE]
     }
@@ -61,7 +62,7 @@ LunaCLI::PackStatus LunaCLI::LunaPack(PackSettings Settings)
     if (!std::filesystem::exists(Settings.ScriptPath))
         return PackStatus::FailedOpenScript;
 
-    std::ofstream OutputFile(Settings.OutputPath, std::ios::binary);
+    std::ofstream OutputFile(Settings.OutputPath, std::ios::binary, std::ios::trunc);
     if (!OutputFile.is_open())
         return PackStatus::FailedOpenOut;
 

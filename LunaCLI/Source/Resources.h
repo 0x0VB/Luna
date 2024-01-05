@@ -15,8 +15,8 @@ namespace LunaCLI
     public:
         char* DBuffer = nullptr;      // DataBuffer
         char* CBuffer = nullptr;      // CompressedBuffer
-        size_t MaxDataSize = 0;       // DataSize
-        size_t CSize = 0;             // CompressedSize
+        size_t DCapacity = 0;       // DataSize
+        size_t CCapacity = 0;             // CompressedSize
         ZSTD_CCtx* CCTX = nullptr;    // Compression Context
 
         std::vector<std::filesystem::path> Assets = {};     // LunaAssets
@@ -28,7 +28,7 @@ namespace LunaCLI
             ZSTD_freeCCtx(CCTX);
         }
 
-        std::string CompressData(std::string Data);
+        std::string CompressData(const char* Data, size_t DataSize);
     };
 
     Resources CreateResources(PackSettings Settings);

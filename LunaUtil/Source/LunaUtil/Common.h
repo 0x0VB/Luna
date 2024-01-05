@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+#include <filesystem>
 
 #define LUNA_VERSION 0
 #define LUNA_MINOR_VERSION 2
@@ -6,5 +8,5 @@
 
 namespace LunaUtil
 {
-	std::string ReadFile(std::filesystem::path FilePath);
+	std::vector<char> ReadFile(std::filesystem::path FilePath);
 }
