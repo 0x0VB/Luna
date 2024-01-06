@@ -26,7 +26,7 @@ namespace LunaUtil
 
 		bool operator==(lua_f Other) { return Pointer == Other.Pointer; }
 	};
-	void SetRegKey(lua_State* L, const char* LocalName, int ValueIndex, bool Pop = true);// Store the value at the given index in a local with the given name.
+	void SetRegKey(lua_State* L, const char* LocalName, int ValueIndex = -1, bool Pop = true);// Store the value at the given index in a local with the given name.
 	void GetRegKey(lua_State* L, const char* LocalName);// Retrieve the value with the given name.
 
 	void SaveRegisters();
