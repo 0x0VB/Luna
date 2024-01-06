@@ -24,6 +24,7 @@ namespace Luna::Class
 	public:
 		LunaClass* Class;
 		void* Base;
+		int Associations[30] = {};
 		void* GetBase();
 	};
 	class LunaClass
@@ -77,7 +78,9 @@ namespace Luna::Class
 	class LunaAppBase;
 	class LunaApp;
 	class LunaUIContainer;
+	class LunaUIElement;
 	class LunaUIRoot;
+	class LunaStoneButton;
 
 	int __gc(lua_State* L);
 	int __call(lua_State* L);
@@ -91,7 +94,7 @@ namespace Luna::Class
 	// Returns the userdata at index 1 cast as a LunaInstance.
 	LunaInstance* GetSelf(lua_State* L);
 	// Returns the userdata at the given index and throws an error if it doesn't belong to the given subclass.
-	LunaInstance* AssertIsA(lua_State* L, int Index, std::string SubClass, std::string ParamName = "self");
+	LunaInstance* AssertIsA(lua_State* L, int Index, std::string SubClass, std::string ParamName = "self", bool AcceptsNil = false);
 
 	int Init(lua_State* L);
 };
@@ -179,6 +182,7 @@ namespace Luna::Class::Fields
 	};
 	class PadField : public LunaField
 	{
+	public:
 		virtual void __index(lua_State* L) override;
 		virtual void __newindex(lua_State* L) override;
 		DefNewField(PadField)
@@ -189,5 +193,13 @@ namespace Luna::Class::Fields
 	public:
 		virtual void __index(lua_State* L) override;
 		static EventField* New(const char* Name, Luna::Event::LunaEvent* New, LunaClass* Class);
+	};
+
+	class FunctionField : public LunaField
+	{
+	public:
+		virtual void __index(lua_State* L) override;
+		virtual void __newindex(lua_State* L) override;
+		DefNewField(FunctionField)
 	};
 }

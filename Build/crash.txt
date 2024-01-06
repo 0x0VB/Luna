@@ -1,15 +1,16 @@
-Unknown exception: (code 0xe06d7363) at address 77769392 in thread EC14
-Module: KERNELBASE.dll
-Logical Address: 0001:00148392
+Exception: Access Violation (code 0xc0000005) at address 0C9C16C1 in thread 5E54
+Module: Exception: Access Violation (code 0xc0000005) at address 0C9C16C1 in thread 5E54
 
-0019FAC0 77769392 RaiseException+62 [(Unknown File Name)(0)+0x00000000]
-Params: E06D7363 00000001 00000003 0019FAE8
+Logical Address: 0000:00000000
+
+0019FC6C 0C9C16C1 0000:00000000 ïÊ8h0Ë8hè«ù@Tá
+Params: 000000FD 76937310 028AA290 76936D00
 
 
-EAX:0019FA68 EBX:19930520 ECX:00000003 EDX:00000000 ESI:00B019D0 EDI:6319936C
-EIP:77769392 ESP:0019FA68  EBP:0019FAC0
+EAX:0053948E EBX:000000AE ECX:0C9C16C0 EDX:00926220 ESI:00000001 EDI:0C9C16C0
+EIP:0C9C16C1 ESP:0019FC64  EBP:78A5AAD9
 CS:0023 SS:002B DS:002B ES:002B FS:0053 GS:002B
-Flags:00000212
+Flags:00010202
 
 Windows Ver: NT 6.2  Build 9200
 DDraw Ver: 10.0.22621.1
@@ -17,9 +18,9 @@ DSound Ver: 10.0.22621.1
 
 Product: PlantsVsZombies
 Version: 1.0.0.1051
-Time Loaded: 00:00:00
+Time Loaded: 00:00:01
 Fullscreen: No
-Primary ThreadId: EC14
+Primary ThreadId: 5E54
 Times Played: 0
 Build Num: 0
 Build Date: 

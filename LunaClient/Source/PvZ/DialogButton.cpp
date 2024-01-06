@@ -4,7 +4,17 @@
 #include "ButtonListener.h"
 #include "Resources.h"
 #include "Graphics.h"
+#include "LawnApp.h"
+#include "Font.h"
 
+void LawnStoneButton::ResizeToFit()
+{
+	auto App = LawnApp::GetApp();
+	if (!App->Loaded) return;
+	auto MinWidth = (*Resources::DwarvenTodcraft18GreenInset)->TextWidth(Label);
+	Bounds.W = max(72, MinWidth + 46);
+	Bounds.H = 46;
+}
 
 LawnStoneButton* __stdcall LawnStoneButton::New(int ID, Sexy::ButtonListener* Listener, const PopString& Text)
 {
@@ -40,7 +50,7 @@ void __stdcall LawnStoneButton::Draw(Sexy::Graphics* G, int X, int Y, int W, int
 	}
 	if (W > 0)
 	{
-		G->DrawImage(Middle, X, Y, Remaining, 47);
+		G->DrawImage(Middle, X, Y, Remaining, 46);
 		X += Remaining;
 	}
 	G->DrawImage(Left, X, Y);

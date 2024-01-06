@@ -10,18 +10,18 @@
 #include "PvZ/Graphics.h"
 
 
-using Luna::Event::LunaEvent;
+using namespace Luna::Event;
 
 namespace
 {
 	std::vector<DWORD> StoneButtonEntries = { 0x447B00 };
-	LunaEvent* StoneButtonDraw;
+	LunaEventRef StoneButtonDraw;
 
 	std::vector<DWORD> UpdateEntries = { 0x539140 };
-	LunaEvent* OnUpdate;
+	LunaEventRef OnUpdate;
 
 	std::vector<DWORD> FinalDrawEntries = { 0x5390DC };
-	LunaEvent* OnFinalDraw;
+	LunaEventRef OnFinalDraw;
 }
 
 #include "LunaApi/LunaStructs/Vector2/Vector2.h"
@@ -29,7 +29,7 @@ namespace // Event Bodies
 {
 	DWORD __stdcall UpdateCaller()
 	{
-		OnUpdate->Call(LUNA_STATE, 0);
+		OnUpdate.GetEvent()->Call(LUNA_STATE, 0);
 		return 0x539148;
 	}
 
@@ -51,8 +51,8 @@ namespace // Methods
 
 	void SetupEvents()
 	{
-		//StoneButtonDraw = LunaEvent::New("OnStoneButtonDraw", StoneButtonDrawHandler, StoneButtonEntries, true);
-		//OnFinalDraw = LunaEvent::New("OnFinalDraw", FinalDrawHandler, FinalDrawEntries, true);
+		StoneButtonDraw = LunaEvent::New("OnStoneButtonDraw", StoneButtonDrawHandler, StoneButtonEntries, true);
+		OnFinalDraw = LunaEvent::New("OnFinalDraw", FinalDrawHandler, FinalDrawEntries, true);
 		OnUpdate = LunaEvent::New("OnUpdate", UpdateHandler, UpdateEntries, false);
 	}
 }
@@ -82,7 +82,8 @@ int Luna::Class::LunaApp::Init(lua_State* L)
 	BlnField::New("SukhbirMode", 0x8BE, Source);
 
 	SetupEvents();
-	EventField::New("OnUpdate", OnUpdate, Source);
+	OnUpdate = LunaEvent::New("OnUpdate", UpdateHandler, UpdateEntries, false);
+	EventField::New("OnUpdate", OnUpdate.GetEvent(), Source);
 
 	Source->Methods["MessageBox"] = MsgBox;
 

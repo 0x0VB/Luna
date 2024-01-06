@@ -27,7 +27,7 @@ namespace Luna::Structs::Color
     int Init(lua_State* L);
 }
 
-Color GetColor(lua_State* L, int Idx);
+Color GetColor(lua_State* L, int Idx, std::string ParamName = "NO_PARAM_NAME");
 Color* NewRGB(lua_State* L, int R = 0, int G = 0, int B = 0, int A = 255);
 Color* NewHSV(lua_State* L, int H = 0, int S = 0, int V = 0, int A = 255);
 Color* NewHex(lua_State* L, std::string Hex);
