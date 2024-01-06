@@ -366,6 +366,33 @@ Luna::Class::Fields::EventField* Luna::Class::Fields::EventField::New(const char
 {
 	return LunaField::New<Luna::Class::Fields::EventField>(Name, (DWORD)Event->EventRef, Class);
 }
+
+void Luna::Class::Fields::FunctionField::__index(lua_State* L)
+{
+	auto self = GetSelf(L);
+	int Ref = self->Associations[Offset];
+	if (Ref == 0)
+		lua_pushnil(L);
+	else
+		lua_getref(L, Ref);
+}
+void Luna::Class::Fields::FunctionField::__newindex(lua_State* L)
+{
+	auto self = GetSelf(L);
+	int Ref = self->Associations[Offset];
+
+	if (Ref != 0)
+		lua_unref(L, Ref);
+
+	if (lua_isnil(L, 3))
+	{
+		self->Associations[Offset] = 0;
+		return;
+	}
+
+	AssertType(L, 3, "function", Name);
+	self->Associations[Offset] = lua_ref(L, 3);
+}
 #pragma endregion
 
 LunaInstance* Luna::Class::GetAndAssert(lua_State* L, int Index, std::string ParamName, std::string Expected)
@@ -379,8 +406,9 @@ LunaInstance* Luna::Class::GetAndAssert(lua_State* L, int Index, std::string Par
 }
 
 LunaInstance* Luna::Class::GetSelf(lua_State* L) { return (LunaInstance*)lua_touserdata(L, 1); }
-LunaInstance* Luna::Class::AssertIsA(lua_State* L, int I, std::string SubClass, std::string ParamName)
+LunaInstance* Luna::Class::AssertIsA(lua_State* L, int I, std::string SubClass, std::string ParamName, bool AcceptsNil)
 {
+	if (AcceptsNil && (lua_isnil(L, I) || lua_gettop(L) < I)) return NULL;
 	auto self = GetAndAssert(L, I, ParamName, SubClass);
 	if (self->Class->IsA(SubClass)) return self;
 	LunaIO::ThrowError(L, "Expected " + SubClass + " for " + ParamName + ", got " + self->Class->Name);
@@ -391,6 +419,8 @@ LunaInstance* Luna::Class::AssertIsA(lua_State* L, int I, std::string SubClass, 
 #include "Classes/LawnAppClass.h"
 #include "Classes/UIContainerClass.h"
 #include "Classes/UIRootClass.h"
+#include "Classes/UIElementClass.h"
+#include "Classes/StoneButtonClass.h"
 
 #include "LunaApi/LunaUtil/LunaUtil.h"
 
@@ -424,6 +454,8 @@ int Luna::Class::Init(lua_State* L)
 	LunaInit(Class::LunaApp);
 	LunaInit(Class::LunaUIContainer);
 	LunaInit(Class::LunaUIRoot);
+	LunaInit(Class::LunaUIElement);
+	LunaInit(Class::LunaStoneButton);
 
 	return 0;
 }

@@ -25,7 +25,7 @@ public:
 
 #pragma region Virtual Functions
 	virtual ~UIContainer() {};// 00
-	virtual IRect** GetRect(_Out_ IRect&& Out) = 0;// 04
+	virtual IRect* GetRect(const IRect* Out) = 0;// 04
 	virtual bool Intersects(UIContainer* Other)  = 0;// 08
 	virtual void AddChild(UIElement* Child)  = 0;// 0C
 	virtual void RemoveChild(UIElement* Child)  = 0;// 10
@@ -39,7 +39,7 @@ public:
 	virtual void BringToBack(UIElement* Child)  = 0;// 30
 	virtual void PutBehind(UIElement* Child, UIElement* Ref)  = 0;// 34
 	virtual void PutInFront(UIElement* Child, UIElement* Ref)  = 0;// 38
-	virtual IVector2&& GetAbsPos(_Out_ IVector2&& Out)  = 0;// 3C
+	virtual IVector2* GetAbsPos(const IVector2* Out)  = 0;// 3C
 	virtual void MarkDirty(UIElement* Child)  = 0;// 40
 	virtual void MarkDirty()  = 0;// 44
 	virtual void MarkDirtyFull(UIContainer* Child)  = 0;// 48
@@ -83,14 +83,14 @@ public:
 	virtual ~UIElement() = 0;// 00
 	virtual void Unk5() {}; // 78
 	virtual void SetVisibile(bool Visible) {}; // 7C
-	virtual void SetColors(int Colors[][4], int ColorNum) = 0;// 80
+	virtual void SetColorsAlpha(int Colors[][4], int ColorNum) = 0;// 80
 	virtual void SetColors(int Colors[][3], int ColorNum) = 0;// 84
 	virtual void SetColor(int Index, const Color& Color) = 0;// 88
-	virtual Color&& GetColor(_Out_ Color&& Out, int Idx, const Color& Default) = 0;// 8C
+	virtual Color* GetColorOut(const Color* Out, int Idx, const Color& Default) = 0;// 8C
 	virtual const Color& GetColor(int Idx) = 0;// 90
 	virtual void SetDisabled(bool Disabled) = 0;// 94
 	virtual void ShowFinger(bool On) = 0;// 98
-	virtual void Resize(IRect* NewSize) = 0;// 9C
+	virtual void ResizeRect(IRect* NewSize) = 0;// 9C
 	virtual void Resize(int X, int Y, int W, int H) = 0;// A0
 	virtual void Move(int X, int Y) = 0;// A4
 	virtual bool WantFocus() = 0;// A8
@@ -104,22 +104,22 @@ public:
 	virtual void MouseEnter() = 0;// C8
 	virtual void MouseLeave() = 0;// CC
 	virtual void MouseMove(int X, int Y) = 0;// D0
-	virtual void MouseDown(int X, int Y, MBNum Btn, int ClickCount) = 0;// D4
+	virtual void MouseBDown(int X, int Y, MBNum Btn, int ClickCount) = 0;// D4
 	virtual void MouseDown(int X, int Y, int ClickCount) = 0;// D8
-	virtual void MouseUp(int X, int Y, int BtnNum, int ClickCount) = 0;// DC
-	virtual void MouseUp(int X, int Y, int ClickCount) = 0;// E0
+	virtual void MouseBUp(int X, int Y, int BtnNum, int ClickCount) = 0;// DC
+	virtual void MouseCUp(int X, int Y, int ClickCount) = 0;// E0
 	virtual void MouseUp(int X, int Y) = 0;// E4
 	virtual void UnkC(DWORD, DWORD) = 0;// E8
 	virtual void UnkD(DWORD) = 0;// EC
 	virtual bool IsPointVisible(int X, int Y) = 0;// F0
-	virtual IRect&& WriteCenteredLine(_Out_ IRect&& Out, Graphics* G, int Offset, const PopString& Text, Color Color1, Color Color2, IVector2 ShadowOffset) = 0;// F4
-	virtual IRect&& WriteCenteredLine(_Out_ IRect&& Out, Graphics* G, int Offset, const PopString& Text) = 0;// F8
+	virtual IRect* WriteCenteredLineColor(const IRect* Out, Graphics* G, int Offset, const PopString& Text, Color Color1, Color Color2, IVector2 ShadowOffset) = 0;// F4
+	virtual IRect* WriteCenteredLine(const IRect* Out, Graphics* G, int Offset, const PopString& Text) = 0;// F8
 	virtual int WriteString(Graphics* G, const PopString& Text, int X, int Y, int Width, int Justification, bool DrawString, int Offset, int Length) = 0;// FC | Returns the XOffset
 	virtual int WriteWordWrapped(Graphics* G, const IRect& Rect, const PopString& Text, int LineSpacing, int Justification) = 0;// 100 | Returns the text height
 	virtual int GetWordWrappedHeight(Graphics* G, int Width, const PopString& Text, int LineSpacing) = 0;// 104
 	virtual int GetNumDigits(int Number) = 0;// 108
 	virtual int WriteNumberFromStrip(Graphics* G, int Number, int X, int Y, Image* Strip, int Spacing) = 0;// 10C
 	virtual bool Contains(int X, int Y) = 0;// 110
-	virtual IRect&& GetInsetRect(_Out_ IRect&& Out) = 0;// 114
+	virtual IRect* GetInsetRect(const IRect* Out) = 0;// 114
 #pragma endregion
 };

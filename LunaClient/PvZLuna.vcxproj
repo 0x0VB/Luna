@@ -16,7 +16,9 @@
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\LawnAppClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\LunaBase.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.cpp" />
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\StoneButtonClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIContainerClass.cpp" />
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIElementClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaEvent\LunaEvent.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\PvZ\DialogButton.cpp" />
@@ -62,7 +64,9 @@
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\LunaBase.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.h" />
     <ClCompile Include="Source\LunaApi\LunaClass\LunaClass.cpp" />
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\StoneButtonClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIContainerClass.h" />
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIElementClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\LunaClass.h" />
     <ClInclude Include="Source\LunaApi\LunaEvent\LunaEvent.h" />
     <ClInclude Include="Source\LunaApi\LunaIO\LunaIO.h" />

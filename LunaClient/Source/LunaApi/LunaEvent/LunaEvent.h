@@ -1,11 +1,21 @@
 #pragma once
 #include <vector>
+#include <Luna.h>
 
 #define LUNA_MAX_CONNECTIONS 20
 
 namespace Luna::Event
 {
 	class LunaEvent;
+	struct LunaEventRef
+	{
+		int EventRef = 0;
+		LunaEventRef() { EventRef = 0; }
+		LunaEventRef(int);
+		void Push(lua_State*);
+		LunaEvent* GetEvent();
+	};
+
 	struct LunaConnection
 	{
 		int RefIdx;
@@ -27,17 +37,25 @@ namespace Luna::Event
 		void SetupHook();
 		void Hook(DWORD Entry);
 	public:
-		void* Handler;
+		union
+		{
+			void* Handler;
+			lua_CFunction LHandler;
+		};
 		char Name[32];
+
 		std::vector<DWORD> Entries;
 		std::vector<LunaConnection> Connections;
+
+		bool IsLuaEvent;
 		bool Hooked;
 
 		int EventRef;
 
 		void Call(lua_State* CL, size_t ArgCount=0);
 
-		static LunaEvent* New(const char* Name, void* Handler, std::vector<DWORD> Entries, bool AutoHook = false);
+		static LunaEventRef New(const char* Name, lua_CFunction Handler);
+		static LunaEventRef New(const char* Name, void* Handler, std::vector<DWORD> Entries, bool AutoHook = false);
 
 		static int __index(lua_State* L);
 		static int __newindex(lua_State* L);

@@ -10,9 +10,10 @@ void Color::Push(lua_State* L) { NewRGB(L, R, G, B, A); }
 #pragma endregion
 
 #pragma region C++ Functions
-Color GetColor(lua_State* L, int Idx)
+Color GetColor(lua_State* L, int Idx, std::string ParamName)
 {
-	AssertType(L, Idx, "Color", "arg#" + std::to_string(Idx));
+	ParamName = (ParamName == "NO_PARAM_NAME") ? "arg#" + std::to_string(Idx) : ParamName;
+	AssertType(L, Idx, "Color", ParamName);
 	return *(Color*)lua_touserdata(L, Idx);
 }
 Color* NewRGB(lua_State* L, int R, int G, int B, int A)

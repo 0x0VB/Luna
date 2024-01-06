@@ -749,7 +749,6 @@ namespace Sexy
     class UIDialog;
     class UIButton;
     class UIDialogButton;
-    class UIStoneButton;
 
     class UISafeDeleteInfo;
     class ButtonListener;

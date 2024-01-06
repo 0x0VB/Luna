@@ -7,7 +7,7 @@ class Sexy::UIButton : public Sexy::UIElement
 public:
 #pragma region Fields
 	int ID;
-	PopString* Label;
+	PopString Label;
 	int LabelJustify;
 	Font* Font;
 	Image* ButtonImage;

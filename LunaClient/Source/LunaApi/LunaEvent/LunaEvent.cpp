@@ -9,7 +9,7 @@ using namespace Luna::Event;
 
 void Luna::Event::LunaEvent::SetupHook()
 {
-	if (Hooked) return;
+	if (Hooked || IsLuaEvent) return;
 	Hooked = true;
 	for (const auto& Entry : Entries)
 		Hook(Entry);
@@ -50,13 +50,42 @@ void Luna::Event::LunaEvent::Call(lua_State* CL, size_t ArgCount)
 	lua_settop(CL, RT);
 }
 
-LunaEvent* Luna::Event::LunaEvent::New(const char* Name, void* Handler, std::vector<DWORD> Entries, bool AutoHook)
+LunaEventRef::LunaEventRef(int Ref) { EventRef = Ref; }
+void LunaEventRef::Push(lua_State* L) { lua_ref(L, EventRef); }
+LunaEvent* LunaEventRef::GetEvent()
+{
+	lua_getref(LUNA_STATE, EventRef);
+	auto Event = lua_touserdata(LUNA_STATE, -1);
+	lua_pop(LUNA_STATE, 1);
+	return (LunaEvent*)Event;
+}
+
+LunaEventRef Luna::Event::LunaEvent::New(const char* Name, lua_CFunction Handler)
 {
 	auto self = (LunaEvent*)lua_newuserdata(LUNA_STATE, sizeof(LunaEvent));// 1
 	// Setup
 	{
-		self->EventRef = lua_ref(LUNA_STATE, 1);
+		self->EventRef = lua_ref(LUNA_STATE, -1);
 		memcpy(self->Name, Name, 32);
+		self->LHandler = Handler;
+		self->IsLuaEvent = true;
+		self->Hooked = true;
+	}
+	LunaUtil::Local(LUNA_STATE, "EventMeta");
+	lua_setmetatable(LUNA_STATE, -2);
+	lua_pop(LUNA_STATE, 1);
+
+	return LunaEventRef(self->EventRef);
+}
+
+LunaEventRef Luna::Event::LunaEvent::New(const char* Name, void* Handler, std::vector<DWORD> Entries, bool AutoHook)
+{
+	auto self = (LunaEvent*)lua_newuserdata(LUNA_STATE, sizeof(LunaEvent));// 1
+	// Setup
+	{
+		self->EventRef = lua_ref(LUNA_STATE, -1);
+		memcpy(self->Name, Name, 32);
+		self->IsLuaEvent = false;
 		self->Entries = Entries;
 		self->Handler = Handler;
 		self->Hooked = false;
@@ -67,7 +96,7 @@ LunaEvent* Luna::Event::LunaEvent::New(const char* Name, void* Handler, std::vec
 	lua_setmetatable(LUNA_STATE, -2);
 	lua_pop(LUNA_STATE, 1);
 
-	return self;
+	return LunaEventRef(self->EventRef);
 }
 
 
