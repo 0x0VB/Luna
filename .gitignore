@@ -1,3 +1,7 @@
+## Don't ignore static libraries
+!Dependencies/Release
+!Dependencies/Debug
+
 ## Luna Ignore Files
 Intermediates/
 Luna.dll
