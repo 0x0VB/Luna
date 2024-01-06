@@ -37,7 +37,7 @@ void LunaUtil::FPCall(lua_CFunction Func)
 int LunaUtil::GetParamIndex(lua_State* L, int Index)
 { return (Index > 0) ? Index : lua_gettop(L) + Index + 1; }
 
-void LunaUtil::Local(lua_State* L, const char* LocalName, int Index, bool Pop)
+void LunaUtil::SetRegKey(lua_State* L, const char* LocalName, int Index, bool Pop)
 {
 	// Save indexes and L->Top
 	Index = GetParamIndex(L, Index);
@@ -55,18 +55,18 @@ void LunaUtil::Local(lua_State* L, const char* LocalName, int Index, bool Pop)
 		lua_remove(L, Index);
 }
 
+void LunaUtil::GetRegKey(lua_State* L, const char* LocalName)
+{
+	lua_pushstring(L, LocalName);
+	lua_gettable(L, LUA_REGISTRYINDEX);
+}
+
 void LunaUtil::PrintStack(lua_State* L)
 {
 	int T = lua_gettop(L);
 	lua_getglobal(L, "print");
 	for (int i = 1; i <= T; i++) lua_pushvalue(L, i);
 	lua_call(L, T, 0);
-}
-
-void LunaUtil::Local(lua_State* L, const char* LocalName)
-{
-	lua_pushstring(L, LocalName);
-	lua_gettable(L, LUA_REGISTRYINDEX);
 }
 
 void __declspec(naked) LunaUtil::SaveRegisters()
@@ -119,7 +119,7 @@ std::string LunaUtil::Type(lua_State* L, int Index)
 		}
 	}
 
-	Local(L, "Type");
+	GetRegKey(L, "Type");
 	lua_pushvalue(L, Index);
 	lua_call(L, 1, 1);
 	Type = lua_tostring(L, -1);
@@ -134,7 +134,7 @@ LunaUtil::lua_f::lua_f(lua_State* L, int Idx)
 	Idx = GetParamIndex(L, Idx);
 	if (!lua_isfunction(L, Idx)) LunaIO::ThrowError(L, "Function expected. Unable to construct lua_f.");
 	Pointer = (void*)lua_topointer(L, Idx);
-	Local(L, "LuaFunctions");
+	GetRegKey(L, "LuaFunctions");
 	lua_pushlightuserdata(L, Pointer);
 	lua_pushvalue(L, Idx);
 	lua_settable(L, -3);
@@ -143,7 +143,7 @@ LunaUtil::lua_f::lua_f(lua_State* L, int Idx)
 	
 void LunaUtil::lua_f::Push(lua_State* L)
 {
-	Local(L, "LuaFunctions");
+	GetRegKey(L, "LuaFunctions");
 	lua_pushlightuserdata(L, Pointer);
 	lua_gettable(L, -2);
 	lua_replace(L, -2);
@@ -196,7 +196,7 @@ int LunaUtil::lua_type(lua_State* L)
 	}
 
 VanillaType:
-	Local(L, "Type");
+	GetRegKey(L, "Type");
 	lua_pushvalue(L, 1);
 	lua_call(L, 1, 1);
 	return 1;
@@ -215,10 +215,10 @@ luaL_Reg UtilFuncs[] = {
 int LunaUtil::Init(lua_State* L)
 {
 	lua_newtable(L);
-	Local(L, "LuaFunctions", -1);// Create the function table
+	SetRegKey(L, "LuaFunctions", -1);// Create the function table
 
 	lua_getglobal(L, "type");// Save type function
-	Local(L, "Type", -1);
+	SetRegKey(L, "Type", -1);
 
 	luaL_register(L, "_G", UtilFuncs);
 	lua_pushcclosure(L, lua_type, "Type", 0);

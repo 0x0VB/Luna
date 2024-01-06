@@ -25,7 +25,7 @@ IRect GetRect(lua_State* L, int Idx)
 IRect* NewRect(lua_State* L, int X, int Y, int W, int H)
 {
 	auto New = (IRect*)lua_newuserdata(L, sizeof(IRect));
-	LunaUtil::Local(L, "RectMeta");
+	LunaUtil::GetRegKey(L, "RectMeta");
 	lua_setmetatable(L, -2);
 
 	New->X = X;
@@ -157,7 +157,7 @@ int Luna::Structs::Rect::__index(lua_State* L)
 		LunaIO::ThrowError(L, Field + " is not a valid member of Rect.");
 	}
 FIDX:
-	LunaUtil::Local(L, "RectMeta");
+	LunaUtil::GetRegKey(L, "RectMeta");
 	lua_pushvalue(L, 2);
 	lua_gettable(L, -2);
 	if (lua_isnil(L, -1)) LunaIO::ThrowError(L, Field + " is not a valid member of Rect.");
@@ -290,6 +290,6 @@ int Luna::Structs::Rect::Init(lua_State* L)
 	SetMeta(SetPosition);
 	SetMeta(GetIntersection);
 
-	LunaUtil::Local(L, "RectMeta", -1);
+	LunaUtil::SetRegKey(L, "RectMeta", -1);
 	return 0;
 }

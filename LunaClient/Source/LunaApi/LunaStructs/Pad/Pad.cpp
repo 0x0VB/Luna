@@ -18,7 +18,7 @@ Pad GetPad(lua_State* L, int Idx)
 Pad* NewPad(lua_State* L, int X, int Y, int W, int H)
 {
 	auto New = (Pad*)lua_newuserdata(L, sizeof(Pad));
-	LunaUtil::Local(L, "PadMeta");
+	LunaUtil::GetRegKey(L, "PadMeta");
 	lua_setmetatable(L, -2);
 
 	New->L = X;
@@ -31,7 +31,7 @@ Pad* NewPad(lua_State* L, int X, int Y, int W, int H)
 Pad* NewPad(lua_State* L, int H, int V)
 {
 	auto New = (Pad*)lua_newuserdata(L, sizeof(Pad));
-	LunaUtil::Local(L, "PadMeta");
+	LunaUtil::GetRegKey(L, "PadMeta");
 	lua_setmetatable(L, -2);
 
 	New->L = H;
@@ -44,7 +44,7 @@ Pad* NewPad(lua_State* L, int H, int V)
 Pad* NewPad(lua_State* L, int P)
 {
 	auto New = (Pad*)lua_newuserdata(L, sizeof(Pad));
-	LunaUtil::Local(L, "PadMeta");
+	LunaUtil::GetRegKey(L, "PadMeta");
 	lua_setmetatable(L, -2);
 
 	New->L = P;
@@ -109,7 +109,7 @@ int Luna::Structs::Pad::__index(lua_State* L)
 		LunaIO::ThrowError(L, Field + " is not a valid member of Pad.");
 	}
 FIDX:
-	LunaUtil::Local(L, "PadMeta");
+	LunaUtil::GetRegKey(L, "PadMeta");
 	lua_pushvalue(L, 2);
 	lua_gettable(L, -2);
 	if (lua_isnil(L, -1)) LunaIO::ThrowError(L, Field + " is not a valid member of Pad.");
@@ -226,6 +226,6 @@ int Luna::Structs::Pad::Init(lua_State* L)
 	SetMeta(__eq);
 	SetMeta(Lerp);
 
-	LunaUtil::Local(L, "PadMeta", -1);
+	LunaUtil::SetRegKey(L, "PadMeta", -1);
 	return 0;
 }
