@@ -4,7 +4,7 @@
 #include <format>
 
 #include "LunaPack.h"
-#include "LunaUtil/LunaFile.h"
+#include "LunaFile.h"
 
 enum LunaCLIMode {
     HELP,
@@ -75,7 +75,7 @@ void StartGettingInfo()
 {
 	std::cout << "\n";
 
-	const auto Luna = LunaUtil::LunaFile::LoadFile(Settings.ScriptPath);
+	const auto Luna = LunaStatic::LunaFile::LoadFile(Settings.ScriptPath);
 	if (Luna.Scripts.size() == 0)
 	{
 		std::cout << "Unable to load luna file " << Settings.ScriptPath << std::endl;

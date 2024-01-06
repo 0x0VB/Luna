@@ -2,7 +2,7 @@
 #include "Common.h"
 
 
-std::vector<char> LunaUtil::ReadFile(std::filesystem::path FilePath)
+std::vector<char> LunaStatic::ReadFile(std::filesystem::path FilePath)
 {
     std::ifstream File(FilePath.c_str());
     File.seekg(0, std::ios::end);

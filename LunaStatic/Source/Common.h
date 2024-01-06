@@ -8,7 +8,7 @@
 
 #define LUNA_COMPRESSION_LEVEL 12
 
-namespace LunaUtil
+namespace LunaStatic
 {
 	std::vector<char> ReadFile(std::filesystem::path FilePath);
 }

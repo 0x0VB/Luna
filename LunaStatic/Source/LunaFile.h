@@ -6,7 +6,7 @@
 #include <optional>
 #include <filesystem>
 
-namespace LunaUtil
+namespace LunaStatic
 {
 	/*
 	LunaFile:

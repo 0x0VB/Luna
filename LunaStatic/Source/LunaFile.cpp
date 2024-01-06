@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "LunaFile.h"
 
-using namespace LunaUtil;
+using namespace LunaStatic;
 
 class LunaInStream {
 public:
@@ -72,7 +72,7 @@ private:
     std::istream& stream_;
 };
 
-LunaFile LunaUtil::LunaFile::LoadFile(std::filesystem::path Path)
+LunaFile LunaStatic::LunaFile::LoadFile(std::filesystem::path Path)
 {
     LunaFile Luna = LunaFile();
 

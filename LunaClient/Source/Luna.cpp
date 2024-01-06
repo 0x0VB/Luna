@@ -5,6 +5,8 @@
 #include "LunaApi/LunaIO/LunaIO.h"
 #include "LunaApi/LunaUtil/LunaUtil.h"
 
+#include "Common.h"
+
 namespace Luna
 {
 	bool DebugMode = false;
@@ -29,19 +31,12 @@ void Luna::Setup(bool DebugMode)
 		LoadMods();
 }
 
-std::string ReadMod(std::filesystem::path ModPath)
-{
-	std::ifstream File(ModPath.c_str());
-	std::string Source((std::istreambuf_iterator<char>(File)),std::istreambuf_iterator<char>());
-	return Source;
-}
-
 bool Luna::LoadFile(lua_State* L, std::filesystem::path ModPath)
 {
-	std::string Source = ReadMod(ModPath);
+	const auto Source = LunaStatic::ReadFile(ModPath);
 
 	std::string chunkname = "=" + ModPath.filename().string();
-	std::string bytecode = Luau::compile(Source.c_str(), Luna::CompileOptions);
+	std::string bytecode = Luau::compile(Source.data(), Luna::CompileOptions);
 
 	return luau_load(L, chunkname.c_str(), bytecode.data(), bytecode.size(), 0) == 0;
 }

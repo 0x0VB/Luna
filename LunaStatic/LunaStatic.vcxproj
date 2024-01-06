@@ -24,6 +24,7 @@
     <ProjectGuid>{25f90689-8889-4099-a293-8bc9371cd633}</ProjectGuid>
     <RootNamespace>LunaUtil</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>LunaStatic</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -152,14 +153,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
-    <ClInclude Include="Source\LunaUtil\Common.h" />
-    <ClInclude Include="Source\LunaUtil\LunaFile.h" />
-    <ClInclude Include="Source\LunaUtil\LunaLoad.h" />
+    <ClInclude Include="Source\Common.h" />
+    <ClInclude Include="Source\LunaFile.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\LunaUtil\Common.cpp" />
-    <ClCompile Include="Source\LunaUtil\LunaFile.cpp" />
+    <ClCompile Include="Source\Common.cpp" />
+    <ClCompile Include="Source\LunaFile.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

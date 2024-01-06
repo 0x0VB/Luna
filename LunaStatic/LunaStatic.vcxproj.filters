@@ -21,13 +21,10 @@
     <ClInclude Include="pch.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="Source\LunaUtil\LunaLoad.h">
+    <ClInclude Include="Source\LunaFile.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="Source\LunaUtil\LunaFile.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\LunaUtil\Common.h">
+    <ClInclude Include="Source\Common.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,10 +32,10 @@
     <ClCompile Include="pch.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="Source\LunaUtil\LunaFile.cpp">
+    <ClCompile Include="Source\LunaFile.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="Source\LunaUtil\Common.cpp">
+    <ClCompile Include="Source\Common.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

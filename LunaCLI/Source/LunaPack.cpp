@@ -1,6 +1,6 @@
 #include "LunaPack.h"
 #include "Resources.h"
-#include "LunaUtil/Common.h"
+#include "Common.h"
 
 #include <iostream>
 #include <string>
@@ -36,7 +36,7 @@ public:
 		const auto AssetName = Path.filename().string();
 		WriteVarInt(AssetName.size()); 		        // [ASSET_IDENTIFIER_SIZE]
 		stream_ << AssetName;                       // [ASSET_IDENTIFIER]
-		auto AssetData = LunaUtil::ReadFile(Path);
+		auto AssetData = LunaStatic::ReadFile(Path);
 		const auto CompressedAssetData = Res->CompressData(AssetData.data(), AssetData.size());
 		WriteVarInt(CompressedAssetData.size());    // [COMPRESSED_ASSET_SIZE]
 		stream_ << CompressedAssetData;             // [COMPRESSED_ASSET_DATA]

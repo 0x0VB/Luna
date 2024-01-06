@@ -85,12 +85,12 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)LunaUtil/Source;$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)LunaStatic/Source;$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)Dependencies/Debug/Luau.Ast.lib;$(SolutionDir)Dependencies/Debug/Luau.Compiler.lib;$(SolutionDir)Dependencies/Debug/Luau.VM.lib;$(SolutionDir)Dependencies/Release/libzstd_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)Dependencies/Debug/Luau.Ast.lib;$(SolutionDir)Dependencies/Debug/Luau.Compiler.lib;$(SolutionDir)Dependencies/Debug/Luau.VM.lib;$(SolutionDir)Dependencies/Release/libzstd_static.lib;$(SolutionDir)LunaStatic/Intermediates/Debug/LunaStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -102,14 +102,14 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)LunaUtil/Source;$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)LunaStatic/Source;$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)Dependencies/Release/Luau.Ast.lib;$(SolutionDir)Dependencies/Release/Luau.Compiler.lib;$(SolutionDir)Dependencies/Release/Luau.VM.lib;$(SolutionDir)Dependencies/Release/libzstd_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)Dependencies/Release/Luau.Ast.lib;$(SolutionDir)Dependencies/Release/Luau.Compiler.lib;$(SolutionDir)Dependencies/Release/Luau.VM.lib;$(SolutionDir)Dependencies/Release/libzstd_static.lib;$(SolutionDir)LunaStatic/Intermediates/Release/LunaStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
