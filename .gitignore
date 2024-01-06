@@ -1,7 +1,3 @@
-## Don't ignore static libraries
-!Dependencies/Release
-!Dependencies/Debug
-
 ## Luna Ignore Files
 Intermediates/
 Luna.dll
@@ -371,3 +367,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+## Don't ignore static libraries
+!Dependencies/Release
+!Dependencies/Debug
