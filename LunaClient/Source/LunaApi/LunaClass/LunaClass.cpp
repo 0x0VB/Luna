@@ -429,10 +429,10 @@ int Luna::Class::Init(lua_State* L)
 	FIELDS = new LunaField[MAX_FIELD_CAPACITY];
 	
 	lua_newtable(L);
-	LunaUtil::Local(L, "ClassRef", -1);
+	LunaUtil::Local(L, "ClassRef", -1, false);
 
 	lua_newtable(L);
-	LunaUtil::Local(L, "Injected", -1);
+	LunaUtil::Local(L, "Injected", -1, false);
 
 	lua_newtable(L);
 	lua_pushstring(L, "__mode");
@@ -456,6 +456,8 @@ int Luna::Class::Init(lua_State* L)
 	LunaInit(Class::LunaUIRoot);
 	LunaInit(Class::LunaUIElement);
 	LunaInit(Class::LunaStoneButton);
+	LunaUtil::PrintStack(L);
+	lua_pop(L, 2); // ClassRef, Injected
 
 	return 0;
 }

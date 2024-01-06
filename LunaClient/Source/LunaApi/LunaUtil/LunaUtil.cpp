@@ -49,8 +49,10 @@ void LunaUtil::Local(lua_State* L, const char* LocalName, int Index, bool Pop)
 	lua_settable(L, LUA_REGISTRYINDEX);
 
 	// Pop the value if Pop is true
-	if (Pop && Index == -1) lua_pop(L, 1);
-	else if (Pop) lua_remove(L, Index);
+	if (Pop && Index == -1)
+		lua_pop(L, 1);
+	else if (Pop)
+		lua_remove(L, Index);
 }
 
 void LunaUtil::PrintStack(lua_State* L)
