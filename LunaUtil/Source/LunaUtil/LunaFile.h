@@ -1,6 +1,10 @@
 #pragma once
+#include "Common.h"
+
 #include <stdint.h>
 #include <vector>
+#include <optional>
+#include <filesystem>
 
 namespace LunaUtil
 {
@@ -28,26 +32,24 @@ namespace LunaUtil
 	{
 	public:
 		std::string Identifier;
-		std::string Bytecode;
+		std::string CBytecode;
 	};
 	class LunaAsset
 	{
 	public:
 		std::string Identifier;
-		std::string Data;
+		std::string CData;
 	};
 
 	class LunaFile
 	{
 	public:
-		uint8_t Version;
-		uint8_t MinorVersion;
-		uint32_t CompressedBytecodeSize;
-		std::string CompressedBytecode;
-		std::vector<LunaAsset> Assets;
-		uint32_t CRC32;
-
-		// Methods
-		std::string DecompressBytecode();
+		uint8_t Version = -1;
+		uint8_t MinorVersion = -1;
+		std::vector<LunaAsset> Assets = {};
+		std::vector<LunaScript> Scripts = {};
+		
+		static LunaFile LoadFile(std::filesystem::path Path);
 	};
+
 }

@@ -72,11 +72,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IntDir>$(ProjectDir)Intermediates</IntDir>
-    <OutDir>$(SolutionDir)Dependencies\Debug\</OutDir>
+    <OutDir>$(ProjectDir)Intermediates\Debug\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IntDir>$(ProjectDir)Intermediates</IntDir>
-    <OutDir>$(SolutionDir)Dependencies\Release\</OutDir>
+    <OutDir>$(ProjectDir)Intermediates\Release\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
