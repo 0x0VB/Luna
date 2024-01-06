@@ -18,5 +18,32 @@
     <ClCompile Include="Source\LunaCLI.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Resources.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaPack.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Resources.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaPack.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="LunaCLI.rc">
+      <Filter>File di risorse</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Assets\LunaXL.ico">
+      <Filter>File di risorse</Filter>
+    </Image>
   </ItemGroup>
 </Project>

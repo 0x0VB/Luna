@@ -84,11 +84,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)LunaUtil/Source;$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)Dependencies/Debug/Luau.Ast.lib;$(SolutionDir)Dependencies/Debug/Luau.Compiler.lib;$(SolutionDir)Dependencies/Debug/Luau.VM.lib;$(SolutionDir)Dependencies/Release/libzstd_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -99,13 +101,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)LunaUtil/Source;$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)Dependencies/Release/Luau.Ast.lib;$(SolutionDir)Dependencies/Release/Luau.Compiler.lib;$(SolutionDir)Dependencies/Release/Luau.VM.lib;$(SolutionDir)Dependencies/Release/libzstd_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -138,11 +142,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\LunaCLI.cpp" />
+    <ClCompile Include="Source\LunaPack.cpp" />
+    <ClCompile Include="Source\Resources.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LunaUtil\LunaUtil.vcxproj">
       <Project>{25f90689-8889-4099-a293-8bc9371cd633}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Source\LunaPack.h" />
+    <ClInclude Include="Source\Resources.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="LunaCLI.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Assets\LunaXL.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
