@@ -13,17 +13,19 @@
   <ItemGroup>
     <ClCompile Include="Source\Luna.cpp" />
     <ClCompile Include="Source\LunaApi\LunaApi.cpp" />
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\FontClass.cpp" />
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\ImageClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\LawnAppClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\LunaBase.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\StoneButtonClass.cpp" />
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIButtonClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIContainerClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIElementClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaEvent\LunaEvent.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\PvZ\DialogButton.cpp" />
     <ClCompile Include="Source\PvZ\Font.cpp" />
-    <ClCompile Include="Source\PvZ\LawnApp.cpp" />
     <ClCompile Include="Source\PvZ\UIElement.cpp" />
     <ClCompile Include="Source\PvZ\UIRoot.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
@@ -60,11 +62,14 @@
     <ClInclude Include="Source\Luna.h" />
     <ClCompile Include="Source\LunaApi\LunaIO\LunaIO.cpp" />
     <ClInclude Include="Source\LunaApi\LunaApi.h" />
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\FontClass.h" />
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\ImageClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\LawnAppClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\LunaBase.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.h" />
     <ClCompile Include="Source\LunaApi\LunaClass\LunaClass.cpp" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\StoneButtonClass.h" />
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIButtonClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIContainerClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIElementClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\LunaClass.h" />
@@ -91,6 +96,7 @@
     <ClInclude Include="Source\PvZ\DialogButton.h" />
     <ClInclude Include="Source\PvZ\Font.h" />
     <ClInclude Include="Source\PvZ\Graphics.h" />
+    <ClInclude Include="Source\PvZ\Image.h" />
     <ClInclude Include="Source\PvZ\LawnApp.h" />
     <ClInclude Include="Source\PvZ\PreModalInfo.h" />
     <ClInclude Include="Source\PvZ\Resources.h" />

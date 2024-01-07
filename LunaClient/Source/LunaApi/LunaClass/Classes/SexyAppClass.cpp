@@ -31,7 +31,14 @@ namespace
 	public:
 		virtual void __index(lua_State* L) override
 		{
-			LawnApp::GetApp()->WindowBounds.Push(L);
+			auto App = LawnApp::GetApp();
+			if (App->MainWindowHandle == NULL)
+			{ App->WindowBounds.Push(L); return; }
+
+			tagRECT OutSource = {};
+			LPRECT Out = &OutSource;
+			GetWindowRect(App->MainWindowHandle, Out);
+			IRect(Out).Push(L);
 		}
 		virtual void __newindex(lua_State* L) override
 		{
@@ -39,7 +46,9 @@ namespace
 			auto Value = GetRect(L, 3);
 			auto App = LawnApp::GetApp();
 			App->WindowBounds = Value;
-			if (App->MainWindowHandle) GetWindowRect(App->MainWindowHandle, Value.ToLPRECT());
+			App->ScreenBounds = Value;
+			if (App->MainWindowHandle)
+				SetWindowPos(App->MainWindowHandle, NULL, Value.X, Value.Y, Value.W, Value.H, NULL);
 		}
 		DefNewField(WindBounds)
 	};

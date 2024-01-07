@@ -210,6 +210,20 @@ luaL_Reg UtilFuncs[] = {
 	{ NULL, NULL }
 };
 
+namespace
+{
+	int PromptDiscordInvite(lua_State* L)
+	{
+		auto InviteCode = GetString(L, 2, "PvZLuna");
+		if (InviteCode.length() > 12)
+			LunaIO::ThrowError(L, "Illegal invite code. Please only copy the invite code, not the link (i.e without discord.gg/).");
+		InviteCode = "start discord://-/invite/" + InviteCode;
+		bool Success = system(InviteCode.c_str());
+		lua_pushboolean(L, !Success);
+		return 1;
+	}
+}
+
 int LunaUtil::Init(lua_State* L)
 {
 	lua_newtable(L);
@@ -221,6 +235,15 @@ int LunaUtil::Init(lua_State* L)
 	luaL_register(L, "_G", UtilFuncs);
 	lua_pushcclosure(L, lua_type, "Type", 0);
 	lua_setglobal(L, "type");
+
+	lua_newtable(L);
+	
+	lua_pushstring(L, "PromptDiscordInvite");
+	lua_pushcclosure(L, PromptDiscordInvite, "PromptDiscordInvite", 0);
+	lua_settable(L, -3);
+
+	lua_setglobal(L, "Luna");
+
 	return 0;
 }
 #pragma endregion

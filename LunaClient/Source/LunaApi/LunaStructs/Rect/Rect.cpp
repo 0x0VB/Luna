@@ -17,9 +17,10 @@ void Rect<T>::Push(lua_State* L) { NewRect(L, X, Y, W, H); }
 #pragma endregion
 
 #pragma region C++ Functions
-IRect GetRect(lua_State* L, int Idx)
+IRect GetRect(lua_State* L, int Idx, std::string ParamName)
 {
-	AssertType(L, Idx, "Rect", "arg#" + std::to_string(Idx));
+	ParamName = (ParamName == "NO_PARAM_NAME") ? "arg#" + std::to_string(Idx) : ParamName;
+	AssertType(L, Idx, "Rect", ParamName);
 	return *(IRect*)lua_touserdata(L, Idx);
 }
 IRect* NewRect(lua_State* L, int X, int Y, int W, int H)

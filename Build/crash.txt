@@ -1,14 +1,14 @@
-Exception: Access Violation (code 0xc0000005) at address 0C9C16C1 in thread 5E54
-Module: Exception: Access Violation (code 0xc0000005) at address 0C9C16C1 in thread 5E54
+Exception: Access Violation (code 0xc0000005) at address 0019F9E8 in thread 5C5C
+Module: Exception: Access Violation (code 0xc0000005) at address 0019F9E8 in thread 5C5C
 
 Logical Address: 0000:00000000
 
-0019FC6C 0C9C16C1 0000:00000000 ïÊ8h0Ë8hè«ù@Tá
-Params: 000000FD 76937310 028AA290 76936D00
+0019FA08 0019F9E8 0000:00000000 ïÊ*f0Ë*fÍ9.XÌÞ
+Params: 00000021 00000000 00000000 00000005
 
 
-EAX:0053948E EBX:000000AE ECX:0C9C16C0 EDX:00926220 ESI:00000001 EDI:0C9C16C0
-EIP:0C9C16C1 ESP:0019FC64  EBP:78A5AAD9
+EAX:0019FA38 EBX:11547648 ECX:0019F9D4 EDX:148F2028 ESI:79AE9484 EDI:00000000
+EIP:0019F9E8 ESP:0019F9D8  EBP:0019FA08
 CS:0023 SS:002B DS:002B ES:002B FS:0053 GS:002B
 Flags:00010202
 
@@ -18,9 +18,9 @@ DSound Ver: 10.0.22621.1
 
 Product: PlantsVsZombies
 Version: 1.0.0.1051
-Time Loaded: 00:00:01
+Time Loaded: 00:00:46
 Fullscreen: No
-Primary ThreadId: 5E54
+Primary ThreadId: 5C5C
 Times Played: 0
 Build Num: 0
 Build Date: 

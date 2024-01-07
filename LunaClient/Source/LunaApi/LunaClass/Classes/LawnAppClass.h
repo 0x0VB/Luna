@@ -42,6 +42,7 @@ namespace // Events
 
 	inline void __declspec(naked) StoneButtonDrawHandler()
 	{
+		// Button in EDI
 		__asm
 		{
 			push[esp + 0x1C]
@@ -52,6 +53,7 @@ namespace // Events
 			push[esp + 0x1C]
 			push eax
 			push[esp + 0x20]
+			push edi
 			call LawnStoneButton::Draw
 			ret
 		}

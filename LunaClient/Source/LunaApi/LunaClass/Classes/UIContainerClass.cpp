@@ -9,6 +9,8 @@
 
 #include "LunaBase.h"
 #include "UIRootClass.h"
+#include "UIElementClass.h"
+#include "UIButtonClass.h"
 #include "StoneButtonClass.h"
 
 using namespace Luna::Class;
@@ -18,8 +20,10 @@ void CreateUIObject(lua_State* L, void* At)
 {
 	auto VTable = *(DWORD*)At;
 	auto ClassDefined = UI_VTABLES.contains(VTable);
-	auto Class = ClassDefined ? UI_VTABLES[VTable] : LunaUIContainer::Source;
-	if (Luna::DebugMode && !ClassDefined)
+	auto Class = ClassDefined ? UI_VTABLES[VTable] : LunaUIElement::Source;
+	if (VTable == NULL) { lua_pushnil(L); return; }
+	Class = (Class != NULL) ? Class : LunaUIElement::Source;
+	if ((Luna::DebugMode && !ClassDefined) || Class == NULL)
 	{
 		UI_VTABLES[VTable] = Class;
 		LunaIO::Print("Undefined UI Class at [", LunaIO::Warning, false);
@@ -242,6 +246,13 @@ int LunaUIContainer::Init(lua_State* L)
 	UI_VTABLES[0x66F794] = LunaUIContainer::Source;// UIContainer
 	UI_VTABLES[0x66F8B4] = LunaUIRoot::Source;// UIRoot
 	UI_VTABLES[0x658838] = LunaStoneButton::Source;// StoneButton
+	UI_VTABLES[0x66DD90] = NULL;// LoadingScreen
+	UI_VTABLES[0x67000C] = NULL;// Hyperlink
+	UI_VTABLES[0x658710] = LunaUIButton::Source;// LawnButton (Fix this when you add LawnButton)
+	UI_VTABLES[0x6555C0] = NULL;// AlmanacDialog
+	UI_VTABLES[0x66FB2C] = LunaUIButton::Source;// UIButton
+	UI_VTABLES[0x656CA8] = NULL;// Lawn
+	UI_VTABLES[0x67026C] = NULL;// CheckBox
 
 	Source->AllowsInjection = true;
 	Source->SetName("UIContainer");

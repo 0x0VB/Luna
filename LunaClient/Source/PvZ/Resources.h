@@ -4,6 +4,8 @@
 
 namespace Resources
 {
+	//const auto Arial = new Sexy::SysFont("Arial Unicode MS", 12, false, false, false);
+
 	const auto StoneButtonLeft = (Sexy::Image**)0x6A7258;
 	const auto StoneButtonRight = (Sexy::Image**)0x6A72A0;
 	const auto StoneButtonMiddle = (Sexy::Image**)0x6A78F4;

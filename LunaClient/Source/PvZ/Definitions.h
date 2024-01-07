@@ -277,6 +277,13 @@ struct Rect
     T Y;
     T W;
     T H;
+    Rect(LPRECT Rect)
+    {
+        X = Rect->left;
+        Y = Rect->top;
+        W = Rect->right - X;
+        H = Rect->bottom - Y;
+    }
     Rect(T x = 0, T y = 0, T w = 0, T h = 0)
     {
         X = x;
@@ -690,6 +697,17 @@ Vector2<T>::operator DVector3() { return DVector3(X, Y); }
 
 class LawnApp;
 
+// DD Stuff
+class IDirectDrawSurface;
+class _DDSURFACEDESC
+{
+    unsigned long Size;
+    unsigned long Flags;
+    unsigned long Height;
+    unsigned long Width;
+    BYTE ImNotAddingAllThat[92];
+};
+
 // Game Objects
 class Lawn;
 class Plant;
@@ -734,6 +752,7 @@ enum GameResult;
 // Sexy
 namespace Sexy
 {
+    struct Span;
     struct Edge;
     struct GraphicsState;
     class Graphics;
@@ -760,12 +779,14 @@ namespace Sexy
     class SharedImage;
     class DDImage;
     class SharedImageRef;
+    class AnimInfo;
     struct TriVertex;
 
     // Font
     class Font;
     class FontData;
     class ImageFont;
+    class SysFont;
     class FontLayer;
     struct ActiveFontLayer;
 

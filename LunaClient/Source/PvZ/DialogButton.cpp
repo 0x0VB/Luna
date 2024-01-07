@@ -9,9 +9,12 @@
 
 void LawnStoneButton::ResizeToFit()
 {
+	int MinWidth;
 	auto App = LawnApp::GetApp();
-	if (!App->Loaded) return;
-	auto MinWidth = (*Resources::DwarvenTodcraft18GreenInset)->TextWidth(Label);
+	if (App->Loaded)
+		MinWidth = (*Resources::DwarvenTodcraft18GreenInset)->TextWidth(Label);
+	else
+		MinWidth = Label.String.length() * 12;
 	Bounds.W = max(72, MinWidth + 46);
 	Bounds.H = 46;
 }
@@ -28,7 +31,7 @@ LawnStoneButton* __stdcall LawnStoneButton::New(int ID, Sexy::ButtonListener* Li
 	}
 }
 
-void __stdcall LawnStoneButton::Draw(Sexy::Graphics* G, int X, int Y, int W, int H, bool Down, bool Highlighted, const PopString& Text)
+void __stdcall LawnStoneButton::Draw(LawnStoneButton* self, Sexy::Graphics* G, int X, int Y, int W, int H, bool Down, bool Highlighted, const PopString& Text)
 {
 	using namespace Resources;
 	auto Right = (Down) ? *StoneButtonRightDown : *StoneButtonRight;
@@ -36,6 +39,7 @@ void __stdcall LawnStoneButton::Draw(Sexy::Graphics* G, int X, int Y, int W, int
 	auto Middle = (Down) ? *StoneButtonMiddleDown : *StoneButtonMiddle;
 	auto Font = (Highlighted) ? *DwarvenTodcraft18BrightGreenInset : *DwarvenTodcraft18GreenInset;
 
+	if (!(Right && Left && Middle && Font)) return;
 	int Width = W;
 	int StartX = X;
 	W -= 71;

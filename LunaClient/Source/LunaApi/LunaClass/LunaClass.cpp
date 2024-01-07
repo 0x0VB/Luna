@@ -220,6 +220,7 @@ void Luna::Class::Fields::BytField::__index(lua_State* L)
 }
 void Luna::Class::Fields::BytField::__newindex(lua_State* L)
 {
+	CheckReadOnly(L);
 	FBase(BYTE);
 	auto Value = GetInt(L, 3, -1);
 	if (Value > 255 || Value < 0) LunaIO::ThrowError(L, std::string(Name) + " can only be a number between 0-255, got " + LunaUtil::Type(L, 3));
@@ -233,6 +234,7 @@ void Luna::Class::Fields::BlnField::__index(lua_State* L)
 }
 void Luna::Class::Fields::BlnField::__newindex(lua_State* L)
 {
+	CheckReadOnly(L);
 	FBase(bool);
 	AssertType(L, 3, "boolean", Name);
 	*Base = (bool)lua_toboolean(L, 3);
@@ -245,6 +247,7 @@ void Luna::Class::Fields::IntField::__index(lua_State* L)
 }
 void Luna::Class::Fields::IntField::__newindex(lua_State* L)
 {
+	CheckReadOnly(L);
 	FBase(int);
 	if (!lua_isnumber(L, 3)) LunaIO::ThrowError(L, std::string("Expected an integer for ") + Name + ", got " + LunaUtil::Type(L, 3));
 	*Base = (int)lua_tonumber(L, 3);
@@ -257,6 +260,7 @@ void Luna::Class::Fields::DblField::__index(lua_State* L)
 }
 void Luna::Class::Fields::DblField::__newindex(lua_State* L)
 {
+	CheckReadOnly(L);
 	FBase(double);
 	if (!lua_isnumber(L, 3)) LunaIO::ThrowError(L, std::string("Expected a number for ") + Name + ", got " + LunaUtil::Type(L, 3));
 	*Base = (double)lua_tonumber(L, 3);
@@ -269,6 +273,7 @@ void Luna::Class::Fields::FltField::__index(lua_State* L)
 }
 void Luna::Class::Fields::FltField::__newindex(lua_State* L)
 {
+	CheckReadOnly(L);
 	FBase(float);
 	if (!lua_isnumber(L, 3)) LunaIO::ThrowError(L, std::string("Expected a number for ") + Name + ", got " + LunaUtil::Type(L, 3));
 	*Base = (float)lua_tonumber(L, 3);
@@ -281,6 +286,7 @@ void Luna::Class::Fields::StrField::__index(lua_State* L)
 }
 void Luna::Class::Fields::StrField::__newindex(lua_State* L)
 {
+	CheckReadOnly(L);
 	FBase(std::string);
 	AssertType(L, 3, "string", std::string(Name));
 	Base->assign(lua_tostring(L, 3));
@@ -293,6 +299,7 @@ void Luna::Class::Fields::RctField::__index(lua_State* L)
 }
 void  Luna::Class::Fields::RctField::__newindex(lua_State* L)
 {
+	CheckReadOnly(L);
 	FBase(IRect);
 	AssertType(L, 3, "Rect", Name);
 	*Base = GetRect(L, 3);
@@ -305,6 +312,7 @@ void Luna::Class::Fields::IV2Field::__index(lua_State* L)
 }
 void Luna::Class::Fields::IV2Field::__newindex(lua_State* L)
 {
+	CheckReadOnly(L);
 	FBase(IVector2);
 	AssertType(L, 3, "Vector2", Name);
 	*Base = (IVector2)GetVector2(L, 3);
@@ -317,6 +325,7 @@ void Luna::Class::Fields::FV2Field::__index(lua_State* L)
 }
 void Luna::Class::Fields::FV2Field::__newindex(lua_State* L)
 {
+	CheckReadOnly(L);
 	FBase(FVector2);
 	AssertType(L, 3, "Vector2", Name);
 	*Base = (FVector2)GetVector2(L, 3);
@@ -329,6 +338,7 @@ void Luna::Class::Fields::FV3Field::__index(lua_State* L)
 }
 void Luna::Class::Fields::FV3Field::__newindex(lua_State* L)
 {
+	CheckReadOnly(L);
 	FBase(FVector3);
 	AssertType(L, 3, "Vector3", Name);
 	*Base = GetVector3(L, 3);
@@ -341,6 +351,7 @@ void Luna::Class::Fields::ColField::__index(lua_State* L)
 }
 void Luna::Class::Fields::ColField::__newindex(lua_State* L)
 {
+	CheckReadOnly(L);
 	FBase(Color);
 	AssertType(L, 3, "Color", Name);
 	*Base = GetColor(L, 3);
@@ -353,6 +364,7 @@ void Luna::Class::Fields::PadField::__index(lua_State* L)
 }
 void Luna::Class::Fields::PadField::__newindex(lua_State* L)
 {
+	CheckReadOnly(L);
 	FBase(Pad);
 	AssertType(L, 3, "Pad", Name);
 	*Base = GetPad(L, 3);
@@ -378,6 +390,7 @@ void Luna::Class::Fields::FunctionField::__index(lua_State* L)
 }
 void Luna::Class::Fields::FunctionField::__newindex(lua_State* L)
 {
+	CheckReadOnly(L);
 	auto self = GetSelf(L);
 	int Ref = self->Associations[Offset];
 
@@ -421,6 +434,9 @@ LunaInstance* Luna::Class::AssertIsA(lua_State* L, int I, std::string SubClass, 
 #include "Classes/UIRootClass.h"
 #include "Classes/UIElementClass.h"
 #include "Classes/StoneButtonClass.h"
+#include "Classes/UIButtonClass.h"
+#include "Classes/ImageClass.h"
+#include "Classes/FontClass.h"
 
 #include "LunaApi/LunaUtil/LunaUtil.h"
 
@@ -456,6 +472,10 @@ int Luna::Class::Init(lua_State* L)
 	LunaInit(Class::LunaUIRoot);
 	LunaInit(Class::LunaUIElement);
 	LunaInit(Class::LunaStoneButton);
+	LunaInit(Class::LunaUIButton);
+	LunaInit(Class::LunaImage);
+	LunaInit(Class::LunaMemImage);
+	LunaInit(Class::LunaDDImage);
 
 	return 0;
 }

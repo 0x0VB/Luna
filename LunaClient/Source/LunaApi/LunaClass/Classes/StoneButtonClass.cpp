@@ -56,6 +56,7 @@ int LunaStoneButton::Constructor(lua_State* L)
 	auto Element = (Sexy::UIContainer*)Parent->GetBase();
 	Element->AddChild(self);
 	self->Parent = Element;
+	self->ResizeToFit();
 
 	return 1;
 }

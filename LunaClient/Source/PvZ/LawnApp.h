@@ -432,5 +432,8 @@ public:
 #pragma region Virtual Functions
 
 #pragma endregion
-	static LawnApp* GetApp();
+	static LawnApp* GetApp()
+	{
+		return *(LawnApp**)0x6A9EC0;
+	}
 };

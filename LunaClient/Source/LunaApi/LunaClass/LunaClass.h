@@ -6,6 +6,7 @@
 
 #include "LunaApi/LunaApi.h"
 #include "LunaApi/LunaEvent/LunaEvent.h"
+#include "LunaApi/LunaIO/LunaIO.h"
 
 namespace Luna::Class
 {
@@ -54,19 +55,25 @@ namespace Luna::Class
 	{
 	public:
 		char Name[32] = {};
+		bool ReadOnly = false;
 		DWORD Offset = 0;
 		virtual void __index(lua_State* L) {}
 		virtual void __newindex(lua_State* L);
 		virtual void* GetBase(LunaInstance* self) { return (void*)((DWORD)self->Class->GetBase(self) + Offset); };
 		void SetName(const char* NewName);
 		void AddToClass(LunaClass* Class);
+		void CheckReadOnly(lua_State* L)
+		{
+			if (ReadOnly) LunaIO::ThrowError(L, std::string(Name) + " is read-only.");
+		}
 
 		template <typename T>
-		static T* New(const char* Name, DWORD Offset, LunaClass* Class)
+		static T* New(const char* Name, DWORD Offset, LunaClass* Class, bool ReadOnly = false)
 		{
 			auto self = (LunaField*)(new (&FIELDS[FIELDS_USED]) T);
 			self->Offset = Offset;
 			self->SetName(Name);
+			self->ReadOnly = ReadOnly;
 			Class->Fields[Name] = self;
 			FIELDS_USED++;
 			return (T*)self;
@@ -81,6 +88,13 @@ namespace Luna::Class
 	class LunaUIElement;
 	class LunaUIRoot;
 	class LunaStoneButton;
+	class LunaUIButton;
+	class LunaImage;
+	class LunaMemImage;
+	class LunaDDImage;
+	class LunaFont;
+	class LunaIFont;
+	class LunaSysFont;
 
 	int __gc(lua_State* L);
 	int __call(lua_State* L);
@@ -101,8 +115,8 @@ namespace Luna::Class
 
 namespace Luna::Class::Fields
 {
-#define DefNewField(T) static T* New(const char* Name, DWORD Offset, LunaClass* Class) \
-	{ return LunaField::New<T>(Name, Offset, Class); }
+#define DefNewField(T) static T* New(const char* Name, DWORD Offset, LunaClass* Class, bool ReadOnly = false) \
+	{ return LunaField::New<T>(Name, Offset, Class, ReadOnly); }
 #define FBase(T) auto self = GetSelf(L); auto Base = (T*)GetBase(self);
 	class BytField : public LunaField
 	{

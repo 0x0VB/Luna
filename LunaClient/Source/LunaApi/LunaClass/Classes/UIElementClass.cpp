@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "UIElementClass.h"
 
-#include "LunaApi/LunaIO/LunaIO.h"
+#include "LunaApi/LunaStructs/Color/Color.h"
 #include "LunaApi/LunaUtil/LunaUtil.h"
+#include "LunaApi/LunaIO/LunaIO.h"
+
 #include "PvZ/UIElement.h"
 #include "PvZ/UIRoot.h"
 #include "PvZ/DialogButton.h"
@@ -11,7 +13,7 @@
 #include "LunaBase.h"
 #include "UIContainerClass.h"
 #include "StoneButtonClass.h"
-#include <LunaApi/LunaStructs/Color/Color.h>
+#include "UIButtonClass.h"
 
 using namespace Luna::Class;
 using namespace Luna::Event;
@@ -154,6 +156,7 @@ LunaClass* LunaUIElement::Source = new LunaClass();
 int LunaUIElement::Init(lua_State* L)
 {
 	UIConst["StoneButton"] = LunaStoneButton::Constructor;
+	UIConst["UIButton"] = LunaUIButton::Constructor;
 
 	Source->AllowsInjection = true;
 	Source->SetName("UIElement");
