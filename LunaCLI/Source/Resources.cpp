@@ -41,7 +41,7 @@ LunaCLI::Resources LunaCLI::CreateResources(PackSettings Settings)
                 continue;
 
             const auto Source = LunaStatic::ReadFile(LuaPath);
-            const auto Bytecode = Luau::compile(Source.data(), CompileOptions);
+            const auto Bytecode = Luau::compile(Source.c_str(), CompileOptions);
             Res.Scripts.push_back({ LuaPath, Bytecode });
 
             const auto DataSize = Bytecode.size();
@@ -62,7 +62,7 @@ LunaCLI::Resources LunaCLI::CreateResources(PackSettings Settings)
 
 std::string LunaCLI::Resources::CompressData(const char* Data, size_t DataSize)
 {
-    strcpy_s(DBuffer, DataSize, Data);
+    memcpy_s(DBuffer, DCapacity, Data, DataSize);
     size_t cSize = ZSTD_compressCCtx(CCTX, CBuffer, CCapacity, DBuffer, DataSize, LUNA_COMPRESSION_LEVEL);
     if (ZSTD_isError(cSize)) {
 		printf("Compression failed: %s\n", ZSTD_getErrorName(cSize));

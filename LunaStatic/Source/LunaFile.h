@@ -49,6 +49,7 @@ namespace LunaStatic
 		std::vector<LunaAsset> Assets = {};
 		std::vector<LunaScript> Scripts = {};
 		
+		const bool IsValid();
 		static LunaFile LoadFile(std::filesystem::path Path);
 	};
 

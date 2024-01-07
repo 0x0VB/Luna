@@ -6,6 +6,9 @@
 #include "LunaApi/LunaUtil/LunaUtil.h"
 
 #include "Common.h"
+#include "LunaFile.h"
+
+#include "LunaUnpacker.h"
 
 namespace Luna
 {
@@ -36,19 +39,70 @@ bool Luna::LoadFile(lua_State* L, std::filesystem::path ModPath)
 	const auto Source = LunaStatic::ReadFile(ModPath);
 
 	std::string chunkname = "=" + ModPath.filename().string();
-	std::string bytecode = Luau::compile(Source.data(), Luna::CompileOptions);
+	std::string bytecode = Luau::compile(Source.c_str(), Luna::CompileOptions);
 
 	return luau_load(L, chunkname.c_str(), bytecode.data(), bytecode.size(), 0) == 0;
 }
 
 
 #include "LunaApi/LunaClass/Classes/LawnAppClass.h"
+void Luna::LoadScript(lua_State* L, std::filesystem::path ScriptPath)
+{
+	if (!LoadFile(L, ScriptPath))
+	{
+		std::cout << "LUA_ERRFILE on " << ScriptPath.string() << "\n";
+		LunaIO::Print(lua_tostring(L, -1), LunaIO::Error);
+		return;
+	}
+
+	// register LawnApp
+	lua_getref(L, Luna::Class::LunaApp::LunaInstanceRef);
+	lua_setglobal(L, "LawnApp");
+
+	if (lua_pcall(L, 0, 0, 0) != LUA_OK)
+	{
+		std::string ErrorMsg = std::format("[{}] ERROR MESSAGE: ", ScriptPath.filename().string());
+		LunaIO::Print(ErrorMsg.c_str(), LunaIO::Error);
+		LunaIO::Print(lua_tostring(L, -1), LunaIO::Error);
+	}
+	else
+		Luna::LoadedMods++;
+}
+
+void Luna::LoadLuna(lua_State* L, std::filesystem::path LunaPath)
+{
+	auto LunaMod = LunaStatic::LunaFile::LoadFile(LunaPath);
+	if (!LunaMod.IsValid())
+	{
+		std::cout << "Can't load invalid luna file on " << LunaPath.string() << "\n";
+		return;
+	}
+
+	if (!LoadCompressedBytecode(L, &LunaMod))
+	{
+		std::cout << "Can't load bytecode on " << LunaPath.string() << "\n";
+		if (lua_gettop(L) > 0)
+			LunaIO::Print(lua_tostring(L, -1), LunaIO::Error);
+		return;
+	}
+
+	if (lua_pcall(L, 0, 0, 0) != LUA_OK)
+	{
+		std::string ErrorMsg = std::format("[{}] ERROR MESSAGE: ", LunaPath.filename().string());
+		LunaIO::Print(ErrorMsg.c_str(), LunaIO::Error);
+		LunaIO::Print(lua_tostring(L, -1), LunaIO::Error);
+	}
+	else
+		Luna::LoadedMods++;
+}
+
 void Luna::LoadMods()
 {
 	for (const auto& entry : std::filesystem::directory_iterator(ModsPath))
 	{
 		const std::filesystem::path ModPath = ModsPath / entry.path().filename();
-		if (ModPath.extension() != ".lua" && ModPath.extension() != ".luna")
+		const auto Extension = ModPath.extension();
+		if (Extension != ".lua" && Extension != ".luna")
 			continue;
 
 		Luna::FoundMods++;
@@ -56,25 +110,14 @@ void Luna::LoadMods()
 		lua_State* L = lua_newthread(LUNA_STATE);	// module needs to run in a new thread, isolated from the rest
 		luaL_sandboxthread(L);						// new thread needs to have the globals sandboxed
 
-		if (!LoadFile(L, ModPath))
+		if (Extension == ".lua")
 		{
-			std::cout << "LUA_ERRFILE on " << ModPath.string() << "\n";
-			LunaIO::Print(lua_tostring(L, -1), LunaIO::Error);
-			return;
-		}
-
-		// register LawnApp
-		lua_getref(L, Luna::Class::LunaApp::LunaInstanceRef);
-		lua_setglobal(L, "LawnApp");
-
-		if (lua_pcall(L, 0, 0, 0) != LUA_OK)
-		{
-			std::string ErrorMsg = std::format("[{}] ERROR MESSAGE:", ModPath.filename().string());
-			LunaIO::Print(ErrorMsg.c_str(), LunaIO::Error);
-			LunaIO::Print(lua_tostring(L, -1), LunaIO::Error);
+			LoadScript(L, ModPath);
 		}
 		else
-			Luna::LoadedMods++;
+		{
+			LoadLuna(L, ModPath);
+		}
 	}
 }
 

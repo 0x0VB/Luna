@@ -22,35 +22,28 @@ public:
         stream_.write(reinterpret_cast<const char*>(&data), sizeof(T));
     }
 
-    void WriteVarInt(unsigned int value)
-    {
-        do
-        {
-            Write<uint8_t>((value & 127) | ((value > 127) << 7));
-            value >>= 7;
-        } while (value);
-    }
-
     void WriteAsset(LunaCLI::Resources* Res, const std::filesystem::path Path)
 	{
 		const auto AssetName = Path.filename().string();
-		WriteVarInt(AssetName.size()); 		        // [ASSET_IDENTIFIER_SIZE]
+		Write<size_t>(AssetName.size()); 		        // [ASSET_IDENTIFIER_SIZE]
 		stream_ << AssetName;                       // [ASSET_IDENTIFIER]
 		auto AssetData = LunaStatic::ReadFile(Path);
 		const auto CompressedAssetData = Res->CompressData(AssetData.data(), AssetData.size());
-		WriteVarInt(CompressedAssetData.size());    // [COMPRESSED_ASSET_SIZE]
-		stream_ << CompressedAssetData;             // [COMPRESSED_ASSET_DATA]
+        Write<size_t>(CompressedAssetData.size());    // [COMPRESSED_ASSET_SIZE]
+        stream_.write(CompressedAssetData.data(), CompressedAssetData.size());    // [COMPRESSED_ASSET_DATA]
 	}
 
     void WriteScript(LunaCLI::Resources* Res, const ScriptData& Data)
     {
         const auto ScriptName = std::get<0>(Data).filename().string();
-        WriteVarInt(ScriptName.size()); 		    // [LUNA_SCRIPT_IDENTIFIER_SIZE]
+        Write<size_t>(ScriptName.size()); 		    // [LUNA_SCRIPT_IDENTIFIER_SIZE]
         stream_ << ScriptName;                      // [LUNA_SCRIPT_IDENTIFIER]
         auto Bytecode = std::get<1>(Data);
-        const auto CompressedBytecode = Res->CompressData(Bytecode.c_str(), Bytecode.size());
-        WriteVarInt(CompressedBytecode.size());     // [LUNA_COMPRESSED_BYTECODE_SIZE]
-        stream_ << CompressedBytecode;              // [LUNA_COMPRESSED_BYTECODE]
+
+        const auto CBytecode = Res->CompressData(Bytecode.c_str(), Bytecode.size());
+
+        Write<size_t>(CBytecode.size());     // [LUNA_COMPRESSED_BYTECODE_SIZE]
+        stream_.write(CBytecode.data(), CBytecode.size());    // [LUNA_COMPRESSED_BYTECODE]    
     }
 
 private:
@@ -72,11 +65,11 @@ LunaCLI::PackStatus LunaCLI::LunaPack(PackSettings Settings)
     OutputStream.Write<uint8_t>(LUNA_VERSION);              // [LUNA_VERSION]
     OutputStream.Write<uint8_t>(LUNA_MINOR_VERSION);        // [LUNA_MINOR_VERSION]
 
-    OutputStream.WriteVarInt(Res.Assets.size());            // [LUNA_ASSETS_NUMBER]
+    OutputStream.Write<size_t>(Res.Assets.size());          // [LUNA_ASSETS_NUMBER]
     for (const auto& Asset : Res.Assets)
         OutputStream.WriteAsset(&Res, Asset);               // [ASSET]
 
-    OutputStream.WriteVarInt(Res.Scripts.size());           // [LUNA_SCRIPTS_NUMBER]
+    OutputStream.Write<size_t>(Res.Scripts.size());         // [LUNA_SCRIPTS_NUMBER]
     for (const auto& Script : Res.Scripts)
 		OutputStream.WriteScript(&Res, Script);             // [SCRIPT]
 

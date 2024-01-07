@@ -20,6 +20,7 @@
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIContainerClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIElementClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaEvent\LunaEvent.cpp" />
+    <ClCompile Include="Source\LunaUnpacker.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\PvZ\DialogButton.cpp" />
     <ClCompile Include="Source\PvZ\Font.cpp" />
@@ -84,6 +85,7 @@
     <ClCompile Include="Source\LunaApi\LunaStructs\Vector3\Vector3.cpp" />
     <ClInclude Include="Source\LunaApi\LunaUtil\LunaUtil.h" />
     <ClCompile Include="Source\LunaApi\LunaUtil\LunaUtil.cpp" />
+    <ClInclude Include="Source\LunaUnpacker.h" />
     <ClInclude Include="Source\Luna\LunaClass\Classes\Sexy\UIContainer.h" />
     <ClInclude Include="Source\Luna\LunaClass\Classes\Sexy\UIRoot.h" />
     <ClInclude Include="Source\PvZ\ButtonListener.h" />

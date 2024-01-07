@@ -86,7 +86,8 @@ LunaEventRef Luna::Event::LunaEvent::New(const char* Name, void* Handler, std::v
 		self->EventRef = lua_ref(LUNA_STATE, -1);
 		memcpy(self->Name, Name, 32);
 		self->IsLuaEvent = false;
-		self->Entries = Entries;
+		memcpy(&self->Entries, (void*)&Entries, sizeof(Entries));	// trick to avoid access violation, self->Entries = Entries;
+		self->Entries = Entries;									// normally move entries std::move(Entries);
 		self->Handler = Handler;
 		self->Hooked = false;
 		if (AutoHook)

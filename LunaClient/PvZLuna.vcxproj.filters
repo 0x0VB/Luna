@@ -93,6 +93,9 @@
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIElementClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\LunaUnpacker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Enums\Enums.h">
@@ -264,6 +267,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIElementClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaUnpacker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -185,6 +185,7 @@ int main(int argc, char* argv[])
 			return 1;
 		}
 		StartPacking();
+		break;
 	}
 	case GET_INFO:
 	{

@@ -12,34 +12,19 @@ public:
         stream_.read(reinterpret_cast<char*>(&data), sizeof(T));
     }
 
-    void ReadVarInt(unsigned int& data)
-    {
-        data = 0;
-        unsigned int shift = 0;
-        uint8_t byte;
-
-        do
-        {
-            Read<uint8_t>(byte);
-            data |= (byte & 127) << shift;
-            shift += 7;
-        } while (byte & 128);
-    }
-
-
     LunaAsset ReadAsset()
     {
 		LunaAsset Asset = LunaAsset();
 
-		uint32_t AssetNameSize;
-		ReadVarInt(AssetNameSize);                      // [ASSET_IDENTIFIER_SIZE]
+        size_t AssetNameSize;
+		Read<size_t>(AssetNameSize);                      // [ASSET_IDENTIFIER_SIZE]
 		std::string AssetName;
 		AssetName.resize(AssetNameSize);
 		stream_.read(AssetName.data(), AssetNameSize);  // [ASSET_IDENTIFIER]
 		Asset.Identifier = AssetName;
 
-		uint32_t CompressedAssetSize;
-        ReadVarInt(CompressedAssetSize);                // [COMPRESSED_ASSET_SIZE]
+        size_t CompressedAssetSize;
+        Read<size_t>(CompressedAssetSize);                // [COMPRESSED_ASSET_SIZE]
 		std::string CompressedAssetData;
 		CompressedAssetData.resize(CompressedAssetSize);
 		stream_.read(CompressedAssetData.data(), CompressedAssetSize); // [COMPRESSED_ASSET_DATA]
@@ -52,14 +37,14 @@ public:
     {
         LunaScript Script = LunaScript();
 
-        uint32_t ScriptNameSize;
-        ReadVarInt(ScriptNameSize);                     // [LUNA_SCRIPT_IDENTIFIER_SIZE]
+        size_t ScriptNameSize;
+        Read<size_t>(ScriptNameSize);                     // [LUNA_SCRIPT_IDENTIFIER_SIZE]
         std::string ScriptName;
         ScriptName.resize(ScriptNameSize);
         stream_.read(ScriptName.data(), ScriptNameSize);// [LUNA_SCRIPT_IDENTIFIER]
         Script.Identifier = ScriptName;
-        uint32_t CompressedBytecodeSize;
-        ReadVarInt(CompressedBytecodeSize);             // [LUNA_COMPRESSED_BYTECODE_SIZE]
+        size_t CompressedBytecodeSize;
+        Read<size_t>(CompressedBytecodeSize);             // [LUNA_COMPRESSED_BYTECODE_SIZE]
         std::string CompressedBytecode;
         CompressedBytecode.resize(CompressedBytecodeSize);
         stream_.read(CompressedBytecode.data(), CompressedBytecodeSize); // [LUNA_COMPRESSED_BYTECODE]
@@ -94,17 +79,17 @@ LunaFile LunaStatic::LunaFile::LoadFile(std::filesystem::path Path)
 		return Luna;
 
     // read assets
-    uint32_t AssetsNumber;
-    Stream.ReadVarInt(AssetsNumber);
+    size_t AssetsNumber;
+    Stream.Read<size_t>(AssetsNumber);
 
-    for (uint32_t i = 0; i < AssetsNumber; i++)
+    for (size_t i = 0; i < AssetsNumber; i++)
 		Luna.Assets.push_back(Stream.ReadAsset());
 
     // read scripts
-    uint32_t ScriptsNumber;
-    Stream.ReadVarInt(ScriptsNumber);
+    size_t ScriptsNumber;
+    Stream.Read<size_t>(ScriptsNumber);
 
-    for (uint32_t i = 0; i < ScriptsNumber; i++)
+    for (size_t i = 0; i < ScriptsNumber; i++)
         Luna.Scripts.push_back(Stream.ReadScript());
 
     // check if stream ended
@@ -112,4 +97,9 @@ LunaFile LunaStatic::LunaFile::LoadFile(std::filesystem::path Path)
 		return LunaFile();
 
     return Luna;
+}
+
+const bool LunaStatic::LunaFile::IsValid()
+{
+    return ((Version * 10 + MinorVersion <= LUNA_COMP_VERSION) && (Scripts.size() >= 1));
 }

@@ -10,5 +10,5 @@
 
 namespace LunaStatic
 {
-	std::vector<char> ReadFile(std::filesystem::path FilePath);
+	std::string ReadFile(std::filesystem::path FilePath);
 }
