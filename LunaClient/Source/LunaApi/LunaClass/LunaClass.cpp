@@ -54,7 +54,7 @@ void LunaClass::Inherit(LunaClass* Other)
 void LunaClass::New(lua_State* L, void* Param)
 {
 	int T = lua_gettop(L);
-	LunaUtil::Local(L, "ClassRef");
+	LunaUtil::GetRegKey(L, "ClassRef");
 	lua_pushlightuserdata(L, Param);
 	lua_gettable(L, -2);
 	if (!lua_isnil(L, -1))
@@ -71,7 +71,7 @@ void LunaClass::New(lua_State* L, void* Param)
 	self->Base = Param;
 	self->Class = this;
 
-	LunaUtil::Local(L, "ClassRef");
+	LunaUtil::GetRegKey(L, "ClassRef");
 
 	lua_pushlightuserdata(L, self);
 	lua_pushvalue(L, T + 1);
@@ -82,14 +82,14 @@ void LunaClass::New(lua_State* L, void* Param)
 	lua_settable(L, T + 2);
 	lua_settop(L, T + 1);
 
-	LunaUtil::Local(L, "ClassMeta");
+	LunaUtil::GetRegKey(L, "ClassMeta");
 	lua_setmetatable(L, T + 1);
 	CLASS_VALIDATE[self] = true;
 
 	if (!AllowsInjection)
 		return;
 
-	LunaUtil::Local(L, "Injected");
+	LunaUtil::GetRegKey(L, "Injected");
 	lua_pushvalue(L, T + 1);
 	lua_newtable(L);
 	lua_settable(L, -3);
@@ -97,7 +97,7 @@ void LunaClass::New(lua_State* L, void* Param)
 }
 void LunaClass::PushInjected(lua_State* L)
 {
-	LunaUtil::Local(L, "Injected");
+	LunaUtil::GetRegKey(L, "Injected");
 	lua_pushvalue(L, 1);
 	lua_gettable(L, -2);
 	lua_replace(L, -2);
@@ -445,10 +445,10 @@ int Luna::Class::Init(lua_State* L)
 	FIELDS = new LunaField[MAX_FIELD_CAPACITY];
 	
 	lua_newtable(L);
-	LunaUtil::Local(L, "ClassRef", -1);
+	LunaUtil::SetRegKey(L, "ClassRef", -1, false);
 
 	lua_newtable(L);
-	LunaUtil::Local(L, "Injected", -1);
+	LunaUtil::SetRegKey(L, "Injected", -1, false);
 
 	lua_newtable(L);
 	lua_pushstring(L, "__mode");
@@ -464,7 +464,7 @@ int Luna::Class::Init(lua_State* L)
 	SetMeta(__newindex);
 	SetMeta(__tostring);
 
-	LunaUtil::Local(L, "ClassMeta", -1);
+	LunaUtil::SetRegKey(L, "ClassMeta", -1);
 	LunaInit(Class::LunaBase);
 	LunaInit(Class::LunaAppBase);
 	LunaInit(Class::LunaApp);

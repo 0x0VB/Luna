@@ -1,6 +1,6 @@
 #include "Resources.h"
 
-#include "LunaUtil/Common.h"
+#include "Common.h"
 #include "Luau/Compiler.h"
 
 const std::vector<std::string> SupportedAssets = { ".png", ".jpg", ".mp3", ".wav", ".json" };
@@ -26,7 +26,7 @@ LunaCLI::Resources LunaCLI::CreateResources(PackSettings Settings)
         }
 
     // add main script
-    const auto MainSource = LunaUtil::ReadFile(Settings.ScriptPath);
+    const auto MainSource = LunaStatic::ReadFile(Settings.ScriptPath);
     const auto MainBytecode = Luau::compile(MainSource.data(), CompileOptions);
     if (MainBytecode.size() > MaxFileSize)
         MaxFileSize = MainBytecode.size();
@@ -40,8 +40,8 @@ LunaCLI::Resources LunaCLI::CreateResources(PackSettings Settings)
             if (LuaPath.extension() != ".lua")
                 continue;
 
-            const auto Source = LunaUtil::ReadFile(LuaPath);
-            const auto Bytecode = Luau::compile(Source.data(), CompileOptions);
+            const auto Source = LunaStatic::ReadFile(LuaPath);
+            const auto Bytecode = Luau::compile(Source.c_str(), CompileOptions);
             Res.Scripts.push_back({ LuaPath, Bytecode });
 
             const auto DataSize = Bytecode.size();
@@ -62,7 +62,7 @@ LunaCLI::Resources LunaCLI::CreateResources(PackSettings Settings)
 
 std::string LunaCLI::Resources::CompressData(const char* Data, size_t DataSize)
 {
-    strcpy_s(DBuffer, DataSize, Data);
+    memcpy_s(DBuffer, DCapacity, Data, DataSize);
     size_t cSize = ZSTD_compressCCtx(CCTX, CBuffer, CCapacity, DBuffer, DataSize, LUNA_COMPRESSION_LEVEL);
     if (ZSTD_isError(cSize)) {
 		printf("Compression failed: %s\n", ZSTD_getErrorName(cSize));

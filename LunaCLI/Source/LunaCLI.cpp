@@ -1,8 +1,10 @@
 #include <iostream>
 #include <string>
 #include <filesystem>
+#include <format>
 
 #include "LunaPack.h"
+#include "LunaFile.h"
 
 enum LunaCLIMode {
     HELP,
@@ -12,7 +14,7 @@ enum LunaCLIMode {
 
 struct LunaCLIOptions {
     LunaCLIMode Mode = HELP;
-	LunaCLI::PackSettings PackSettings;
+	LunaCLI::PackSettings Settings;
 } Options;
 
 void ShowHelp()
@@ -31,24 +33,83 @@ void ShowHelp()
 	std::cout << "         LunaCLI -p -a Mods/MyModAssets -s Mods/MyLuaScripts -o MyMod.luna Mods/MyMod.lua\n";
 }
 
-auto& PackSettings = Options.PackSettings;
+auto& Settings = Options.Settings;
 void StartPacking()
 {
-	if (PackSettings.OutputPath == "")
-		PackSettings.OutputPath = "Mod.luna";
+	if (Settings.OutputPath == "")
+		Settings.OutputPath = "Mod.luna";
 	std::cout << "\n";
-	std::cout << "Packing " << PackSettings.ScriptPath << " script file ...\n";
+	std::cout << "Packing " << Settings.ScriptPath << " script file ...\n";
 
-	const auto Status = LunaCLI::LunaPack(PackSettings);
+	const auto Status = LunaCLI::LunaPack(Settings);
 	switch (Status)
 	{
 	case LunaCLI::PackStatus::Success:
-		std::cout << "Successfully packed into " << PackSettings.OutputPath << std::endl;
+		std::cout << "Successfully packed into " << Settings.OutputPath << std::endl;
 		break;
 	// TODO: Add more error messages based on the status
 	default:
-		std::cout << "Failed to pack into " << PackSettings.OutputPath << std::endl;
+		std::cout << "Failed to pack into " << Settings.OutputPath << std::endl;
 		break;
+	}
+}
+
+
+std::string ReadableSize(size_t bytes) {
+	const double KB = 1024.0;
+	const double MB = KB * KB;
+	const double GB = MB * KB;
+
+	if (bytes < KB)
+		return std::to_string(bytes) + " bytes";
+	else if (bytes < MB)
+		return std::to_string(bytes / KB) + " KB";
+	else if (bytes < GB)
+		return std::to_string(bytes / MB) + " MB";
+	else
+		return std::to_string(bytes / GB) + " GB";
+}
+
+
+void StartGettingInfo()
+{
+	std::cout << "\n";
+
+	const auto Luna = LunaStatic::LunaFile::LoadFile(Settings.ScriptPath);
+	if (Luna.Scripts.size() == 0)
+	{
+		std::cout << "Unable to load luna file " << Settings.ScriptPath << std::endl;
+		return;
+	}
+	if (Luna.Version == -1 && Luna.MinorVersion == -1)
+	{
+		std::cout << "Corrupted luna file detected " << Settings.ScriptPath << std::endl;
+		return;
+	}
+
+	std::cout << std::format("Luna Version: {}.{}\nAssets Number: {}\nScripts Number: {}\n\n", Luna.Version, Luna.MinorVersion, Luna.Assets.size(), Luna.Scripts.size());
+	if (Luna.Assets.size() > 0)
+	{
+		std::cout << std::setw(15) << std::left << "#Assets";
+		std::cout << std::setw(15) << std::left << "Identifier";
+		std::cout << std::setw(15) << std::left << "Compressed Size" << std::endl;
+		for (auto& Asset : Luna.Assets)
+		{
+			std::cout << std::setw(15) << std::left << "";
+			std::cout << std::setw(15) << std::left << Asset.Identifier;
+			std::cout << std::setw(15) << std::left << ReadableSize(Asset.CData.size()) << std::endl;
+		}
+		std::cout << "\n";
+	}
+	std::cout << std::setw(15) << std::left << "#Scripts";
+	std::cout << std::setw(15) << std::left << "Identifier";
+	std::cout << std::setw(15) << std::left << "Compressed Size" << std::endl;
+	for (auto& Script : Luna.Scripts)
+	{
+		std::cout << std::setw(15) << std::left << "";
+		std::cout << std::setw(15) << std::left << Script.Identifier;
+		std::cout << std::setw(15) << std::left << ReadableSize(Script.CBytecode.size()) << std::endl;
+		std::cout << std::endl;
 	}
 }
 
@@ -91,37 +152,50 @@ int main(int argc, char* argv[])
 
 			if (i == argc - 1)
 			{
-				PackSettings.ScriptPath = arg;
+				Settings.ScriptPath = arg;
 				break;
 			}
 
 			if (arg == "-a" || arg == "--assets-path" && i + 1 < argc)
 			{
 				i++;
-				PackSettings.AssetsPath = argv[i];
+				Settings.AssetsPath = argv[i];
 				
 			}
 			else if (arg == "-s" || arg == "--scripts-path" && i + 1 < argc)
 			{
 				i++;
-				PackSettings.ScriptsPath = argv[i];
+				Settings.ScriptsPath = argv[i];
 			}
 			else if (arg == "-o" || arg == "--output-path" && i + 1 < argc)
 			{
 				i++;
-				PackSettings.OutputPath = argv[i];
+				Settings.OutputPath = argv[i];
+			}
+			else
+			{
+				std::cout << "Invalid unpack option: " << arg << std::endl;
+				return 2;
 			}
 		}
 
-		if (PackSettings.ScriptPath == "")
+		if (Settings.ScriptPath == "")
 		{
 			std::cout << "No script path specified." << std::endl;
 			return 1;
 		}
 		StartPacking();
+		break;
 	}
 	case GET_INFO:
 	{
+		if (argc < 3)
+		{
+			std::cout << "No luna path specified." << std::endl;
+			return 1;
+		}
+		Settings.ScriptPath = argv[2];
+		StartGettingInfo();
 		break;
 	}
 	default:

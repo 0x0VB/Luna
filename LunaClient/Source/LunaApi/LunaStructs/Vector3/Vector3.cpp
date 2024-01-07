@@ -20,7 +20,7 @@ FVector3* GetV3Self(lua_State* L) { return (FVector3*)lua_touserdata(L, 1); }
 FVector3* NewVector3(lua_State* L, float X, float Y, float Z)
 {
 	auto New = (FVector3*)lua_newuserdata(L , sizeof(FVector3));
-	LunaUtil::Local(L, "Vector3Meta");
+	LunaUtil::GetRegKey(L, "Vector3Meta");
 	lua_setmetatable(L, -2);
 
 	New->X = X;
@@ -136,7 +136,7 @@ int Luna::Structs::Vector3::__index(lua_State* L)
 	else if (Field == "Z") lua_pushnumber(L, (float)self->Z);
 	else
 	{
-		LunaUtil::Local(L, "Vector3Meta");
+		LunaUtil::GetRegKey(L, "Vector3Meta");
 		lua_pushvalue(L, 2);
 		lua_gettable(L, -2);
 		if (lua_isnil(L, -1) || Field[0] == '_') LunaIO::ThrowError(L,  Field + " is not a valid attribute of Vector3.");
@@ -277,6 +277,6 @@ int Luna::Structs::Vector3::Init(lua_State* L)
 	SetMeta(To2D);
 
 
-	LunaUtil::Local(L, "Vector3Meta", -1);
+	LunaUtil::SetRegKey(L, "Vector3Meta", -1);
 	return 0;
 }

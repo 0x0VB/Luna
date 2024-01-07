@@ -23,6 +23,7 @@
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIContainerClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIElementClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaEvent\LunaEvent.cpp" />
+    <ClCompile Include="Source\LunaUnpacker.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\PvZ\DialogButton.cpp" />
     <ClCompile Include="Source\PvZ\Font.cpp" />
@@ -89,6 +90,7 @@
     <ClCompile Include="Source\LunaApi\LunaStructs\Vector3\Vector3.cpp" />
     <ClInclude Include="Source\LunaApi\LunaUtil\LunaUtil.h" />
     <ClCompile Include="Source\LunaApi\LunaUtil\LunaUtil.cpp" />
+    <ClInclude Include="Source\LunaUnpacker.h" />
     <ClInclude Include="Source\Luna\LunaClass\Classes\Sexy\UIContainer.h" />
     <ClInclude Include="Source\Luna\LunaClass\Classes\Sexy\UIRoot.h" />
     <ClInclude Include="Source\PvZ\ButtonListener.h" />
@@ -165,12 +167,12 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)Source;$(SolutionDir)Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source;$(SolutionDir)Include;$(SolutionDir)LunaStatic/Source</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)Dependencies/Debug/Luau.Ast.lib;$(SolutionDir)Dependencies/Debug/Luau.Compiler.lib;$(SolutionDir)Dependencies/Debug/Luau.VM.lib;$(SolutionDir)Dependencies/Release/libzstd_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)Dependencies/Debug/Luau.Ast.lib;$(SolutionDir)Dependencies/Debug/Luau.Compiler.lib;$(SolutionDir)Dependencies/Debug/Luau.VM.lib;$(SolutionDir)Dependencies/Release/libzstd_static.lib;$(SolutionDir)LunaStatic/Intermediates/Debug/LunaStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -183,14 +185,14 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)Source;$(SolutionDir)Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source;$(SolutionDir)Include;$(SolutionDir)LunaStatic/Source</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)Dependencies/Release/Luau.Ast.lib;$(SolutionDir)Dependencies/Release/Luau.Compiler.lib;$(SolutionDir)Dependencies/Release/Luau.VM.lib;$(SolutionDir)Dependencies/Release/libzstd_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)Dependencies/Release/Luau.Ast.lib;$(SolutionDir)Dependencies/Release/Luau.Compiler.lib;$(SolutionDir)Dependencies/Release/Luau.VM.lib;$(SolutionDir)Dependencies/Release/libzstd_static.lib;$(SolutionDir)LunaStatic/Intermediates/Release/LunaStatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

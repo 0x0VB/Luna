@@ -164,6 +164,7 @@ namespace
 			LunaIO::ThrowError(L, "BringToFront cannot be used on UIElements with a nil parent.");
 		else
 			self->Parent->BringToFront(self);
+		return 0;
 	}
 	int BringToBack(lua_State* L)
 	{
@@ -172,6 +173,7 @@ namespace
 			LunaIO::ThrowError(L, "BringToBack cannot be used on UIElements with a nil parent.");
 		else
 			self->Parent->BringToBack(self);
+		return 0;
 	}
 	int PutInFront(lua_State* L)
 	{
@@ -184,6 +186,7 @@ namespace
 			LunaIO::ThrowError(L, "PutInFront can only be used on UIElements that share the same parent.");
 		else
 			self->Parent->PutInFront(self, Other);
+		return 0;
 	}
 	int PutBehind(lua_State* L)
 	{
@@ -196,6 +199,7 @@ namespace
 			LunaIO::ThrowError(L, "PutBehind can only be used on UIElements that share the same parent.");
 		else
 			self->Parent->PutBehind(self, Other);
+		return 0;
 	}
 	int IsMouseOn(lua_State* L)
 	{

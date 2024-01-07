@@ -19,7 +19,7 @@ Color GetColor(lua_State* L, int Idx, std::string ParamName)
 Color* NewRGB(lua_State* L, int R, int G, int B, int A)
 {
 	auto New = (Color*)lua_newuserdata(LUNA_STATE, sizeof(Color));
-	LunaUtil::Local(L, "ColorMeta");
+	LunaUtil::GetRegKey(L, "ColorMeta");
 	lua_setmetatable(LUNA_STATE, -2);
 
 	New->R = R;
@@ -33,7 +33,7 @@ Color* NewHSV(lua_State* L, int H, int S, int V, int A)
 {
 	auto RGBA = Color::FromHSVA(H, S, V, 0);
 	auto New = (Color*)lua_newuserdata(L, sizeof(Color));
-	LunaUtil::Local(L, "ColorMeta");
+	LunaUtil::GetRegKey(L, "ColorMeta");
 	lua_setmetatable(L, -2);
 
 	New->R = RGBA.R;
@@ -47,7 +47,7 @@ Color* NewHex(lua_State* L, std::string Hex)
 {
 	auto RGBA = Color::FromHex(Hex);
 	auto New = (Color*)lua_newuserdata(L, sizeof(Color));
-	LunaUtil::Local(L, "ColorMeta");
+	LunaUtil::GetRegKey(L, "ColorMeta");
 	lua_setmetatable(L, -2);
 
 	New->R = RGBA.R;
@@ -166,7 +166,7 @@ int Luna::Structs::Color::__index(lua_State* L)
 		LunaIO::ThrowError(L, Field + " is not a valid member of Color.");
 	}
 FIDX:
-	LunaUtil::Local(L, "ColorMeta");
+	LunaUtil::GetRegKey(L, "ColorMeta");
 	lua_pushvalue(L, 2);
 	lua_gettable(L, -2);
 	if (lua_isnil(L, -1)) LunaIO::ThrowError(L, Field + " is not a valid member of Color.");
@@ -280,7 +280,7 @@ int Luna::Structs::Color::Init(lua_State* L)
 	SetMeta(ShiftHue);
 	SetMeta(Desaturate);
 
-	LunaUtil::Local(L, "ColorMeta", -1);
+	LunaUtil::SetRegKey(L, "ColorMeta", -1);
 
 	return 0;
 }

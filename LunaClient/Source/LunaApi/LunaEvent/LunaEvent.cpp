@@ -71,7 +71,7 @@ LunaEventRef Luna::Event::LunaEvent::New(const char* Name, lua_CFunction Handler
 		self->IsLuaEvent = true;
 		self->Hooked = true;
 	}
-	LunaUtil::Local(LUNA_STATE, "EventMeta");
+	LunaUtil::GetRegKey(LUNA_STATE, "EventMeta");
 	lua_setmetatable(LUNA_STATE, -2);
 	lua_pop(LUNA_STATE, 1);
 
@@ -86,13 +86,14 @@ LunaEventRef Luna::Event::LunaEvent::New(const char* Name, void* Handler, std::v
 		self->EventRef = lua_ref(LUNA_STATE, -1);
 		memcpy(self->Name, Name, 32);
 		self->IsLuaEvent = false;
-		self->Entries = Entries;
+		memcpy(&self->Entries, (void*)&Entries, sizeof(Entries));	// trick to avoid access violation, self->Entries = Entries;
+		self->Entries = Entries;									// normally move entries std::move(Entries);
 		self->Handler = Handler;
 		self->Hooked = false;
 		if (AutoHook)
 			self->SetupHook();
 	}
-	LunaUtil::Local(LUNA_STATE, "EventMeta");
+	LunaUtil::GetRegKey(LUNA_STATE, "EventMeta");
 	lua_setmetatable(LUNA_STATE, -2);
 	lua_pop(LUNA_STATE, 1);
 
@@ -119,7 +120,7 @@ int Luna::Event::LunaEvent::Connect(lua_State* L)
 	Connection->EventRef = self->EventRef;
 	self->Connections.push_back(*Connection);	// store new connection
 
-	LunaUtil::Local(L, "ConnectionMeta");
+	LunaUtil::GetRegKey(L, "ConnectionMeta");
 	lua_setmetatable(L, -2);
 
 	return 1;
@@ -176,7 +177,7 @@ int Luna::Event::LunaConnection::__index(lua_State* L)
 	if (FieldString[0] == '_')
 		LunaIO::ThrowError(L, std::string(FieldString) + " is not a valid member of LunaConnection.");
 
-	LunaUtil::Local(L, "ConnectionMeta");
+	LunaUtil::GetRegKey(L, "ConnectionMeta");
 	lua_pushvalue(L, 2);
 	lua_gettable(L, -2);
 
@@ -213,7 +214,7 @@ int Luna::Event::LunaEvent::__index(lua_State* L)
 	if (FieldString[0] == '_')
 		LunaIO::ThrowError(L, std::string(FieldString) + " is not a valid member of LunaEvent.");
 
-	LunaUtil::Local(L, "EventMeta");
+	LunaUtil::GetRegKey(L, "EventMeta");
 	lua_pushvalue(L, 2);
 	lua_gettable(L, -2);
 
@@ -257,7 +258,7 @@ int Luna::Event::Init(lua_State* L)
 	SetMetaByName(LunaEvent::Connect, "Connect");
 	SetMetaByName(LunaEvent::DisconnectAll, "DisconnectAll");
 
-	LunaUtil::Local(L, "EventMeta", -1, true);
+	LunaUtil::SetRegKey(L, "EventMeta", -1, true);
 	
 	lua_newtable(L);
 	lua_pushstring(L, "__type");
@@ -270,6 +271,6 @@ int Luna::Event::Init(lua_State* L)
 
 	SetMetaByName(LunaConnection::Disconnect, "Disconnect");
 
-	LunaUtil::Local(L, "ConnectionMeta", -1, true);
+	LunaUtil::SetRegKey(L, "ConnectionMeta", -1, true);
 	return 0;
 }

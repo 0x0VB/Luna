@@ -64,7 +64,7 @@ LunaClass* LunaBase::Source = new LunaClass();
 int LunaBase::Flush(lua_State* L)
 {
 	auto self = GetAndAssert(L);
-	LunaUtil::Local(L, "Injected");
+	LunaUtil::GetRegKey(L, "Injected");
 	lua_pushvalue(L, 1);
 	lua_newtable(L);
 	lua_settable(L, -3);
