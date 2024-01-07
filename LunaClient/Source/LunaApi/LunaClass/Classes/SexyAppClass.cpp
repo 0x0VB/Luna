@@ -22,7 +22,8 @@ namespace
 			AssertType(L, 3, "string", Name);
 			auto App = LawnApp::GetApp();
 			App->Title = Value;
-			if (App->MainWindowHandle) SetWindowTextA(App->MainWindowHandle, Value.c_str());
+			if (App->MainWindowHandle)
+				SetWindowTextA(App->MainWindowHandle, Value.c_str());
 		}
 		DefNewField(WindTitle)
 	};

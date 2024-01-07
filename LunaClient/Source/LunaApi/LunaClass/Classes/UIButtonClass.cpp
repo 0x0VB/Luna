@@ -80,37 +80,46 @@ Sexy::Image* _MainImage;
 PopString* _Label;
 Sexy::Font* _Font;
 
-void __declspec(naked) Construct()
+NewLawnButton* Construct(
+	Sexy::Image* DownImage,
+	Sexy::Image* ButtonImage,
+	int id,
+	Sexy::ButtonListener* ButtonListenerPtr,
+	PopString* Text,
+	Sexy::Font* Font,
+	Sexy::Image* OverImage)
 {
+	NewLawnButton* Res = nullptr;
 	__asm
 	{
-		pushad
-		mov ebx, _MainImage
-		mov edi, _MainImage
-		push _MainImage
-		push _Font
-		push _Label
-		push Listener
-		push 00
-		mov eax, 0x448BC0
-		call eax
-		mov _Out, eax
-		popad
-		add esp, 0x14
-		ret
+		mov     eax, OverImage
+		push    eax
+		mov		eax, Font
+		push    eax
+		mov     eax, Text
+		push    eax
+		mov     eax, ButtonListenerPtr
+		push    eax
+		mov     eax, id
+		push    eax
+		mov     edi, ButtonImage
+		mov     ebx, DownImage
+		mov		eax, 0x448BC0
+		call    eax
+		xor		ebx, ebx
+		add     esp, 0x14
+		mov     Res, eax
 	}
+	return Res;
 }
+
 int LunaUIButton::Constructor(lua_State* L)
 {
 	Sexy::Image* MainImage = (Sexy::Image*)GetLunaImage(L, 2, "ButtonImage", true, true)->GetBase();
 	PopString Label = PopString(GetString(L, 3, "Luna!"));
 
-	_Label = &Label;
-	_Font = *Resources::Pico129;
-	_MainImage = MainImage;
-	Construct();// If you comment this line it returns properly
-	std::cout << _Out << "\n";// this works fine, it even prints correctly
+	auto Button = Construct(nullptr, MainImage, 0, nullptr, &Label, *Resources::Pico129, nullptr);
+	CreateUIObject(L, Button);
 
-	//CreateUIObject(L, Button);// Commented this just to make sure this isn't whats breaking the code
-	return 0;// Returns incorrectly for some reason???
+	return 1;
 }

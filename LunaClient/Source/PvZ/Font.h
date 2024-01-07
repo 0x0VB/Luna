@@ -62,7 +62,7 @@ public:
 	}
 
 #pragma region Virtual Functions
-	virtual ImageFont* Duplicate(){};// 2C
+	virtual ImageFont* Duplicate() { return nullptr; };// 2C
 	virtual void GenerateActiveFontLayers(){};// 30
 	virtual void DrawStringEx(Graphics* G, int X, int Y, const PopString& Text, const Color& Color, const IRect* ClipRect, PopList<IRect>* DrawnAreas = NULL, int* OutWidth = NULL) {};// 34
 	virtual void SetPointSize(int PointSize){};// 38
@@ -71,8 +71,8 @@ public:
 	virtual int GetDefaultPointSize(){ return 0; };// 44
 	virtual void AddTag(const PopString& TagName){};// 48
 	virtual void RemoveTag(const PopString& TagName){};// 4C
-	virtual bool HasTag(const PopString& TagName){};// 50
-	virtual PopString&& GetDefine(_Out_ const PopString&& ElementString, const PopString& Name) {};// 54
+	virtual bool HasTag(const PopString& TagName) { return false; };// 50
+	virtual PopString&& GetDefine(_Out_ const PopString&& ElementString, const PopString& Name) { return PopString(); };// 54
 	virtual void Prepare(){};// 58
 	virtual void WriteToCache(const PopString& FilePath, const PopString& GroupName){};// 5C
 #pragma endregion

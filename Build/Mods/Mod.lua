@@ -2,6 +2,8 @@
 LawnApp.WindowTitle = "Luna!";
 LawnApp.Speed = 2;
 local UIRoot = LawnApp.UIRoot;
+print(UIRoot);
+
 local TheButton = UI.New("StoneButton", UIRoot);
 local ButtonCount = 1;
 TheButton.Dirty = true;
@@ -11,7 +13,7 @@ function TheButton:OnMouseDown(X, Y, Button, DoubleClick)
     local ThisCount = ButtonCount;
     local NB = UI.New("UIButton");-- Create new button
     local Img = Luna:LoadImage("images/DiscordButton");
-    --NB.NormalImage = Img;
+    NB.NormalImage = Img;
     NB.Text = "New Button " .. ButtonCount;-- Set its text
     ButtonCount += 1;-- Add 1 to the button count
     NB.Parent = UIRoot;
