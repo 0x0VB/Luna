@@ -1,5 +1,6 @@
 --// Luna V0.2.2 \\--
 LawnApp.WindowTitle = "Luna!";
+LawnApp.Speed = 5;
 local UIRoot = LawnApp.UIRoot;
 
 local SpeedButton = UI.New("StoneButton", UIRoot);

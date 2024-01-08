@@ -1,5 +1,6 @@
 #pragma once
 #include "Definitions.h"
+#include "GridItem.h"
 
 template <typename T>
 struct DataArrayItem
@@ -24,6 +25,7 @@ struct DataArray
 	unsigned int NextKey;
 	const char* Name;
 
+	DWORD MaxAddress() { return (DWORD)(Block + MaxUsedCount); }
 	T* TryToGet(int ID)
 	{
 		auto NID = (ID & 0xFFFF);
@@ -31,9 +33,30 @@ struct DataArray
 		DataArrayItem<T> Item = Block[NID];
 		return Item & (Item.ID != ID) - 1;
 	}
+	T* Alloc()
+	{
+		DataArrayItem<T>* New;
 
-	DWORD MaxAddress() { return (DWORD)(Block + MaxUsedCount); }
+		int FreeListOG = FreeListHead;
+		if (FreeListHead == MaxUsedCount)
+		{
+			MaxUsedCount++;
+			FreeListHead++;
+		}
+		else
+			FreeListHead = Block[FreeListOG].ID;
+		
+		New = Block + FreeListOG;
+		memset(New, 0, sizeof(T));
+		New->ID = NextKey << 10 | FreeListOG;
+		NextKey++;
 
+		if (NextKey == 0x10000) NextKey = 1;
+		Size++;
+		
+		auto Item = new (&New->Item) T();
+		return Item;
+	}
 	bool Next(T** Last)
 	{
 		DataArrayItem<T>* Current;

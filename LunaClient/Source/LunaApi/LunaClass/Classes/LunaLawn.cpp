@@ -24,9 +24,9 @@ namespace
 	int NextZombie(lua_State* L)
 	{
 		auto Lawn = Luna::App->Lawn;
-		Zombie* Current = NULL;
-		while (Lawn->Zombies.Next(&Current))
-			std::cout << Current << "\n";
+		Plant* Current = NULL;
+		while (Lawn->Plants.Next(&Current))
+			Lawn->AddGrave(Current->Column, Current->Lane);
 
 		return 0;
 	}
@@ -79,6 +79,13 @@ int LunaLawn::Init(lua_State* L)
 	IntField::New("ThudTimer", 0x5750, Source);
 	IV2Field::New("CobCursorPosition", 0x5758, Source);
 	BlnField::New("YetiKilled", 0x5760, Source);
+	BlnField::New("MustacheMode", 0x8B8, Source);
+	BlnField::New("SuperMowerMode", 0x8B9, Source);
+	BlnField::New("FutureMode", 0x8BA, Source);
+	BlnField::New("PinataMode", 0x8BB, Source);
+	BlnField::New("DanceMode", 0x8BC, Source);
+	BlnField::New("DaisyMode", 0x8BD, Source);
+	BlnField::New("SukhbirMode", 0x8BE, Source);
 
 	Source->Methods["Test"] = NextZombie;
 

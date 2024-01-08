@@ -727,7 +727,7 @@ class GameObject
 {
 public:
     LawnApp* App;
-    Lawn* Lawn;
+    Lawn* MyLawn;
     IRect Bounds;
     bool Visible;
     int Lane;
@@ -766,18 +766,19 @@ enum GameMode;
 enum GameScene;
 enum GameResult;
 
+enum AttachmentID { ATTACHMENTID_NULL = 0 };
+enum ParticleSystemID { PARTICLESYSTEMID_NULL = 0 };
+enum ReanimationID { REANIMATIONID_NULL = 0 };
+enum ZombieID { ZOMBIEID_NULL = 0 };
+
 enum ZombieType;
 enum ZombiePhase;
 enum ZombieHeight;
 enum HelmType;
 enum ShieldType;
-enum ZombieID;
-enum AttachmentID;
 enum PlantID;
 enum SeedType;
 enum PlantState;
-enum ParticleSystemID;
-enum ReanimationID;
 enum PlantOnBungeeState;
 enum MagnetItemType;
 enum PickupType;

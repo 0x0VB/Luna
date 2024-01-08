@@ -1,6 +1,7 @@
 #pragma once
 #include "Definitions.h"
 #include "PottedPlant.h"
+#include "Lawn.h"
 
 class Pickup : public GameObject
 {
