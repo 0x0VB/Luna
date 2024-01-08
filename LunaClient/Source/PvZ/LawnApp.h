@@ -436,4 +436,24 @@ public:
 	{
 		return *(LawnApp**)0x6A9EC0;
 	}
+	
+	// Creates a LawnMessageBox and awaits its result. ButtonModes are [NONE, YES_NO, OK_CANCEL, FOOTER]
+	int LawnMessageBox(const char* Head, const char* Body, const char* B1, const char* B2, int ButtonMode = 1)
+	{
+		int R = 0x3E8;
+		CONST DWORD Function = 0x4504B0;
+		__asm
+		{
+			push ButtonMode
+			push B2
+			push B1
+			push Body
+			push Head
+			push 200
+			push this
+			call Function
+			mov R, eax
+		}
+		return R - 0x3E8;
+	}
 };

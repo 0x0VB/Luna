@@ -16,4 +16,9 @@ namespace Sexy {
 		virtual void __thiscall DialogButtonPress(int DialogID, int ButtonID) {};
 		virtual void __thiscall DialogButtonDepress(int DialogID, int ButtonID) {};
 	};
+
+	class CheckBoxListener
+	{
+		virtual void __thiscall Checked(int ID, bool State) {};
+	};
 }

@@ -17,6 +17,7 @@
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\ImageClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\LawnAppClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\LunaBase.cpp" />
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\LunaLawn.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\StoneButtonClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIButtonClass.cpp" />
@@ -67,12 +68,21 @@
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\ImageClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\LawnAppClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\LunaBase.h" />
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\LunaLawn.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.h" />
     <ClCompile Include="Source\LunaApi\LunaClass\LunaClass.cpp" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\StoneButtonClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIButtonClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIContainerClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIElementClass.h" />
+    <ClInclude Include="Source\PvZ\GridItem.h" />
+    <ClInclude Include="Source\PvZ\DataArray.h" />
+    <ClInclude Include="Source\PvZ\LawnMower.h" />
+    <ClInclude Include="Source\PvZ\Pickup.h" />
+    <ClInclude Include="Source\PvZ\Plant.h" />
+    <ClInclude Include="Source\PvZ\PottedPlant.h" />
+    <ClInclude Include="Source\PvZ\Projectile.h" />
+    <ClInclude Include="Source\PvZ\Zombie.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\LunaClass.h" />
     <ClInclude Include="Source\LunaApi\LunaEvent\LunaEvent.h" />
     <ClInclude Include="Source\LunaApi\LunaIO\LunaIO.h" />
@@ -99,6 +109,7 @@
     <ClInclude Include="Source\PvZ\Font.h" />
     <ClInclude Include="Source\PvZ\Graphics.h" />
     <ClInclude Include="Source\PvZ\Image.h" />
+    <ClInclude Include="Source\PvZ\Lawn.h" />
     <ClInclude Include="Source\PvZ\LawnApp.h" />
     <ClInclude Include="Source\PvZ\PreModalInfo.h" />
     <ClInclude Include="Source\PvZ\Resources.h" />

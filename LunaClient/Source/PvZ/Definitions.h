@@ -697,6 +697,12 @@ Vector2<T>::operator DVector3() { return DVector3(X, Y); }
 
 class LawnApp;
 
+template <typename T>
+struct DataArrayItem;
+
+template <typename T>
+struct DataArray;
+
 // DD Stuff
 class IDirectDrawSurface;
 class _DDSURFACEDESC
@@ -716,6 +722,17 @@ class Pickup;
 class GridItem;
 class LawnMower;
 class Projectile;
+class PottedPlant;
+class GameObject
+{
+public:
+    LawnApp* App;
+    Lawn* Lawn;
+    IRect Bounds;
+    bool Visible;
+    int Lane;
+    int RenderOrder;
+};
 
 
 // Screens
@@ -748,6 +765,33 @@ class Music;
 enum GameMode;
 enum GameScene;
 enum GameResult;
+
+enum ZombieType;
+enum ZombiePhase;
+enum ZombieHeight;
+enum HelmType;
+enum ShieldType;
+enum ZombieID;
+enum AttachmentID;
+enum PlantID;
+enum SeedType;
+enum PlantState;
+enum ParticleSystemID;
+enum ReanimationID;
+enum PlantOnBungeeState;
+enum MagnetItemType;
+enum PickupType;
+enum PickupMotion;
+enum GardenType;
+enum DrawVariation;
+enum PottedPlantAge;
+enum PottedPlantNeed;
+enum GridItemType;
+enum GridItemState;
+enum VaseType;
+enum ProjectileMotion;
+enum ProjectileType;
+
 
 // Sexy
 namespace Sexy

@@ -73,13 +73,7 @@ int LunaUIButton::Init(lua_State* L)
 	return 0;
 }
 
-// Yes i know this isnt the best way to do it uniqua, im desprate at this point
-auto Listener = Sexy::ButtonListener();
-NewLawnButton* _Out;
-Sexy::Image* _MainImage;
-PopString* _Label;
-Sexy::Font* _Font;
-
+auto Listener = new Sexy::ButtonListener();
 NewLawnButton* Construct(
 	Sexy::Image* DownImage,
 	Sexy::Image* ButtonImage,
@@ -116,9 +110,9 @@ NewLawnButton* Construct(
 int LunaUIButton::Constructor(lua_State* L)
 {
 	Sexy::Image* MainImage = (Sexy::Image*)GetLunaImage(L, 2, "ButtonImage", true, true)->GetBase();
-	PopString Label = PopString(GetString(L, 3, "Luna!"));
+	PopString Label = PopString(GetString(L, 3, ""));
 
-	auto Button = Construct(nullptr, MainImage, 0, nullptr, &Label, *Resources::Pico129, nullptr);
+	auto Button = Construct(nullptr, MainImage, 0, Listener, &Label, *Resources::Pico129, nullptr);
 	CreateUIObject(L, Button);
 
 	return 1;

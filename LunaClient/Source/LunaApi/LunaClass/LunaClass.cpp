@@ -437,6 +437,7 @@ LunaInstance* Luna::Class::AssertIsA(lua_State* L, int I, std::string SubClass, 
 #include "Classes/UIButtonClass.h"
 #include "Classes/ImageClass.h"
 #include "Classes/FontClass.h"
+#include "Classes/LunaLawn.h"
 
 #include "LunaApi/LunaUtil/LunaUtil.h"
 
@@ -476,6 +477,10 @@ int Luna::Class::Init(lua_State* L)
 	LunaInit(Class::LunaImage);
 	LunaInit(Class::LunaMemImage);
 	LunaInit(Class::LunaDDImage);
+	LunaInit(Class::LunaFont);
+	LunaInit(Class::LunaIFont);
+	LunaInit(Class::LunaSysFont);
+	LunaInit(Class::LunaLawn);
 
 	return 0;
 }

@@ -8,6 +8,7 @@
 #include "Luna.h"
 
 #include "LunaBase.h"
+#include "LunaLawn.h"
 #include "UIRootClass.h"
 #include "UIElementClass.h"
 #include "UIButtonClass.h"
@@ -18,6 +19,7 @@ using namespace Fields;
 
 void CreateUIObject(lua_State* L, void* At)
 {
+	if (At == NULL) { lua_pushnil(L); return; }
 	auto VTable = *(DWORD*)At;
 	auto ClassDefined = UI_VTABLES.contains(VTable);
 	auto Class = ClassDefined ? UI_VTABLES[VTable] : LunaUIElement::Source;
@@ -90,7 +92,7 @@ namespace
 			Base->GetAbsPos(&AbsPos);
 			AbsPos.Push(L);
 		}
-		DefNewField(AbsolutePositionField);
+		DefNewField(AbsolutePositionField)
 	};
 
 	int GetChildren(lua_State* L)
@@ -255,7 +257,7 @@ int LunaUIContainer::Init(lua_State* L)
 	UI_VTABLES[0x658710] = LunaUIButton::Source;// LawnButton (Fix this when you add LawnButton)
 	UI_VTABLES[0x6555C0] = NULL;// AlmanacDialog
 	UI_VTABLES[0x66FB2C] = LunaUIButton::Source;// UIButton
-	UI_VTABLES[0x656CA8] = NULL;// Lawn
+	UI_VTABLES[0x656CA8] = LunaLawn::Source;// Lawn
 	UI_VTABLES[0x67026C] = NULL;// CheckBox
 
 	Source->AllowsInjection = true;
