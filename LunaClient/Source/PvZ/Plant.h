@@ -95,6 +95,8 @@ struct MagnetItem
 
 class Plant : public GameObject
 {
+	typedef void(__stdcall* Die_Type)(Plant*);
+	typedef void(__stdcall* Fire_Type)(Plant*, Zombie*, int, bool);
 public:
 #pragma region Fields
 	SeedType Type;
@@ -151,6 +153,11 @@ public:
 		Visible = true;
 		RenderOrder = 400000;
 		TicksPerFrame = 10;
+		Bounds = IRect(0, 0, 100, 100);
+		PlantRect = IRect(0, 0, 100, 100);
 		Type = SEED_WALLNUT;
 	}
+
+	void Die();
+	void Fire(Zombie* Target = NULL, int Lane = -1, bool IsSecondary = false);
 };

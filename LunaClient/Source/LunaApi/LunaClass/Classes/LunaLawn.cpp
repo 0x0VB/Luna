@@ -14,6 +14,7 @@
 #include "UIElementClass.h"
 #include "UIContainerClass.h"
 #include "StoneButtonClass.h"
+#include "PvZ/Reanimation.h"
 #include "ImageClass.h"
 
 using namespace Luna::Class;
@@ -24,13 +25,9 @@ namespace
 	int NextZombie(lua_State* L)
 	{
 		auto Lawn = Luna::App->Lawn;
-		Plant* CP = NULL;
-		GridItem* CG = NULL;
-
-		Plant* Test = Lawn->Plants.Alloc();
-		Test->Type = (SeedType)100;
-		while (Lawn->Plants.Next(&CP))
-			Lawn->AddCrater(CP->Column, CP->Lane);
+		Zombie* CZ = NULL;
+		while (Lawn->Zombies.Next(&CZ))
+			Lawn->AddPickup(400, 300, PICK_SUN, PICK_MOTION_COIN);
 
 		return 0;
 	}

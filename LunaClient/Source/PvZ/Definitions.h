@@ -764,6 +764,13 @@ class SoundSystem;
 class EffectSystem;
 
 
+// Animation
+class ReanimatorTrackInstance;
+class ReanimatorDefinition;
+class ReanimationHolder;
+class Reanimation;
+
+
 // Other
 class ReanimatorCache;
 class ProfileManager;
@@ -772,7 +779,6 @@ class ToolTipWidget;
 class MessageWidget;
 class CursorObject;
 class TypingCheck;
-class Reanimation;
 class LevelStats;
 class GameButton;
 class PoolEffect;
@@ -792,6 +798,8 @@ enum GameScene;
 enum GameResult;
 
 enum ReanimationType;
+enum ReanimLoopType;
+enum FilterEffect;
 
 enum GridSquareType;
 enum BackgroundType;
@@ -827,7 +835,6 @@ enum GridItemState;
 enum VaseType;
 enum ProjectileMotion;
 enum ProjectileType;
-
 
 // Sexy
 namespace Sexy
@@ -880,4 +887,24 @@ namespace Sexy
 
     // Other
     class PreModalInfo;
+
+#pragma region Structs
+    struct SexyMatrix3
+    {
+        float M00;
+        float M01;
+        float M02;
+        float M10;
+        float M11;
+        float M12;
+        float M20;
+        float M21;
+        float M22;
+    };
+
+    struct SexyTransform2D : SexyMatrix3
+    {
+
+    };
+#pragma endregion
 }

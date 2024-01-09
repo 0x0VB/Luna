@@ -456,8 +456,20 @@ public:
 		}
 		return R - 0x3E8;
 	}
-	Reanimation* NewReanim(ReanimationType Type, float X, float Y, int RenderOrder)
+	Reanimation* NewReanim(ReanimationType AnimType, float X, float Y, int RenderOrder)
 	{
-
+		Reanimation* R = NULL;
+		CONST DWORD Function = 0x453C30;
+		__asm
+		{
+			mov eax, this
+			mov ebx, AnimType
+			push RenderOrder
+			push Y
+			push X
+			call Function
+			mov R, eax
+		}
+		return R;
 	}
 };
