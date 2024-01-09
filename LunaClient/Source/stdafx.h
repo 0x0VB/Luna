@@ -5,3 +5,5 @@
 #include "Luau/lua.h"
 #include "Luau/lualib.h"
 #include "Luau/Compiler.h"
+
+#include "Discord/discord.h"

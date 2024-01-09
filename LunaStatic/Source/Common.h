@@ -2,6 +2,8 @@
 #include <vector>
 #include <filesystem>
 
+#define LUNA_DEBUG true
+
 #define LUNA_VERSION 0
 #define LUNA_MINOR_VERSION 2
 #define LUNA_COMP_VERSION LUNA_VERSION * 10 + LUNA_MINOR_VERSION
