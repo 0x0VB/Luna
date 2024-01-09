@@ -121,4 +121,7 @@ public:
 		MotionTrailCount = 0;
 	}
 	void DoGraveEffects();
+	void __thiscall Die();
+	void __thiscall OpenPortal();
+	void __thiscall ClosePortal();
 };

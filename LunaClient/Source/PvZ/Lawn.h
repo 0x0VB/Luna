@@ -134,7 +134,15 @@ public:
 	
 #pragma region Functions
 	GridItem* AddLadder(int Column, int Lane);
-	GridItem* AddCrater(int Column, int Lane);
-	GridItem* AddGrave(int Column, int Lane, bool DoEffects = false);
+	GridItem* AddCrater(int Column, int Lane, bool KillPlants = false);
+	GridItem* AddGrave(int Column, int Lane, bool DoEffects = false, bool KillPlants = false);
+	GridItem* AddPortal(int Column, int Lane, bool Square = false);
+	GridItem* AddBrain(int X, int Y, bool Zombaquarium = false);
+
+	Pickup* AddPickup(int X, int Y, PickupType Type, PickupMotion Motion);
+
+	void KillPlantCell(int Column, int Lane);
+	void KillPlantLane(int Lane);
+	void KillPlantCol(int Col);
 #pragma endregion
 };

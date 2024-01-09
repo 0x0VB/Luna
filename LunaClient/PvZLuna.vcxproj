@@ -30,8 +30,11 @@
     <ClCompile Include="Source\PvZ\Font.cpp" />
     <ClCompile Include="Source\PvZ\GridItem.cpp" />
     <ClCompile Include="Source\PvZ\Lawn.cpp" />
+    <ClCompile Include="Source\PvZ\Pickup.cpp" />
+    <ClCompile Include="Source\PvZ\Plant.cpp" />
     <ClCompile Include="Source\PvZ\UIElement.cpp" />
     <ClCompile Include="Source\PvZ\UIRoot.cpp" />
+    <ClCompile Include="Source\PvZ\Zombie.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -84,6 +87,7 @@
     <ClInclude Include="Source\PvZ\Plant.h" />
     <ClInclude Include="Source\PvZ\PottedPlant.h" />
     <ClInclude Include="Source\PvZ\Projectile.h" />
+    <ClInclude Include="Source\PvZ\Reanimation.h" />
     <ClInclude Include="Source\PvZ\Zombie.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\LunaClass.h" />
     <ClInclude Include="Source\LunaApi\LunaEvent\LunaEvent.h" />

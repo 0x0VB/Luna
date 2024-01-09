@@ -45,6 +45,7 @@ enum ZombieType
 class Zombie : public GameObject
 {
 public:
+#pragma region Fields
 	ZombieType Type;
 	ZombiePhase Phase;
 	FVector2 Position;
@@ -119,4 +120,8 @@ public:
 	bool IsFireBall;
 	ReanimationID MoweredReanimID;
 	int LastPortalX;
+#pragma endregion
+
+	void __thiscall DieNoLoot();
+	void __thiscall DieWithLoot();
 };

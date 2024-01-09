@@ -111,6 +111,15 @@
     <ClCompile Include="Source\PvZ\GridItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\PvZ\Plant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PvZ\Zombie.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PvZ\Pickup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Enums\Enums.h">
@@ -327,6 +336,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\PvZ\PottedPlant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PvZ\Reanimation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
