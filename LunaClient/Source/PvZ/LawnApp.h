@@ -456,5 +456,8 @@ public:
 		}
 		return R - 0x3E8;
 	}
-	Reanimation* 
+	Reanimation* NewReanim(ReanimationType Type, float X, float Y, int RenderOrder)
+	{
+
+	}
 };

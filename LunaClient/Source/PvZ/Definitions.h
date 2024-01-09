@@ -772,6 +772,7 @@ class ToolTipWidget;
 class MessageWidget;
 class CursorObject;
 class TypingCheck;
+class Reanimation;
 class LevelStats;
 class GameButton;
 class PoolEffect;
@@ -789,6 +790,8 @@ class Music;
 enum GameMode;
 enum GameScene;
 enum GameResult;
+
+enum ReanimationType;
 
 enum GridSquareType;
 enum BackgroundType;
