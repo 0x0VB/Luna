@@ -1,9 +1,7 @@
 #pragma warning (disable: 26495)
 #include "stdafx.h"
 #include "Luna.h"
-
-// Luna Globals
-#define LUNA_DEBUG true
+#include "Common.h"
 
 
 BOOL APIENTRY DllMain
