@@ -1,10 +1,15 @@
 #pragma once
 #include <Windows.h>
+#include <iostream>
+#include <sstream>
+#include <iomanip>
 #include <string>
 #include <vector>
 #include <list>
 #include <set>
 #include <map>
+
+#include "Luau/lua.h"
 
 #pragma region PopStructs
 struct PopWString
@@ -100,7 +105,6 @@ struct PopPair
     operator std::pair<K, V>() { return Pair; }
 };
 #pragma endregion
-
 
 #pragma region Struct
 #define IVector2 Vector2<int>
@@ -695,6 +699,17 @@ Vector2<T>::operator DVector3() { return DVector3(X, Y); }
 #pragma endregion
 #pragma endregion
 
+#pragma region Other Structures
+struct SmoothArray
+{
+    int Item;
+    float Weight;
+    float LastPicked;
+    float SecondLastPicked;
+};
+#pragma endregion
+
+
 class LawnApp;
 
 template <typename T>
@@ -752,19 +767,36 @@ class EffectSystem;
 // Other
 class ReanimatorCache;
 class ProfileManager;
+class CursorPreview;
+class ToolTipWidget;
+class MessageWidget;
+class CursorObject;
 class TypingCheck;
 class LevelStats;
+class GameButton;
 class PoolEffect;
 class ZenGarden;
 class CrazyDave;
+class Challenge;
 class UserData;
+class CutScene;
+class SeedBank;
 class PopDRM;
 class Music;
+
 
 // Enums
 enum GameMode;
 enum GameScene;
 enum GameResult;
+
+enum GridSquareType;
+enum BackgroundType;
+enum DebugTextMode;
+enum TutorialState;
+enum PlantRowType;
+enum BoardResult;
+enum AdviceType;
 
 enum AttachmentID { ATTACHMENTID_NULL = 0 };
 enum ParticleSystemID { PARTICLESYSTEMID_NULL = 0 };

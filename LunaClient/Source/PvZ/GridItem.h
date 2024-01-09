@@ -3,6 +3,7 @@
 #include "Zombie.h"
 #include "Plant.h"
 #include "Lawn.h"
+#include "Luna.h"
 
 #pragma region Enums
 enum GridItemType
@@ -14,7 +15,7 @@ enum GridItemType
 	GRIDITEM_PORTAL_CIRCLE = 0x4,
 	GRIDITEM_PORTAL_SQUARE = 0x5,
 	GRIDITEM_BRAIN = 0x6,
-	GRIDITEM_SCARY_POT = 0x7,
+	GRIDITEM_VASE = 0x7,
 	GRIDITEM_SQUIRREL = 0x8,
 	GRIDITEM_ZEN_TOOL = 0x9,
 	GRIDITEM_STINKY = 0xA,
@@ -72,6 +73,7 @@ struct MotionTrailFrame
 
 class GridItem
 {
+	typedef void(__stdcall* DoGraveEffects_Type)(GridItem*);
 public:
 	LawnApp* App;
 	Lawn* MyLawn;
@@ -79,7 +81,7 @@ public:
 	GridItemState State;
 	int Column;
 	int Lane;
-	int Age;
+	int MainTimer;
 	int RenderOrder;
 	bool Dead;
 	FVector2 Position;
@@ -103,7 +105,7 @@ public:
 		State = GRIDITEM_STATE_NORMAL;
 		Column = 0;
 		Lane = 0;
-		Age = 0;
+		MainTimer = 0;
 		RenderOrder = 0;
 		Dead = false;
 		Position = FVector2();
@@ -118,4 +120,5 @@ public:
 		SunCount = 0;
 		MotionTrailCount = 0;
 	}
+	void DoGraveEffects();
 };

@@ -12,6 +12,7 @@
 
 class Lawn : public Sexy::UIElement, Sexy::ButtonListener
 {
+#pragma region Fields
 public:
 	LawnApp* App;
 	DataArray<Zombie> Zombies;
@@ -20,32 +21,120 @@ public:
 	DataArray<Pickup> Pickups;
 	DataArray<LawnMower> LawnMowers;
 	DataArray<GridItem> GridItems;
+
+	CursorObject* CursorObject;
+	CursorPreview* CursorPreview;
+	MessageWidget* Advice;
+	SeedBank* SeedBank;
+	GameButton* MenuButton;
+	GameButton* StoreButton;
+	bool IgnoreMouseUp;
+	ToolTipWidget* ToolTip;
+	Sexy::Font* DebugFont;
+	CutScene* CutScene;
+	Challenge* Challenge;
+	bool Paused;
+	GridSquareType GridSquareType[9][6];
+	int GridCelLook[9][6];
+	int GridCelOffset[9][6][2];
+	int GridCelFog[9][7];
+	bool EnableGraveStones;
+	int SpecialGraveStoneX;
+	int SpecialGraveStoneY;
+	float FogOffset;
+	int FogBlownCountDown;
+	PlantRowType PlantRow[6];
+	int WaveRowGotLawnMowered[6];
+	int BonusLawnMowersRemaining;
+	int IceMinX[6];
+	int IceTimer[6];
+	ParticleSystemID IceParticleID[6];
+	SmoothArray RowPickingArray[6];
+	ZombieType ZombiesInWave[100][50];
+	bool ZombieAllowed[100];
+	int SunCountDown;
+	int NumSunsFallen;
+	int ShakeCounter;
+	int ShakeAmountX;
+	int ShakeAmountY;
+	BackgroundType Background;
+	int Level;
+	int SodPosition;
+	int PrevMouseX;
+	int PrevMouseY;
+	int SunMoney;
+	int NumWaves;
+	int MainCounter;
+	int EffectCounter;
+	int DrawCount;
+	int RiseFromGraveCounter;
+	int OutOfMoneyCounter;
+	int CurrentWave;
+	int TotalSpawnedWaves;
+	TutorialState TutorialState;
+	ParticleSystemID TutorialParticleID;
+	int TutorialTimer;
+	int LastBungeeWave;
+	int ZombieHealthToNextWave;
+	int ZombieHealthWaveStart;
+	int ZombieCountDown;
+	int ZombieCountDownStart;
+	int HugeWaveCountDown;
+	bool HelpDisplayed[65];
+	AdviceType HelpIndex;
+	bool FinalBossKilled;
+	bool ShowShovel;
+	int CoinBankFadeCount;
+	DebugTextMode DebugTextMode;
+	bool LevelComplete;
+	int BoardFadeOutCounter;
+	int NextSurvivalStageCounter;
+	int ScoreNextMowerCounter;
+	bool LevelAwardSpawned;
+	int ProgressMeterWidth;
+	int FlagRaiseCounter;
+	int IceTrapCounter;
+	int BoardRandSeed;
+	ParticleSystemID PoolSparklyParticleID;
+	ReanimationID FwooshID[6][12];
+	int FwooshCountDown;
+	int TimeStopCounter;
+	bool DroppedFirstCoin;
+	int FinalWaveSoundCounter;
+	int CobCannonCursorDelayCounter;
+	int CobCannonMouseX;
+	int CobCannonMouseY;
+
+	bool KilledYeti;
+	bool MustacheMode;
+	bool SuperMowerMode;
+	bool FutureMode;
+	bool PinataMode;
+	bool DaisyMode;
+	bool SukhbirMode;
+	BoardResult PrevBoardResult;
+	int TriggeredLawnMowers;
+	int PlayTimeActiveLevel;
+	int PlayTimeInactiveLevel;
+	int MaxSunPlants;
+	int StartDrawTime;
+	int IntervalDrawTime;
+	int IntervalDrawCountStart;
+	float MinFPS;
+	int PreloadTime;
+	int GameID;
+	int GravesCleared;
+	int PlantsEaten;
+	int PlantsShoveled;
+	int CoinsCollected;
+	int DiamondsCollected;
+	int PottedPlantsCollected;
+	int ChocolateCollected;
+#pragma endregion
 	
 #pragma region Functions
-	GridItem* AddLadder(int Column, int Lane)
-	{
-		auto New = GridItems.Alloc();
-		New->Type = GRIDITEM_LADDER;
-		New->RenderOrder = Lane * 10000 + 0x49ED0;
-		New->Column = Column;
-		New->Lane = Lane;
-		return New;
-	}
-	GridItem* AddCrater(int Column, int Lane)
-	{
-
-	}
-	GridItem* AddGrave(int Column, int Lane)
-	{
-		auto New = GridItems.Alloc();
-		New->Type = GRIDITEM_GRAVESTONE;
-		New->RenderOrder = Lane * 10000 + 0x497CB;
-		New->Column = Column;
-		New->Lane = Lane;
-		New->Age = 0;
-		std::cout << New << " " << GridItems.Block << "\n";
-		return New;
-	}
+	GridItem* AddLadder(int Column, int Lane);
+	GridItem* AddCrater(int Column, int Lane);
+	GridItem* AddGrave(int Column, int Lane, bool DoEffects = false);
 #pragma endregion
-
 };

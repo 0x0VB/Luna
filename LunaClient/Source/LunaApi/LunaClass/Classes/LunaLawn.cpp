@@ -24,9 +24,13 @@ namespace
 	int NextZombie(lua_State* L)
 	{
 		auto Lawn = Luna::App->Lawn;
-		Plant* Current = NULL;
-		while (Lawn->Plants.Next(&Current))
-			Lawn->AddGrave(Current->Column, Current->Lane);
+		Plant* CP = NULL;
+		GridItem* CG = NULL;
+
+		Plant* Test = Lawn->Plants.Alloc();
+		Test->Type = (SeedType)100;
+		while (Lawn->Plants.Next(&CP))
+			Lawn->AddCrater(CP->Column, CP->Lane);
 
 		return 0;
 	}

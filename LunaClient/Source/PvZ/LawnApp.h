@@ -456,4 +456,5 @@ public:
 		}
 		return R - 0x3E8;
 	}
+	Reanimation* 
 };

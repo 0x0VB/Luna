@@ -48,7 +48,7 @@ struct DataArray
 		
 		New = Block + FreeListOG;
 		memset(New, 0, sizeof(T));
-		New->ID = NextKey << 10 | FreeListOG;
+		New->ID = NextKey << 0x10 | FreeListOG;
 		NextKey++;
 
 		if (NextKey == 0x10000) NextKey = 1;

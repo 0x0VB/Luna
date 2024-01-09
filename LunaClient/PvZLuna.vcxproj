@@ -28,6 +28,8 @@
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\PvZ\DialogButton.cpp" />
     <ClCompile Include="Source\PvZ\Font.cpp" />
+    <ClCompile Include="Source\PvZ\GridItem.cpp" />
+    <ClCompile Include="Source\PvZ\Lawn.cpp" />
     <ClCompile Include="Source\PvZ\UIElement.cpp" />
     <ClCompile Include="Source\PvZ\UIRoot.cpp" />
     <ClCompile Include="Source\stdafx.cpp">

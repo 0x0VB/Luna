@@ -1,5 +1,7 @@
 #pragma once
 #include "Definitions.h"
+#include "LawnApp.h"
+#include "Luna.h"
 
 #pragma region Enums
 enum SeedType
@@ -94,15 +96,16 @@ struct MagnetItem
 class Plant : public GameObject
 {
 public:
+#pragma region Fields
 	SeedType Type;
 	int Column;
-	int AnimCounter;
-	int Frame;
-	int FrameLength;
-	int NumFrames;
+	int AnimTimer;
+	int CurrentFrame;
+	int TicksPerFrame;
+	int FrameCount;
 	PlantState State;
-	int PlantHealth;
-	int PlantMaxHealth;
+	int Health;
+	int MaxHealth;
 	int Subclass;
 	int VanishTimer;
 	int SpecialTimer;
@@ -139,4 +142,15 @@ public:
 	bool Asleep;
 	bool OnLawn;
 	bool Highlighted;
+#pragma endregion
+
+	Plant()
+	{
+		App = Luna::App;
+		MyLawn = Luna::App->Lawn;
+		Visible = true;
+		RenderOrder = 400000;
+		TicksPerFrame = 10;
+		Type = SEED_WALLNUT;
+	}
 };
