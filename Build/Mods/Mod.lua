@@ -5,9 +5,9 @@ local UIRoot = LawnApp.UIRoot;
 
 local SpeedButton = UI.New("StoneButton", UIRoot);
 local CurrentSpeed = 1;
-local Speeds = {1, 5, 10, 0.5, 0.25};
+local Speeds = {5, 1, 2};
 
-SpeedButton.Text = "1x";
+SpeedButton.Text = "5x";
 SpeedButton:ResizeToFit();
 
 function SpeedButton:OnMouseDown()
@@ -17,14 +17,4 @@ function SpeedButton:OnMouseDown()
     self.Text = Speed .. "x";
     self:ResizeToFit();
     LawnApp.Speed = Speed;
-    print(LawnApp.Lawn);
-end;
-
-local GetSun = UI.New("StoneButton", UIRoot);
-GetSun.Text = "Get Sun";
-GetSun.Bounds = Rect(0, SpeedButton.Bounds.H);
-GetSun:ResizeToFit();
-function GetSun:OnMouseDown()
-    LawnApp.Lawn:Test();
-    LawnApp.Lawn.Sun += 500;
 end;

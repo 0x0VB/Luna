@@ -120,6 +120,9 @@
     <ClCompile Include="Source\PvZ\Pickup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\LunaPlant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Enums\Enums.h">
@@ -339,6 +342,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\PvZ\Reanimation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\LunaPlant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

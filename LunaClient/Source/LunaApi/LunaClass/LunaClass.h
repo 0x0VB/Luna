@@ -25,6 +25,7 @@ namespace Luna::Class
 	public:
 		LunaClass* Class;
 		void* Base;
+		int Data[2] = {};
 		int Associations[30] = {};
 		void* GetBase();
 	};
@@ -97,6 +98,14 @@ namespace Luna::Class
 	class LunaSysFont;
 	class LunaLawn;
 	class LunaCrazyDave;
+	
+	class LunaDABase;
+	class LunaPlant;
+	class LunaZombie;
+	class LunaProjectile;
+	class LunaGridItem;
+	class LunaPickup;
+	class LunaMower;
 
 	int __gc(lua_State* L);
 	int __call(lua_State* L);

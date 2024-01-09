@@ -22,13 +22,9 @@ using namespace Fields;
 
 namespace
 {
-	int NextZombie(lua_State* L)
+	int AddPlant(lua_State* L)
 	{
-		auto Lawn = Luna::App->Lawn;
-		Zombie* CZ = NULL;
-		while (Lawn->Zombies.Next(&CZ))
-			Lawn->AddPickup(400, 300, PICK_SUN, PICK_MOTION_COIN);
-
+		
 		return 0;
 	}
 }
@@ -43,6 +39,7 @@ int LunaLawn::Init(lua_State* L)
 	Source->AddSubClass("Level");
 	Source->Inherit(LunaUIElement::Source);
 
+#pragma region Fields
 	BlnField::New("Paused", 0x164, Source);
 	FltField::New("FogOffset", 0x5D0, Source);
 	IntField::New("FogBlowTimer", 0x5D4, Source);
@@ -87,8 +84,8 @@ int LunaLawn::Init(lua_State* L)
 	BlnField::New("DanceMode", 0x8BC, Source);
 	BlnField::New("DaisyMode", 0x8BD, Source);
 	BlnField::New("SukhbirMode", 0x8BE, Source);
+#pragma endregion
 
-	Source->Methods["Test"] = NextZombie;
 
 	return 0;
 }

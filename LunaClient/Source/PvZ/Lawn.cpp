@@ -73,10 +73,11 @@ GridItem* Lawn::AddBrain(int X, int Y, bool IsZomb)
 	return New;
 }
 
-Pickup* Lawn::AddPickup(int X, int Y, PickupType Type, PickupMotion Motion)
+Pickup* Lawn::AddPickup(int X, int Y, PickupType Type, PickupMotion Motion, SeedType PacketType)
 {
 	auto New = Pickups.Alloc();
 	New->Initialize(X, Y, Type, Motion);
+	New->UsableSeedType = PacketType;
 	return New;
 }
 
