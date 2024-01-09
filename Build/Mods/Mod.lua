@@ -1,31 +1,30 @@
 --// Luna V0.2.2 \\--
 LawnApp.WindowTitle = "Luna!";
-LawnApp.Speed = 2;
+LawnApp.Speed = 5;
 local UIRoot = LawnApp.UIRoot;
-print(UIRoot);
 
-local TheButton = UI.New("StoneButton", UIRoot);
-local ButtonCount = 1;
-TheButton.Dirty = true;
-print(TheButton.Parent);
+local SpeedButton = UI.New("StoneButton", UIRoot);
+local CurrentSpeed = 1;
+local Speeds = {1, 5, 10, 0.5, 0.25};
 
-function TheButton:OnMouseDown(X, Y, Button, DoubleClick)
-    local ThisCount = ButtonCount;
-    local NB = UI.New("UIButton");-- Create new button
-    local Img = Luna:LoadImage("images/DiscordButton");
-    NB.NormalImage = Img;
-    NB.Text = "New Button " .. ButtonCount;-- Set its text
-    ButtonCount += 1;-- Add 1 to the button count
-    NB.Parent = UIRoot;
-    NB.Position = Vector2(math.random(0, 600), math.random(0, 550));-- Give it a random position
-    NB:PutBehind(self);
-    
-    function NB:OnMouseDown()
-        print(ThisCount);
-    end;
+SpeedButton.Text = "1x";
+SpeedButton:ResizeToFit();
 
-    print(LawnApp.WindowBounds);
-    LawnApp.WindowTitle ..= "!";
-    LawnApp.WindowBounds += Rect(10, 10, 0, 0);
-    --Luna:PromptDiscordInvite("BVcCAFXe4B");
+function SpeedButton:OnMouseDown()
+    CurrentSpeed += 1;
+    CurrentSpeed = (CurrentSpeed > #Speeds and 1) or CurrentSpeed;
+    local Speed = Speeds[CurrentSpeed];
+    self.Text = Speed .. "x";
+    self:ResizeToFit();
+    LawnApp.Speed = Speed;
+    print(LawnApp.Lawn);
+end;
+
+local GetSun = UI.New("StoneButton", UIRoot);
+GetSun.Text = "Get Sun";
+GetSun.Bounds = Rect(0, SpeedButton.Bounds.H);
+GetSun:ResizeToFit();
+function GetSun:OnMouseDown()
+    LawnApp.Lawn:Test();
+    LawnApp.Lawn.Sun += 500;
 end;

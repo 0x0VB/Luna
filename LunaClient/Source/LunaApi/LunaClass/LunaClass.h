@@ -95,6 +95,8 @@ namespace Luna::Class
 	class LunaFont;
 	class LunaIFont;
 	class LunaSysFont;
+	class LunaLawn;
+	class LunaCrazyDave;
 
 	int __gc(lua_State* L);
 	int __call(lua_State* L);
@@ -147,6 +149,7 @@ namespace Luna::Class::Fields
 	};
 	class FltField : public LunaField
 	{
+	public:
 		virtual void __index(lua_State* L) override;
 		virtual void __newindex(lua_State* L) override;
 		DefNewField(FltField)

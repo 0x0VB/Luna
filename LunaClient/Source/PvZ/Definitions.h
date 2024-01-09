@@ -1,10 +1,15 @@
 #pragma once
 #include <Windows.h>
+#include <iostream>
+#include <sstream>
+#include <iomanip>
 #include <string>
 #include <vector>
 #include <list>
 #include <set>
 #include <map>
+
+#include "Luau/lua.h"
 
 #pragma region PopStructs
 struct PopWString
@@ -100,7 +105,6 @@ struct PopPair
     operator std::pair<K, V>() { return Pair; }
 };
 #pragma endregion
-
 
 #pragma region Struct
 #define IVector2 Vector2<int>
@@ -695,7 +699,24 @@ Vector2<T>::operator DVector3() { return DVector3(X, Y); }
 #pragma endregion
 #pragma endregion
 
+#pragma region Other Structures
+struct SmoothArray
+{
+    int Item;
+    float Weight;
+    float LastPicked;
+    float SecondLastPicked;
+};
+#pragma endregion
+
+
 class LawnApp;
+
+template <typename T>
+struct DataArrayItem;
+
+template <typename T>
+struct DataArray;
 
 // DD Stuff
 class IDirectDrawSurface;
@@ -716,6 +737,17 @@ class Pickup;
 class GridItem;
 class LawnMower;
 class Projectile;
+class PottedPlant;
+class GameObject
+{
+public:
+    LawnApp* App;
+    Lawn* MyLawn;
+    IRect Bounds;
+    bool Visible;
+    int Lane;
+    int RenderOrder;
+};
 
 
 // Screens
@@ -735,19 +767,67 @@ class EffectSystem;
 // Other
 class ReanimatorCache;
 class ProfileManager;
+class CursorPreview;
+class ToolTipWidget;
+class MessageWidget;
+class CursorObject;
 class TypingCheck;
+class Reanimation;
 class LevelStats;
+class GameButton;
 class PoolEffect;
 class ZenGarden;
 class CrazyDave;
+class Challenge;
 class UserData;
+class CutScene;
+class SeedBank;
 class PopDRM;
 class Music;
+
 
 // Enums
 enum GameMode;
 enum GameScene;
 enum GameResult;
+
+enum ReanimationType;
+
+enum GridSquareType;
+enum BackgroundType;
+enum DebugTextMode;
+enum TutorialState;
+enum PlantRowType;
+enum BoardResult;
+enum AdviceType;
+
+enum AttachmentID { ATTACHMENTID_NULL = 0 };
+enum ParticleSystemID { PARTICLESYSTEMID_NULL = 0 };
+enum ReanimationID { REANIMATIONID_NULL = 0 };
+enum ZombieID { ZOMBIEID_NULL = 0 };
+
+enum ZombieType;
+enum ZombiePhase;
+enum ZombieHeight;
+enum HelmType;
+enum ShieldType;
+enum PlantID;
+enum SeedType;
+enum PlantState;
+enum PlantOnBungeeState;
+enum MagnetItemType;
+enum PickupType;
+enum PickupMotion;
+enum GardenType;
+enum DrawVariation;
+enum PottedPlantAge;
+enum PottedPlantNeed;
+enum GridItemType;
+enum GridItemState;
+enum VaseType;
+enum ProjectileMotion;
+enum ProjectileType;
+
 
 // Sexy
 namespace Sexy

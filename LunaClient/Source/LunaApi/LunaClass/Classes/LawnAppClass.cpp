@@ -9,9 +9,7 @@
 
 #include "PvZ/Graphics.h"
 
-
 using namespace Luna::Event;
-
 namespace
 {
 	std::vector<DWORD> StoneButtonEntries = { 0x447B00 };
@@ -25,6 +23,7 @@ namespace
 }
 
 #include "LunaApi/LunaStructs/Vector2/Vector2.h"
+#include "UIContainerClass.h"
 namespace // Event Bodies
 {
 	DWORD __stdcall UpdateCaller()
@@ -47,6 +46,19 @@ namespace // Methods
 		AssertType(L, 2, "string", "Message");
 		Luna::App->MsgBox(GetString(L, 2, "Luna!"), GetString(L, 3, "Luna!"), 0);
 		return 0;
+	}
+
+	int LawnMsgBox(lua_State* L)
+	{
+		AssertType(L, 2, "string", "Content");
+		auto Content = GetString(L, 2);
+		auto Title = GetString(L, 3, "Luna!");
+		auto B1 = GetString(L, 4, "Yes");
+		auto B2 = GetString(L, 5, "No");
+		auto ButtonMode = GetInt(L, 6, 1);
+		int R = Luna::App->LawnMessageBox(Title.c_str(), Content.c_str(), B1.c_str(), B2.c_str(), ButtonMode);
+		lua_pushboolean(L, R == 0);
+		return 1;
 	}
 
 	void SetupEvents()
@@ -73,6 +85,14 @@ int Luna::Class::LunaApp::Init(lua_State* L)
 	BlnField::New("CloseRequest", 0x834, Source);
 	IntField::New("Age", 0x838, Source);
 
+	UIObjectField::New("Lawn", 0x768, Source);
+	UIObjectField::New("TitleScreen", 0x76C, Source);
+	UIObjectField::New("GameSelector", 0x770, Source);
+	UIObjectField::New("SeedChooser", 0x774, Source);
+	UIObjectField::New("AwardScreen", 0x778, Source);
+	UIObjectField::New("CreditsScreen", 0x77C, Source);
+	UIObjectField::New("ChallengeScreen", 0x780, Source);
+
 	BlnField::New("MustacheMode", 0x8B8, Source);
 	BlnField::New("SuperMowerMode", 0x8B9, Source);
 	BlnField::New("FutureMode", 0x8BA, Source);
@@ -86,6 +106,7 @@ int Luna::Class::LunaApp::Init(lua_State* L)
 	EventField::New("OnUpdate", OnUpdate.GetEvent(), Source);
 
 	Source->Methods["MessageBox"] = MsgBox;
+	Source->Methods["LawnMsgBox"] = LawnMsgBox;
 
 	Source->New(L, LawnApp::GetApp());
 	LunaInstanceRef = lua_ref(L, -1);
