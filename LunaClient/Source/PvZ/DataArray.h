@@ -1,6 +1,4 @@
 #pragma once
-#include "Definitions.h"
-#include "GridItem.h"
 
 template <typename T>
 struct DataArrayItem
@@ -31,7 +29,9 @@ struct DataArray
 		auto NID = (ID & 0xFFFF);
 		if (ID == 0 || (NID > MaxSize)) return NULL;
 		DataArrayItem<T> Item = Block[NID];
-		return Item & (Item.ID != ID) - 1;
+		if (Item)
+			return Item;
+		return nullptr;
 	}
 	T* Alloc()
 	{

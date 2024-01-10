@@ -19,6 +19,7 @@ int LunaPlant::Init(lua_State* L)
 #pragma region Fields
 	IntField::New("Type", 0x24, Source);
 #pragma endregion
+	return 0;
 }
 
 void* LunaPlant::GetBase(LunaInstance* self)

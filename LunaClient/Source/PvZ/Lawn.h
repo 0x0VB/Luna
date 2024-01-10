@@ -1,14 +1,17 @@
 #pragma once
+
 #include "Definitions.h"
 
 #include "ButtonListener.h"
 #include "UIElement.h"
-#include "DataArray.h"
 #include "Zombie.h"
 #include "Plant.h"
 #include "Pickup.h"
 #include "LawnMower.h"
 #include "GridItem.h"
+#include "DataArray.h"
+#include "Projectile.h"
+
 
 class Lawn : public Sexy::UIElement, Sexy::ButtonListener
 {
