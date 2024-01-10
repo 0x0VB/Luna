@@ -34,6 +34,24 @@ void LunaPlant::New(lua_State* L, void* Param)
 	auto ID = NewPlant->ID;
 
 	int T = lua_gettop(L);
-	LunaUtil::GetRegKey(L, "ClassRef");
-	lua_pushlightuserdata(L, Param);
+	LunaUtil::GetRegKey(L, "PlantRef");// T + 1
+	lua_pushinteger(L, ID);
+	lua_gettable(L, -2);
+	if (!lua_isnil(L, -1))
+	{
+		lua_replace(L, T + 1);
+		lua_settop(L, T + 1);
+		return;
+	}
+
+	lua_settop(L, T + 1);
+	lua_pushinteger(L, ID);
+
+	auto self = (LunaInstance*)lua_newuserdata(L, sizeof(LunaInstance));
+	self->Base = &(NewPlant->Item.MyLawn->Plants);
+	self->Class = this;
+	self->Data[0] = ID;
+
+	LunaUtil::GetRegKey(L, "ClassMeta");
+	lua_setmetatable(L, T + 2);
 }
