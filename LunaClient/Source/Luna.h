@@ -27,6 +27,7 @@ namespace Luna
 	void InitializeCompileOptions();
 
 	bool LoadFile(lua_State* L, std::filesystem::path ModPath);
+	void Tick();
 
 	void Setup(bool DebugMode = false);
 }
