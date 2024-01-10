@@ -25,7 +25,7 @@ namespace Luna::Class
 	public:
 		LunaClass* Class;
 		void* Base;
-		int Data[2] = {};
+		unsigned int Data[2] = {};
 		int Associations[30] = {};
 		void* GetBase();
 	};

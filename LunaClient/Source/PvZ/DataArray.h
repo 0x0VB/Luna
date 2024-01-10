@@ -27,11 +27,11 @@ struct DataArray
 	T* TryToGet(int ID)
 	{
 		auto NID = (ID & 0xFFFF);
+		DataArrayItem<T>* Item;
+
 		if (ID == 0 || (NID > MaxSize)) return NULL;
-		DataArrayItem<T> Item = Block[NID];
-		if (Item)
-			return Item;
-		return nullptr;
+		Item = Block + NID;
+		return (T*)((DWORD)Item & (Item->ID != ID) - 1);
 	}
 	T* Alloc()
 	{
@@ -45,7 +45,7 @@ struct DataArray
 		}
 		else
 			FreeListHead = Block[FreeListOG].ID;
-		
+
 		New = Block + FreeListOG;
 		memset(New, 0, sizeof(T));
 		New->ID = NextKey << 0x10 | FreeListOG;
@@ -53,7 +53,7 @@ struct DataArray
 
 		if (NextKey == 0x10000) NextKey = 1;
 		Size++;
-		
+
 		auto Item = new (&New->Item) T();
 		return Item;
 	}

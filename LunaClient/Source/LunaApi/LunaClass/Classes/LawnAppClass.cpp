@@ -8,6 +8,7 @@
 #include "Luna.h"
 
 #include "PvZ/Graphics.h"
+#include "PvZ/Lawn.h"
 
 namespace
 {
@@ -20,10 +21,55 @@ namespace
 
 	std::vector<DWORD> FinalDrawEntries = { 0x5390DC };
 	LunaEventRef OnFinalDraw;
+
+	std::vector<DWORD> OnNewGameEntries = { 0x44F5C5 };
+	LunaEventRef OnNewGame;
+
+	std::vector<DWORD> OnGameLoadEntries = { 0x44F58A };
+	LunaEventRef OnGameLoad;
 }
 
 #include "LunaApi/LunaStructs/Vector2/Vector2.h"
 #include "UIContainerClass.h"
+
+void HandleGame()
+{
+	auto L = LUNA_STATE;
+	auto Game = Luna::App->Lawn;
+	auto GameID = Game->GameID;
+	
+	lua_pushinteger(L, GameID);
+	lua_newtable(L);
+	
+	lua_pushstring(L, "Plants");
+	lua_newtable(L);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Zombies");
+	lua_newtable(L);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Projectiles");
+	lua_newtable(L);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "GridItems");
+	lua_newtable(L);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Pickups");
+	lua_newtable(L);
+	lua_settable(L, -3);
+
+
+	lua_pushstring(L, "LawnMowers");
+	lua_newtable(L);
+	lua_settable(L, -3);
+
+	lua_settable(L, LUA_REGISTRYINDEX);
+	std::cout << "GAME_ID: " << GameID << "\n";
+}
+
 namespace // Event Bodies
 {
 	DWORD __stdcall UpdateCaller()
@@ -32,11 +78,97 @@ namespace // Event Bodies
 		OnUpdate.GetEvent()->Call(LUNA_STATE, 0);
 		return 0x539148;
 	}
-
 	DWORD __stdcall FinalDrawCaller(Sexy::Graphics* G)
 	{
 
 		return 0x5390E1;
+	}
+	DWORD __stdcall NewGameCaller()
+	{
+		HandleGame();
+		CreateUIObject(LUNA_STATE, Luna::App->Lawn);
+		OnNewGame.GetEvent()->Call(LUNA_STATE, 1);
+		return 0x44F5CA;
+	}
+	DWORD __stdcall GameLoadCaller(bool Success)
+	{
+		if (!Success) return 0x44F58F;
+
+		HandleGame();
+		CreateUIObject(LUNA_STATE, Luna::App->Lawn);
+		OnGameLoad.GetEvent()->Call(LUNA_STATE, 1);
+		return 0x44F58F;
+	}
+}
+
+namespace
+{
+	inline void __declspec(naked) UpdateHandler()
+	{
+		__asm
+		{
+			push ecx
+			call UpdateCaller
+			pop ecx
+			sub esp, 0xC
+			push esi
+			lea esi, [esp + 04]
+			jmp eax
+		}
+	}
+	inline void __declspec(naked) FinalDrawHandler()
+	{
+		__asm
+		{
+			push ecx
+			push ecx
+			call FinalDrawCaller
+			pop ecx
+			jmp eax
+		}
+	}
+	inline void __declspec(naked) StoneButtonDrawHandler()
+	{
+		// Button in EDI
+		__asm
+		{
+			push[esp + 0x1C]
+			push[esp + 0x1C]
+			push[esp + 0x1C]
+			push[esp + 0x1C]
+			push[esp + 0x1C]
+			push[esp + 0x1C]
+			push eax
+			push[esp + 0x20]
+			push edi
+			call LawnStoneButton::Draw
+			ret
+		}
+	};
+	inline void __declspec(naked) NewGameHandler()
+	{
+		// No need for register recovery since these events hook at function call, so scratch registers can be used.
+		__asm
+		{
+			mov ecx, 0x44F890
+			call ecx
+			call NewGameCaller
+			jmp eax
+		}
+	}
+	inline void __declspec(naked) GameLoadHandler()
+	{
+		__asm
+		{
+			mov ecx, 0x44F7A0
+			call ecx
+			push eax
+			push eax
+			call GameLoadCaller
+			mov ecx, eax
+			pop eax
+			jmp ecx
+		}
 	}
 }
 
@@ -48,7 +180,6 @@ namespace // Methods
 		Luna::App->MsgBox(GetString(L, 2, "Luna!"), GetString(L, 3, "Luna!"), 0);
 		return 0;
 	}
-
 	int LawnMsgBox(lua_State* L)
 	{
 		AssertType(L, 2, "string", "Content");
@@ -61,12 +192,13 @@ namespace // Methods
 		lua_pushboolean(L, R == 0);
 		return 1;
 	}
-
 	void SetupEvents()
 	{
 		StoneButtonDraw = LunaEvent::New("OnStoneButtonDraw", StoneButtonDrawHandler, StoneButtonEntries, true);
 		OnFinalDraw = LunaEvent::New("OnFinalDraw", FinalDrawHandler, FinalDrawEntries, true);
 		OnUpdate = LunaEvent::New("OnUpdate", UpdateHandler, UpdateEntries, false);
+		OnNewGame = LunaEvent::New("OnNewGame", NewGameHandler, OnNewGameEntries, true);
+		OnGameLoad = LunaEvent::New("OnGameLoad", GameLoadHandler, OnGameLoadEntries, true);
 	}
 }
 
@@ -103,15 +235,15 @@ int Luna::Class::LunaApp::Init(lua_State* L)
 	BlnField::New("SukhbirMode", 0x8BE, Source);
 
 	SetupEvents();
-	OnUpdate = LunaEvent::New("OnUpdate", UpdateHandler, UpdateEntries, true);
 	EventField::New("OnUpdate", OnUpdate.GetEvent(), Source);
+	EventField::New("OnNewGame", OnNewGame.GetEvent(), Source);
+	EventField::New("OnGameLoad", OnGameLoad.GetEvent(), Source);
 
 	Source->Methods["MessageBox"] = MsgBox;
 	Source->Methods["LawnMsgBox"] = LawnMsgBox;
 
 	Source->New(L, LawnApp::GetApp());
 	LunaInstanceRef = lua_ref(L, -1);
-	lua_pop(L, 1);
 
 	return 0;
 }

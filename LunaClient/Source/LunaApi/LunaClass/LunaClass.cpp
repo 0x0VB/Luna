@@ -410,11 +410,19 @@ void Luna::Class::Fields::FunctionField::__newindex(lua_State* L)
 
 LunaInstance* Luna::Class::GetAndAssert(lua_State* L, int Index, std::string ParamName, std::string Expected)
 {
+	int T = lua_gettop(L);
 	void* self = lua_touserdata(L, Index);
 	if (!lua_isuserdata(L, Index))
 		LunaIO::ThrowError(L, "Expected " + Expected + " for " + ParamName + ", got " + LunaUtil::Type(L, Index));
-	if (CLASS_VALIDATE.contains(self))
-		return (LunaInstance*)self;
+	
+	lua_getmetatable(L, Index);
+	LunaUtil::GetRegKey(L, "ClassMeta");
+	
+	if (!lua_equal(L, -1, -2))
+		LunaIO::ThrowError(L, "Expected " + Expected + " for " + ParamName + ", got " + LunaUtil::Type(L, Index));
+
+	lua_settop(L, T);
+	return (LunaInstance*)self;
 	LunaIO::ThrowError(L, "Unable to get " + ParamName + ". This object might have been destroyed.");
 }
 
@@ -438,6 +446,7 @@ LunaInstance* Luna::Class::AssertIsA(lua_State* L, int I, std::string SubClass, 
 #include "Classes/ImageClass.h"
 #include "Classes/FontClass.h"
 #include "Classes/LunaLawn.h"
+#include "Classes/LunaPlant.h"
 
 #include "LunaApi/LunaUtil/LunaUtil.h"
 
@@ -481,6 +490,7 @@ int Luna::Class::Init(lua_State* L)
 	LunaInit(Class::LunaIFont);
 	LunaInit(Class::LunaSysFont);
 	LunaInit(Class::LunaLawn);
+	LunaInit(Class::LunaPlant);
 
 	return 0;
 }

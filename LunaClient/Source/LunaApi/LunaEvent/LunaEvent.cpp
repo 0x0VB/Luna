@@ -51,7 +51,7 @@ void Luna::Event::LunaEvent::Call(lua_State* CL, size_t ArgCount)
 }
 
 LunaEventRef::LunaEventRef(int Ref) { EventRef = Ref; }
-void LunaEventRef::Push(lua_State* L) { lua_ref(L, EventRef); }
+void LunaEventRef::Push(lua_State* L) { lua_getref(L, EventRef); }
 LunaEvent* LunaEventRef::GetEvent()
 {
 	lua_getref(LUNA_STATE, EventRef);

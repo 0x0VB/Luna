@@ -23,7 +23,7 @@ std::string GameModeToString(GameMode Mode)
 	if (Mode == GameMode::GAMEMODE_TREE_OF_WISDOM)
 		return "Tree of Wisdom";
 	if (Mode >= GameMode::GAMEMODE_SCARY_POTTER_1 && Mode <= GameMode::GAMEMODE_SCARY_POTTER_ENDLESS)
-		return "Scary Potter";
+		return "VaseBreaker";
 	if (Mode >= GameMode::GAMEMODE_PUZZLE_I_ZOMBIE_1 && Mode <= GameMode::GAMEMODE_PUZZLE_I_ZOMBIE_ENDLESS)
 		return "Puzzle";
 	return "Unknown";
@@ -40,7 +40,7 @@ void Luna::Discord::Tick()
 
 	auto& Assets = Activity.GetAssets();
 	Assets.SetLargeImage("pvz");
-	Assets.SetLargeText("Plants vs. Zombies: Game of the Year");
+	Assets.SetLargeText("Plants vs. Zombies: Luna");
 	Assets.SetSmallImage("lunaxl");
 	Assets.SetSmallText("Luna Client");
 

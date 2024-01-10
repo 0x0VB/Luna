@@ -1,5 +1,6 @@
 --// Luna V0.2.2 \\--
 LawnApp.WindowTitle = "Luna!";
+LawnApp.Speed = 5;
 local UIRoot = LawnApp.UIRoot;
 
 local SpeedButton = UI.New("StoneButton", UIRoot);
@@ -17,3 +18,8 @@ function SpeedButton:OnMouseDown()
     self:ResizeToFit();
     LawnApp.Speed = Speed;
 end;
+
+Plant.OnUpdate:Connect(function(Plant, Table)
+    print(Plant.Type);
+    Table.Skip = true;
+end);
