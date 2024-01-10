@@ -11,6 +11,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Discord\achievement_manager.cpp" />
+    <ClCompile Include="Source\Discord\activity_manager.cpp" />
+    <ClCompile Include="Source\Discord\application_manager.cpp" />
+    <ClCompile Include="Source\Discord\core.cpp" />
+    <ClCompile Include="Source\Discord\image_manager.cpp" />
+    <ClCompile Include="Source\Discord\lobby_manager.cpp" />
+    <ClCompile Include="Source\Discord\network_manager.cpp" />
+    <ClCompile Include="Source\Discord\overlay_manager.cpp" />
+    <ClCompile Include="Source\Discord\relationship_manager.cpp" />
+    <ClCompile Include="Source\Discord\storage_manager.cpp" />
+    <ClCompile Include="Source\Discord\store_manager.cpp" />
+    <ClCompile Include="Source\Discord\types.cpp" />
+    <ClCompile Include="Source\Discord\user_manager.cpp" />
+    <ClCompile Include="Source\Discord\voice_manager.cpp" />
     <ClCompile Include="Source\Luna.cpp" />
     <ClCompile Include="Source\LunaApi\LunaApi.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\FontClass.cpp" />
@@ -35,6 +49,7 @@
     <ClCompile Include="Source\PvZ\UIElement.cpp" />
     <ClCompile Include="Source\PvZ\UIRoot.cpp" />
     <ClCompile Include="Source\PvZ\Zombie.cpp" />
+    <ClCompile Include="Source\RichPresence.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -42,6 +57,23 @@
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIRootClass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Discord\achievement_manager.h" />
+    <ClInclude Include="Source\Discord\activity_manager.h" />
+    <ClInclude Include="Source\Discord\application_manager.h" />
+    <ClInclude Include="Source\Discord\core.h" />
+    <ClInclude Include="Source\Discord\discord.h" />
+    <ClInclude Include="Source\Discord\event.h" />
+    <ClInclude Include="Source\Discord\ffi.h" />
+    <ClInclude Include="Source\Discord\image_manager.h" />
+    <ClInclude Include="Source\Discord\lobby_manager.h" />
+    <ClInclude Include="Source\Discord\network_manager.h" />
+    <ClInclude Include="Source\Discord\overlay_manager.h" />
+    <ClInclude Include="Source\Discord\relationship_manager.h" />
+    <ClInclude Include="Source\Discord\storage_manager.h" />
+    <ClInclude Include="Source\Discord\store_manager.h" />
+    <ClInclude Include="Source\Discord\types.h" />
+    <ClInclude Include="Source\Discord\user_manager.h" />
+    <ClInclude Include="Source\Discord\voice_manager.h" />
     <ClInclude Include="Source\Enums\Enums.h" />
     <ClInclude Include="Source\Enums\GameModes.h" />
     <ClInclude Include="Source\Enums\GameResult.h" />
@@ -122,6 +154,7 @@
     <ClInclude Include="Source\PvZ\UIButton.h" />
     <ClInclude Include="Source\PvZ\UIElement.h" />
     <ClInclude Include="Source\PvZ\UIRoot.h" />
+    <ClInclude Include="Source\RichPresence.h" />
     <ClInclude Include="Source\stdafx.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIRootClass.h" />
   </ItemGroup>
@@ -183,7 +216,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -194,7 +227,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)Dependencies/Release/Luau.Ast.lib;$(SolutionDir)Dependencies/Release/Luau.Compiler.lib;$(SolutionDir)Dependencies/Release/Luau.VM.lib;$(SolutionDir)Dependencies/Release/libzstd_static.lib;$(SolutionDir)LunaStatic/Intermediates/Release/LunaStatic.lib;$(SolutionDir)Dependencies/Release/discord_game_sdk.dll.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)Dependencies/Release/Luau.Ast.lib;$(SolutionDir)Dependencies/Release/Luau.Compiler.lib;$(SolutionDir)Dependencies/Release/Luau.VM.lib;$(SolutionDir)Dependencies/Release/libzstd_static.lib;$(SolutionDir)LunaStatic/Intermediates/Release/LunaStatic.lib;$(SolutionDir)Dependencies/Release/discord_game_sdk.dll.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -203,7 +236,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -216,7 +249,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)Dependencies/Release/Luau.Ast.lib;$(SolutionDir)Dependencies/Release/Luau.Compiler.lib;$(SolutionDir)Dependencies/Release/Luau.VM.lib;$(SolutionDir)Dependencies/Release/libzstd_static.lib;$(SolutionDir)LunaStatic/Intermediates/Release/LunaStatic.lib;$(SolutionDir)Dependencies/Release/discord_game_sdk.dll.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)Dependencies/Release/Luau.Ast.lib;$(SolutionDir)Dependencies/Release/Luau.Compiler.lib;$(SolutionDir)Dependencies/Release/Luau.VM.lib;$(SolutionDir)Dependencies/Release/libzstd_static.lib;$(SolutionDir)LunaStatic/Intermediates/Release/LunaStatic.lib;$(SolutionDir)Dependencies/Release/discord_game_sdk.dll.lib;;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

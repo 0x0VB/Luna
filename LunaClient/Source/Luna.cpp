@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Luna.h"
+#include "RichPresence.h"
 
 #include "LunaApi/LunaApi.h"
 #include "LunaApi/LunaIO/LunaIO.h"
@@ -20,12 +21,18 @@ namespace Luna
 	Luau::CompileOptions CompileOptions = {};
 }
 
+void Luna::Tick()
+{
+	Luna::Discord::Tick();
+}
+
 std::filesystem::path ModsPath = "./Mods";
 void Luna::Setup(bool DebugMode)
 {
 	Luna::DebugMode = DebugMode;	// Set DebugMode
 	Luna::InitiateLunaState();		// Create Lua State at L
 	Luna::InitializeCompileOptions();
+	Luna::Discord::Initialize();	// Setup Discord Rich Presence
 	Luna::App = LawnApp::GetApp();	// Get LawnApp
 
 	if (DebugMode)

@@ -4,7 +4,8 @@
 
 namespace Luna::Discord
 {
-	extern discord::Core* core;
-	void Setup();
+	extern discord::Core* Core;
+
+	void Initialize();
 	void Tick();
 }

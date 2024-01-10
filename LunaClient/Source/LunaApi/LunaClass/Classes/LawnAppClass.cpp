@@ -9,9 +9,9 @@
 
 #include "PvZ/Graphics.h"
 
-using namespace Luna::Event;
 namespace
 {
+	using namespace Luna::Event;
 	std::vector<DWORD> StoneButtonEntries = { 0x447B00 };
 	LunaEventRef StoneButtonDraw;
 
@@ -28,6 +28,7 @@ namespace // Event Bodies
 {
 	DWORD __stdcall UpdateCaller()
 	{
+		Luna::Tick();
 		OnUpdate.GetEvent()->Call(LUNA_STATE, 0);
 		return 0x539148;
 	}
@@ -102,7 +103,7 @@ int Luna::Class::LunaApp::Init(lua_State* L)
 	BlnField::New("SukhbirMode", 0x8BE, Source);
 
 	SetupEvents();
-	OnUpdate = LunaEvent::New("OnUpdate", UpdateHandler, UpdateEntries, false);
+	OnUpdate = LunaEvent::New("OnUpdate", UpdateHandler, UpdateEntries, true);
 	EventField::New("OnUpdate", OnUpdate.GetEvent(), Source);
 
 	Source->Methods["MessageBox"] = MsgBox;
