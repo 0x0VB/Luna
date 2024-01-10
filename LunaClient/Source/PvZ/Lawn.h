@@ -139,7 +139,7 @@ public:
 	GridItem* AddPortal(int Column, int Lane, bool Square = false);
 	GridItem* AddBrain(int X, int Y, bool Zombaquarium = false);
 
-	Pickup* AddPickup(int X, int Y, PickupType Type, PickupMotion Motion);
+	Pickup* AddPickup(int X, int Y, PickupType Type, PickupMotion Motion, SeedType PacketType = SEED_NONE);
 
 	void KillPlantCell(int Column, int Lane);
 	void KillPlantLane(int Lane);

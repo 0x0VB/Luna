@@ -168,6 +168,9 @@
     <ClCompile Include="Source\Discord\voice_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\LunaPlant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Enums\Enums.h">

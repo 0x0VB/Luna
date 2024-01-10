@@ -158,6 +158,7 @@ public:
 		Type = SEED_WALLNUT;
 	}
 
+	void __thiscall Initialize(SeedType Type, SeedType Imitater, int Lane, int Column);
 	void Die();
 	void Fire(Zombie* Target = NULL, int Lane = -1, bool IsSecondary = false);
 };

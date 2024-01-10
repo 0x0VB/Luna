@@ -48,7 +48,6 @@ enum PickupType
 
 #pragma endregion
 
-
 class Pickup : public GameObject
 {
 #pragma region Fields
