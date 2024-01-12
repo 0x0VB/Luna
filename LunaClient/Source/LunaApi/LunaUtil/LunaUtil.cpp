@@ -208,7 +208,7 @@ int LunaUtil::lua_Wait(lua_State* L) { Sleep(GetInt(L, 1, 1) * 1000); return 0; 
 luaL_Reg UtilFuncs[] = {
 	{ "Sleep", LunaUtil::lua_Sleep },
 	{ "Wait",  LunaUtil::lua_Wait },
-	{ "Type",  LunaUtil::lua_type }, // TODO: check how luau type and typeof work and in case replace this accordingly
+	{ "Type",  LunaUtil::lua_type },
 	{ NULL, NULL }
 };
 
@@ -233,10 +233,7 @@ int LunaUtil::Init(lua_State* L)
 
 	lua_getglobal(L, "type");// Save type function
 	SetRegKey(L, "Type", -1);
-
 	luaL_register(L, "_G", UtilFuncs);
-	lua_pushcclosure(L, lua_type, "Type", 0);
-	lua_setglobal(L, "type");
 
 	lua_newtable(L);
 	

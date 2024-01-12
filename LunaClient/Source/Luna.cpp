@@ -133,7 +133,6 @@ void Luna::InitiateLunaState()
 	if (LUNA_STATE)
 		lua_close(LUNA_STATE);
 	LUNA_STATE = luaL_newstate();
-
 	LunaInit(LunaApi);
 }
 

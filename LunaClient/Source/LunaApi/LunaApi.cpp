@@ -6,6 +6,7 @@
 #include "LunaApi/LunaStructs/LunaStructs.h"
 #include "LunaApi/LunaEvent/LunaEvent.h"
 #include "LunaApi/LunaClass/LunaClass.h"
+#include "LunaApi/LunaEnum/LunaEnum.h"
 
 int LunaApi::GlobalsTableRef;
 
@@ -38,6 +39,7 @@ int LunaApi::Init(lua_State* L)
 	LunaInit(LunaStruct);			// Contains structs like Vector2, Rect, Color, etc.
 	LunaInit(Luna::Event);			// Ports events onto lua, is also the main hooking lib.
 	LunaInit(Luna::Class);			// Wraps C++ classes into lua, allowing user interaction.
+	LunaInit(Luna::Enum);			// Handles custom values within predefined sets.
 	return 0;
 }
 
