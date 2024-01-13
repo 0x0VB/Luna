@@ -14,7 +14,7 @@ namespace Luna::Enum
 	public:
 		int Reference;
 		std::string Name;
-		std::set<int> Values;
+		std::map<int, EnumItem*> Values;
 		std::map<std::string, EnumItem*> Items;
 		EnumLib(std::string LibName)
 		{
@@ -62,5 +62,6 @@ namespace Luna::Enum
 		static int __tostring(lua_State* L);
 	};
 
+	void SetEnum(lua_State* L, EnumLib* Lib);
 	int Init(lua_State* L);
 }

@@ -1,7 +1,6 @@
 --// Luna V0.2.2 \\--
 LawnApp.WindowTitle = "Luna!";
 LawnApp.Speed = 5;
-print(type(LawnApp));
 local UIRoot = LawnApp.UIRoot;
 
 local SpeedButton = UI.New("StoneButton", UIRoot);
@@ -20,12 +19,6 @@ function SpeedButton:OnMouseDown()
     LawnApp.Speed = Speed;
 end;
 
-print("State");
-print(Enum);
-print(Enum.PlantState.Ready.Library);
-
 Plant.OnUpdate:Connect(function(Plant, Table)
-    print(Plant.Type);
-    print(Type(Plant));
-    Table.Skip = true;
+    Plant.BungeeState = Enum.PlantBungeeState.Rising;
 end);

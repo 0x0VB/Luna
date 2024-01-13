@@ -3,6 +3,7 @@
 
 #include "LunaApi/LunaUtil/LunaUtil.h"
 #include "LunaApi/LunaStructs/LunaStructs.h"
+#include "LunaApi/LunaEnum/LunaEnum.h"
 #include "LunaApi/LunaIO/LunaIO.h"
 #include "Luna.h"
 
@@ -405,6 +406,30 @@ void Luna::Class::Fields::FunctionField::__newindex(lua_State* L)
 
 	AssertType(L, 3, "function", Name);
 	self->Associations[Offset] = lua_ref(L, 3);
+}
+
+void Luna::Class::Fields::EnumField::__index(lua_State* L)
+{
+	FBase(int);
+	Enum::EnumLib* Library = (Enum::EnumLib*)Data;
+
+	lua_getref(L, Library->Values[*Base]->Reference);
+}
+
+void Luna::Class::Fields::EnumField::__newindex(lua_State* L)
+{
+	CheckReadOnly(L);
+	FBase(int);
+	auto Library = (Enum::EnumLib*)Data;
+	auto Value = Library->AssertEnum(L, 3, Name);
+	*Base = Value;
+}
+
+Fields::EnumField* Fields::EnumField::New(const char* Name, DWORD Offset, Enum::EnumLib* Library, LunaClass* Class)
+{
+	auto self = LunaField::New<EnumField>(Name, Offset, Class);
+	self->Data = Library;
+	return self;
 }
 #pragma endregion
 

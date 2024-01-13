@@ -6,6 +6,7 @@
 
 #include "LunaApi/LunaApi.h"
 #include "LunaApi/LunaEvent/LunaEvent.h"
+#include "LunaApi/LunaEnum/LunaEnum.h"
 #include "LunaApi/LunaIO/LunaIO.h"
 
 namespace Luna::Class
@@ -58,6 +59,8 @@ namespace Luna::Class
 		char Name[32] = {};
 		bool ReadOnly = false;
 		DWORD Offset = 0;
+		void* Data = NULL;
+
 		virtual void __index(lua_State* L) {}
 		virtual void __newindex(lua_State* L);
 		virtual void* GetBase(LunaInstance* self) { return (void*)((DWORD)self->Class->GetBase(self) + Offset); };
@@ -227,5 +230,13 @@ namespace Luna::Class::Fields
 		virtual void __index(lua_State* L) override;
 		virtual void __newindex(lua_State* L) override;
 		DefNewField(FunctionField)
+	};
+
+	class EnumField : public LunaField
+	{
+	public:
+		virtual void __index(lua_State* L) override;
+		virtual void __newindex(lua_State* L) override;
+		static EnumField* New(const char* Name, DWORD Offset, Enum::EnumLib* Library, LunaClass* Class);
 	};
 }

@@ -37,9 +37,9 @@ int LunaApi::Init(lua_State* L)
 	LunaInit(LunaIO);				// Responsible for print/warn/info functions.
 	LunaInit(LunaUtil);				// General-purpose lua functions that make dealing with lua easier.
 	LunaInit(LunaStruct);			// Contains structs like Vector2, Rect, Color, etc.
+	LunaInit(Luna::Enum);			// Handles custom values within predefined sets.
 	LunaInit(Luna::Event);			// Ports events onto lua, is also the main hooking lib.
 	LunaInit(Luna::Class);			// Wraps C++ classes into lua, allowing user interaction.
-	LunaInit(Luna::Enum);			// Handles custom values within predefined sets.
 	return 0;
 }
 

@@ -16,7 +16,7 @@ void EnumLib::Add(EnumItem* Item)
 {
 	Item->Library = this;
 	Items[Item->Name] = Item;
-	Values.insert(Item->Value);
+	Values[Item->Value] = Item;
 }
 
 void EnumLib::Add(lua_State* L, std::string ItemName, int Value)
@@ -27,14 +27,29 @@ void EnumLib::Add(lua_State* L, std::string ItemName, int Value)
 int EnumLib::AssertEnum(lua_State* L, int Index, std::string ParamName)
 {
 	int T = lua_gettop(L);
-	lua_getmetatable(L, Index);
-	LunaUtil::GetRegKey(L, "EnumItemMeta");
-	if (!lua_equal(L, -2, -1))
-		LunaIO::ThrowError(L, "Expected a " + Name + " for " + ParamName + ", got " + LunaUtil::Type(L, Index));
-
-	lua_settop(L, T);
-	auto self = *(EnumItem**)lua_touserdata(L, Index);
-	return self->Value;
+	
+	if (lua_isuserdata(L, Index))
+	{
+		lua_getmetatable(L, Index);
+		LunaUtil::GetRegKey(L, "EnumItemMeta");
+		if (lua_equal(L, -2, -1))
+		{
+			lua_settop(L, T);
+			auto self = *(EnumItem**)lua_touserdata(L, Index);
+			return self->Value;
+		}
+	}
+	else if (lua_isnumber(L, Index))
+	{
+		int Value = GetInt(L, Index);
+		if (Contains(Value)) return Value;
+	}
+	else if (lua_isstring(L, Index))
+	{
+		auto ItemName = GetString(L, Index);
+		if (Contains(ItemName)) return Items[ItemName]->Value;
+	}
+	LunaIO::ThrowError(L, "Expected a " + Name + " for " + ParamName + ", got " + LunaUtil::Type(L, Index));
 }
 
 EnumLib* EnumLib::New(lua_State* L, std::string LibName)
@@ -129,30 +144,13 @@ int EnumItem::__tostring(lua_State* L)
 }
 #pragma endregion
 
-namespace
+void Luna::Enum::SetEnum(lua_State* L, EnumLib* Lib)
 {
-	void SetEnum(lua_State* L, EnumLib* Lib)
-	{
-		lua_getglobal(L, "Enum");
-		lua_pushstring(L, Lib->Name.c_str());
-		lua_getref(L, Lib->Reference);
-		lua_settable(L, -3);
-		lua_pop(L, 1);
-	}
-
-	void PlantState(lua_State* L)
-	{
-		auto Lib = EnumLib::New(L, "PlantState");
-		SetEnum(L, Lib);
-
-		Lib->Add(L, "NotReady", 0);
-		Lib->Add(L, "Ready", 1);
-	}
-
-	void SetupEnums(lua_State* L)
-	{
-		PlantState(L);
-	}
+	lua_getglobal(L, "Enum");
+	lua_pushstring(L, Lib->Name.c_str());
+	lua_getref(L, Lib->Reference);
+	lua_settable(L, -3);
+	lua_pop(L, 1);
 }
 
 int Luna::Enum::Init(lua_State* L)
@@ -199,6 +197,5 @@ int Luna::Enum::Init(lua_State* L)
 	lua_settable(L, -3);
 	LunaUtil::SetRegKey(L, "EnumItemMeta");
 
-	SetupEnums(L);
 	return 0;
 }
