@@ -19,6 +19,6 @@ function SpeedButton:OnMouseDown()
     LawnApp.Speed = Speed;
 end;
 
-Plant.OnUpdate:Connect(function(Plant, Table)
-    Plant.BungeeState = Enum.PlantBungeeState.Rising;
+LawnApp.OnNewGame:Connect(function(...)
+    print(...);
 end);

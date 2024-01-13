@@ -455,5 +455,8 @@
     <ClInclude Include="Source\LunaApi\LunaEnum\LunaEnum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\PvZ\PlantDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

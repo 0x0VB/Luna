@@ -23,7 +23,7 @@ void Luna::Event::LunaEvent::Hook(DWORD Entry)
 	DWORD OldProtection;
 	VirtualProtect((LPVOID)Entry, 5, PAGE_EXECUTE_READWRITE, &OldProtection);
 
-	*JmpInst = 0xE9;	// JMP OPCode
+	*JmpInst = (CallHook) ? 0xE8 : 0xE9;	// JMP OPCode
 	*JumpAddress = RelativeAddress;	// Address to jump to
 
 	DWORD _;
@@ -78,7 +78,7 @@ LunaEventRef Luna::Event::LunaEvent::New(const char* Name, lua_CFunction Handler
 	return LunaEventRef(self->EventRef);
 }
 
-LunaEventRef Luna::Event::LunaEvent::New(const char* Name, void* Handler, std::vector<DWORD> Entries, bool AutoHook)
+LunaEventRef Luna::Event::LunaEvent::New(const char* Name, void* Handler, std::vector<DWORD> Entries, bool AutoHook, bool CallHook)
 {
 	auto self = (LunaEvent*)lua_newuserdata(LUNA_STATE, sizeof(LunaEvent));// 1
 	// Setup
@@ -90,6 +90,7 @@ LunaEventRef Luna::Event::LunaEvent::New(const char* Name, void* Handler, std::v
 		self->Entries = Entries;									// normally move entries std::move(Entries);
 		self->Handler = Handler;
 		self->Hooked = false;
+		self->CallHook = CallHook;
 		if (AutoHook)
 			self->SetupHook();
 	}

@@ -43,6 +43,7 @@ namespace Luna::Event
 			lua_CFunction LHandler;
 		};
 		char Name[32];
+		bool CallHook;
 
 		std::vector<DWORD> Entries;
 		std::vector<LunaConnection> Connections;
@@ -55,7 +56,7 @@ namespace Luna::Event
 		void Call(lua_State* CL, size_t ArgCount=0);
 
 		static LunaEventRef New(const char* Name, lua_CFunction Handler);
-		static LunaEventRef New(const char* Name, void* Handler, std::vector<DWORD> Entries, bool AutoHook = false);
+		static LunaEventRef New(const char* Name, void* Handler, std::vector<DWORD> Entries, bool AutoHook = false, bool CallHook = false);
 
 		static int __index(lua_State* L);
 		static int __newindex(lua_State* L);

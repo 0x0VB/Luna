@@ -67,9 +67,11 @@ void* LunaPlant::GetBase(LunaInstance* self)
 {
 	auto L = LUNA_STATE;
 	auto Array = (DataArray<Plant>*)self->Base;
+	auto GameID = self->Data[1];
 	auto ID = self->Data[0];
 	int T = lua_gettop(L);
 	void* Result;
+	if (GameID == 0) return self->Base;
 
 	lua_pushinteger(L, self->Data[1]);
 	lua_gettable(L, LUA_REGISTRYINDEX);
@@ -88,12 +90,19 @@ void LunaPlant::New(lua_State* L, void* Param)
 	auto NewPlant = (DataArrayItem<Plant>*)Param;
 	auto ID = NewPlant->ID;
 	auto Game = NewPlant->Item.MyLawn;
-	auto GameID = Game->GameID;
+	auto NoGame = Game == NULL;
+	auto GameID = (NoGame) ? 0 : (Game->GameID);
 
 	int T = lua_gettop(L);
 	lua_pushinteger(L, GameID);
 	lua_gettable(L, LUA_REGISTRYINDEX);// T + 1: GameRef
 	lua_pushstring(L, "Plants");// T + 2: PlantRef
+	if (!lua_istable(L, T + 1))
+	{
+		lua_settop(L, T);
+		lua_pushnil(L);
+		return;
+	}
 	lua_gettable(L, T + 1);
 
 	lua_pushinteger(L, ID);
@@ -106,7 +115,7 @@ void LunaPlant::New(lua_State* L, void* Param)
 	}
 
 	auto self = (LunaInstance*)lua_newuserdata(L, sizeof(LunaInstance));// T + 4: Plant Proxy
-	self->Base = &(Game->Plants);
+	self->Base = (NoGame) ? Param : &(Game->Plants);
 	self->Class = this;
 	self->Data[0] = ID;
 	self->Data[1] = GameID;

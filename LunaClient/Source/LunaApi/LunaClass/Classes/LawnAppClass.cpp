@@ -22,7 +22,17 @@ namespace
 	std::vector<DWORD> FinalDrawEntries = { 0x5390DC };
 	LunaEventRef OnFinalDraw;
 
-	std::vector<DWORD> OnNewGameEntries = { 0x44F5C5 };
+	std::vector<DWORD> OnNewGameEntries = { 0x42D893, 0x43C939, 0x43C941, 0x44F5C5, 0x451550, 0x457F09, 0x457F10 };
+	std::map<DWORD, const char*> NewGameCallReasons =
+	{
+		{0x42D898, "TreeOfWisdomToZenGarden"},
+		{0x43C93E, "CheatKeysResetAdventure"},
+		{0x43C946, "CheatKeysReset"},
+		{0x44F5CA, "GameStarted"},
+		{0x451555, "GameRestarted"},
+		{0x457F0E, "TryAgainAdventure"},
+		{0x457F15, "TryAgain"}
+	};
 	LunaEventRef OnNewGame;
 
 	std::vector<DWORD> OnGameLoadEntries = { 0x44F58A };
@@ -67,7 +77,6 @@ void HandleGame()
 	lua_settable(L, -3);
 
 	lua_settable(L, LUA_REGISTRYINDEX);
-	std::cout << "GAME_ID: " << GameID << "\n";
 }
 
 namespace // Event Bodies
@@ -83,12 +92,12 @@ namespace // Event Bodies
 
 		return 0x5390E1;
 	}
-	DWORD __stdcall NewGameCaller()
+	void __stdcall NewGameCaller(DWORD CallReason)
 	{
 		HandleGame();
 		CreateUIObject(LUNA_STATE, Luna::App->Lawn);
-		OnNewGame.GetEvent()->Call(LUNA_STATE, 1);
-		return 0x44F5CA;
+		lua_pushstring(LUNA_STATE, NewGameCallReasons[CallReason]);
+		OnNewGame.GetEvent()->Call(LUNA_STATE, 2);
 	}
 	DWORD __stdcall GameLoadCaller(bool Success)
 	{
@@ -152,8 +161,9 @@ namespace
 		{
 			mov ecx, 0x44F890
 			call ecx
+			push [esp]
 			call NewGameCaller
-			jmp eax
+			ret
 		}
 	}
 	inline void __declspec(naked) GameLoadHandler()
@@ -196,8 +206,8 @@ namespace // Methods
 	{
 		StoneButtonDraw = LunaEvent::New("OnStoneButtonDraw", StoneButtonDrawHandler, StoneButtonEntries, true);
 		OnFinalDraw = LunaEvent::New("OnFinalDraw", FinalDrawHandler, FinalDrawEntries, true);
-		OnUpdate = LunaEvent::New("OnUpdate", UpdateHandler, UpdateEntries, false);
-		OnNewGame = LunaEvent::New("OnNewGame", NewGameHandler, OnNewGameEntries, true);
+		OnUpdate = LunaEvent::New("OnUpdate", UpdateHandler, UpdateEntries, true);
+		OnNewGame = LunaEvent::New("OnNewGame", NewGameHandler, OnNewGameEntries, true, true);
 		OnGameLoad = LunaEvent::New("OnGameLoad", GameLoadHandler, OnGameLoadEntries, true);
 	}
 }

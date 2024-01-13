@@ -86,6 +86,18 @@ int LunaLawn::Init(lua_State* L)
 	BlnField::New("SukhbirMode", 0x8BE, Source);
 #pragma endregion
 
+	lua_pushinteger(L, 0);
+	lua_newtable(L);
+
+	lua_pushstring(L, "Plants");
+	lua_newtable(L);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "Zombies");
+	lua_newtable(L);
+	lua_settable(L, -3);
+
+	lua_settable(L, LUA_REGISTRYINDEX);
 
 	return 0;
 }
