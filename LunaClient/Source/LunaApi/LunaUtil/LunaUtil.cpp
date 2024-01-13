@@ -172,6 +172,12 @@ std::string LunaUtil::GetLuaString(lua_State* L, int I, std::string D)
 	if (!lua_isstring(L, I)) return D;
 	return std::string(lua_tostring(L, I));
 }
+std::string LunaUtil::GetLuaField(lua_State* L)
+{
+	if (!lua_isstring(L, 2))
+		LunaIO::ThrowError(L, "Expected a string field, got " + LunaUtil::Type(L, 2) + ".");
+	return std::string(lua_tostring(L, 2));
+}
 void LunaUtil::AssertLuaType(lua_State* L, int Index, std::string WantedType, std::string ParamName)
 {
 	std::string ValueType = Type(L, Index);

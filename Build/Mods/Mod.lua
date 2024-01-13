@@ -22,10 +22,7 @@ end;
 
 print("State");
 print(Enum);
-print(Enum.PlantState);
-print(Enum.PlantState.Ready);
-print(Enum.PlantState.Ready.Value);
-print(Enum.PlantState.Ready.Name);
+print(Enum.PlantState.Ready.Library);
 
 Plant.OnUpdate:Connect(function(Plant, Table)
     print(Plant.Type);

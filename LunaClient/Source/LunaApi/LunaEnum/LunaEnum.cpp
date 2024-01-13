@@ -7,70 +7,95 @@
 
 using namespace Luna::Enum;
 
-bool EnumLib::Contains(std::string Name)
-{
-	return Items.contains(Name);
-}
-
-bool EnumLib::Contains(EnumItem* Item)
-{
-	return Values.contains(Item->Value);
-}
-
-bool EnumLib::Contains(int Value)
-{
-	return Values.contains(Value);
-}
+#pragma region EnumLib Member Functions
+bool EnumLib::Contains(std::string Name) { return Items.contains(Name); }
+bool EnumLib::Contains(EnumItem* Item) { return Items.contains(Item->Name); }
+bool EnumLib::Contains(int Value) { return Values.contains(Value); }
 
 void EnumLib::Add(EnumItem* Item)
 {
+	Item->Library = this;
+	Items[Item->Name] = Item;
 	Values.insert(Item->Value);
-	Items[Item->Name] = Item->Reference;
-	Item->LibReference = Reference;
 }
 
-EnumItem* EnumLib::Add(lua_State* L, std::string ItemName, int Value)
+void EnumLib::Add(lua_State* L, std::string ItemName, int Value)
 {
 	auto Item = EnumItem::New(L, this, ItemName, Value);
-	Add(Item);
+}
+
+int EnumLib::AssertEnum(lua_State* L, int Index, std::string ParamName)
+{
+	int T = lua_gettop(L);
+	lua_getmetatable(L, Index);
+	LunaUtil::GetRegKey(L, "EnumItemMeta");
+	if (!lua_equal(L, -2, -1))
+		LunaIO::ThrowError(L, "Expected a " + Name + " for " + ParamName + ", got " + LunaUtil::Type(L, Index));
+
+	lua_settop(L, T);
+	auto self = *(EnumItem**)lua_touserdata(L, Index);
+	return self->Value;
 }
 
 EnumLib* EnumLib::New(lua_State* L, std::string LibName)
 {
 	int T = lua_gettop(L);
-	auto self = (EnumLib*)lua_newuserdata(L, sizeof(EnumLib));
+	auto Proxy = (EnumLib**)lua_newuserdata(L, 4);
+	*Proxy = new EnumLib(LibName);
 
 	LunaUtil::GetRegKey(L, "EnumLibMeta");
 	lua_setmetatable(L, -2);
-
-	self->Name = std::string(LibName);
-	self->Items = std::map<std::string, EnumRef>();
-	self->Values = std::set<int>();
-	self->Reference = lua_ref(L, -1);
-
+	(*Proxy)->Reference = lua_ref(L, -1);
 	lua_settop(L, T);
-	return self;
-}
 
+	return *Proxy;
+}
+#pragma endregion
+
+#pragma region EnumItem Member Functions
 EnumItem* EnumItem::New(lua_State* L, EnumLib* Lib, std::string ItemName, int Value)
 {
 	int T = lua_gettop(L);
-	auto self = (EnumItem*)lua_newuserdata(L, sizeof(EnumItem));
+	auto Proxy = (EnumItem**)lua_newuserdata(L, 4);
+	*Proxy = new EnumItem(ItemName, Lib, Value);
 
 	LunaUtil::GetRegKey(L, "EnumItemMeta");
 	lua_setmetatable(L, -2);
+	(*Proxy)->Reference = lua_ref(L, -1);
+	lua_settop(L, T);
 
-	self->Reference = lua_ref(L, -1);
-	self->LibReference = Lib->Reference;
-	self->Name = std::string(ItemName);
-	self->Value = Value;
+	return *Proxy;
+}
+#pragma endregion
 
-	Lib->Add(self);
-	return self;
+#pragma region EnumLib Meta
+int EnumLib::__type(lua_State* L)
+{
+	lua_pushstring(L, "EnumLibrary");
+	return 1;
 }
 
-#pragma region MetaMethods
-using namespace Luna::Class;
+int EnumLib::__index(lua_State* L)
+{
+	auto self = *(EnumLib**)lua_touserdata(L, 1);
+	auto Field = GetField(L);
+	if (Field == "Name") lua_pushstring(L, self->Name.c_str());
+	else if (self->Contains(Field)) lua_getref(L, self->Items[Field]->Reference);
+	else LunaIO::ThrowError(L, Field + " is not a valid member of EnumLibrary.");
+
+	return 1;
+}
+
+int EnumLib::__newindex(lua_State* L) { LunaIO::ThrowError(L, "EnumLibraries are read-only."); }
+int EnumLib::__tostring(lua_State* L)
+{
+	auto self = *(EnumLib**)lua_touserdata(L, 1);
+	lua_pushstring(L, ("Enum." + self->Name).c_str());
+	return 1;
+}
+#pragma endregion
+
+#pragma region EnumItem Meta
 int EnumItem::__type(lua_State* L)
 {
 	lua_pushstring(L, "EnumItem");
@@ -79,13 +104,15 @@ int EnumItem::__type(lua_State* L)
 
 int EnumItem::__index(lua_State* L)
 {
-	if (!lua_isstring(L, 2)) LunaIO::ThrowError(L, "Can only index string fields in enums.");
-	auto self = (EnumItem*)lua_touserdata(L, 1);
-	auto Field = GetString(L, 2);
+	auto self = *(EnumItem**)lua_touserdata(L, 1);
+	auto Field = GetField(L);
+
 	if (Field == "Name") lua_pushstring(L, self->Name.c_str());
 	else if (Field == "Value") lua_pushinteger(L, self->Value);
-	else if (Field == "Library") lua_getref(L, self->LibReference);
-	else LunaIO::ThrowError(L, "Unable to index field " + Field + ".");
+	else if (Field == "Library") lua_getref(L, self->Library->Reference);
+	else if (Field == "Type") lua_pushstring(L, self->Library->Name.c_str());
+	else LunaIO::ThrowError(L, Field + " is not a valid member of EnumItem.");
+
 	return 1;
 }
 
@@ -96,38 +123,8 @@ int EnumItem::__newindex(lua_State* L)
 
 int EnumItem::__tostring(lua_State* L)
 {
-	auto self = (EnumItem*)lua_touserdata(L, 1);
-	lua_pushstring(L, self->Name.c_str());
-	return 1;
-}
-
-int EnumLib::__type(lua_State* L)
-{
-	lua_pushstring(L, "EnumLib");
-	return 1;
-}
-
-int EnumLib::__index(lua_State* L)
-{
-	if (!lua_isstring(L, 2)) LunaIO::ThrowError(L, "Can only index string fields in enums.");
-	auto self = (EnumLib*)lua_touserdata(L, 1);
-	auto Field = GetString(L, 2);
-
-	if (!self->Contains(Field)) LunaIO::ThrowError(L, "Unable to index field " + Field);
-	lua_getref(L, self->Items[Field]);
-	return 1;
-}
-
-int EnumLib::__newindex(lua_State* L)
-{
-	LunaIO::ThrowError(L, "EnumLibs are read-only.");
-}
-
-int EnumLib::__tostring(lua_State* L)
-{
-	auto self = (EnumLib*)lua_touserdata(L, 1);
-	lua_pushstring(L, self->Name.c_str());
-	std::cout << "Name: " << self->Name;
+	auto self = *(EnumItem**)lua_touserdata(L, 1);
+	lua_pushstring(L, ("Enum." + self->Library->Name + "." + self->Name).c_str());
 	return 1;
 }
 #pragma endregion
@@ -146,65 +143,61 @@ namespace
 	void PlantState(lua_State* L)
 	{
 		auto Lib = EnumLib::New(L, "PlantState");
+		SetEnum(L, Lib);
 
 		Lib->Add(L, "NotReady", 0);
 		Lib->Add(L, "Ready", 1);
-
-		SetEnum(L, Lib);
 	}
 
 	void SetupEnums(lua_State* L)
 	{
-		// Plant Enums
-		std::cout << "Called";
-
 		PlantState(L);
-		std::cout << "Setup Plants!";
 	}
 }
 
 int Luna::Enum::Init(lua_State* L)
 {
-	lua_newtable(L);// EnumLib Meta
+	lua_newtable(L);// Enums
+	lua_setglobal(L, "Enum");
+
+	lua_newtable(L);// EnumLibrary Meta
 	
 	lua_pushstring(L, "__type");
 	lua_pushcclosure(L, EnumLib::__type, "EnumLib::__type", 0);
-	lua_settable(L, 1);
+	lua_settable(L, -3);
 
 	lua_pushstring(L, "__index");
 	lua_pushcclosure(L, EnumLib::__index, "EnumLib::__index", 0);
-	lua_settable(L, 1);
+	lua_settable(L, -3);
 
 	lua_pushstring(L, "__newindex");
 	lua_pushcclosure(L, EnumLib::__newindex, "EnumLib::__newindex", 0);
-	lua_settable(L, 1);
+	lua_settable(L, -3);
 
 	lua_pushstring(L, "__tostring");
 	lua_pushcclosure(L, EnumLib::__tostring, "EnumLib::__tostring", 0);
-	lua_settable(L, 1);
+	lua_settable(L, -3);
 	LunaUtil::SetRegKey(L, "EnumLibMeta");
+
 
 	lua_newtable(L);// EnumItem Meta
 
 	lua_pushstring(L, "__type");
 	lua_pushcclosure(L, EnumItem::__type, "EnumItem::__type", 0);
-	lua_settable(L, 1);
+	lua_settable(L, -3);
 
 	lua_pushstring(L, "__index");
 	lua_pushcclosure(L, EnumItem::__index, "EnumItem::__index", 0);
-	lua_settable(L, 1);
+	lua_settable(L, -3);
 
 	lua_pushstring(L, "__newindex");
 	lua_pushcclosure(L, EnumItem::__newindex, "EnumItem::__newindex", 0);
-	lua_settable(L, 1);
+	lua_settable(L, -3);
 
 	lua_pushstring(L, "__tostring");
 	lua_pushcclosure(L, EnumItem::__tostring, "EnumItem::__tostring", 0);
-	lua_settable(L, 1);
+	lua_settable(L, -3);
 	LunaUtil::SetRegKey(L, "EnumItemMeta");
-
-	lua_newtable(L);// Enums Table
-	lua_setglobal(L, "Enum");
 
 	SetupEnums(L);
 	return 0;
