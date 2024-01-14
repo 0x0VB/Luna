@@ -29,7 +29,7 @@ namespace
 		{0x43C93E, "CheatKeysResetAdventure"},
 		{0x43C946, "CheatKeysReset"},
 		{0x44F5CA, "GameStarted"},
-		{0x451555, "GameRestarted"},
+		{0x451555, "SavedGameDiscarded"},
 		{0x457F0E, "TryAgainAdventure"},
 		{0x457F15, "TryAgain"}
 	};

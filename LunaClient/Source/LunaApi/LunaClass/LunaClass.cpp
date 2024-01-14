@@ -157,7 +157,7 @@ int Luna::Class::__index(lua_State* L)
 	auto Field = GetString(L, 2);
 	auto Class = self->Class;
 
-	if (Field == "Destroyed")
+	if (Field == "Destroyed" && Class->AllowsInjection)
 	{
 		if (!self->Base)
 			lua_pushboolean(L, true);
@@ -188,7 +188,7 @@ int Luna::Class::__newindex(lua_State* L)
 	auto Field = GetString(L, 2);
 	auto Class = self->Class;
 
-	if (self->Base == NULL) LunaIO::ThrowError(L, "This object has been destroyed.");
+	if (self->Base == NULL && Class->AllowsInjection) LunaIO::ThrowError(L, "This object has been destroyed.");
 	else if (!lua_isstring(L, 2)) LunaIO::ThrowError(L, "Expected a string field, got " + LunaUtil::Type(L, 2));// Only string fields allowed
 	else if (Class->Methods.contains(Field)) LunaIO::ThrowError(L, Field + " is read-only.");// Error: Methods are read-only.
 	else if (Class->Fields.contains(Field)) Class->Fields[Field]->__newindex(L);// Set Field
@@ -472,6 +472,7 @@ LunaInstance* Luna::Class::AssertIsA(lua_State* L, int I, std::string SubClass, 
 #include "Classes/FontClass.h"
 #include "Classes/LunaLawn.h"
 #include "Classes/LunaPlant.h"
+#include "Classes/PlantDefClass.h"
 
 #include "LunaApi/LunaUtil/LunaUtil.h"
 
@@ -516,6 +517,7 @@ int Luna::Class::Init(lua_State* L)
 	LunaInit(Class::LunaSysFont);
 	LunaInit(Class::LunaLawn);
 	LunaInit(Class::LunaPlant);
+	LunaInit(Class::LunaPlantDef);
 
 	return 0;
 }

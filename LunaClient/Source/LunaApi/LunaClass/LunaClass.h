@@ -110,6 +110,8 @@ namespace Luna::Class
 	class LunaPickup;
 	class LunaMower;
 
+	class LunaPlantDef;
+
 	int __gc(lua_State* L);
 	int __call(lua_State* L);
 	int __type(lua_State* L);

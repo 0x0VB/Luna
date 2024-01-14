@@ -1,13 +1,18 @@
 --// Luna V0.2.2 \\--
 LawnApp.WindowTitle = "Luna!";
-LawnApp.Speed = 5;
+LawnApp.Speed = 1;
+local F1 = "Sun";
+local F2 = "Cost";
+Plants.PEASHOOTER[F1..F2] = 50;
+print("Cost: ", Plants.PEASHOOTER[F1..F2]);
+
 local UIRoot = LawnApp.UIRoot;
 
 local SpeedButton = UI.New("StoneButton", UIRoot);
 local CurrentSpeed = 1;
 local Speeds = {5, 1, 2};
 
-SpeedButton.Text = "5x";
+SpeedButton.Text = "1x";
 SpeedButton:ResizeToFit();
 
 function SpeedButton:OnMouseDown()
