@@ -154,34 +154,34 @@ void LunaUtil::lua_f::Push(lua_State* L)
 #pragma region Quick Cast Functions
 int LunaUtil::GetLuaInt(lua_State* L, int I, int D)
 {
-	if (!lua_isnumber(L, I)) return D;
+	if (!lua_isnumber(L, I) || lua_gettop(L) < I) return D;
 	return (int)lua_tonumber(L, I);
 }
 float LunaUtil::GetLuaFloat(lua_State* L, int I, float D)
 {
-	if (!lua_isnumber(L, I)) return D;
+	if (!lua_isnumber(L, I) || lua_gettop(L) < I) return D;
 	return (float)lua_tonumber(L, I);
 }
 double LunaUtil::GetLuaDouble(lua_State* L, int I, double D)
 {
-	if (!lua_isnumber(L, I)) return D;
+	if (!lua_isnumber(L, I) || lua_gettop(L) < I) return D;
 	return (double)lua_tonumber(L, I);
 }
 std::string LunaUtil::GetLuaString(lua_State* L, int I, std::string D)
 {
-	if (!lua_isstring(L, I)) return D;
+	if (!lua_isstring(L, I) || lua_gettop(L) < I) return D;
 	return std::string(lua_tostring(L, I));
 }
 std::string LunaUtil::GetLuaField(lua_State* L)
 {
-	if (!lua_isstring(L, 2))
+	if (!lua_isstring(L, 2) || lua_gettop(L) < 2)
 		LunaIO::ThrowError(L, "Expected a string field, got " + LunaUtil::Type(L, 2) + ".");
 	return std::string(lua_tostring(L, 2));
 }
 void LunaUtil::AssertLuaType(lua_State* L, int Index, std::string WantedType, std::string ParamName)
 {
 	std::string ValueType = Type(L, Index);
-	if (WantedType == ValueType) return;
+	if (WantedType == ValueType && lua_gettop(L) >= Index) return;
 	LunaIO::ThrowError(L, "Expected a " + WantedType + " for " + ParamName + ", got " + ValueType + ".");
 }
 #pragma endregion

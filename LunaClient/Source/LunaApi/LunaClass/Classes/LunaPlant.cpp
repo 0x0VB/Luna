@@ -3,14 +3,19 @@
 #include "LunaApi/LunaUtil/LunaUtil.h"
 #include "LunaApi/LunaEvent/LunaEvent.h"
 #include "LunaApi/LunaEnum/LunaEnum.h"
+#include "LunaApi/LunaEnum/EnumList.h"
 
 #include "PvZ/DataArray.h"
 #include "PvZ/Plant.h"
 #include "PvZ/Lawn.h"
 #include "LunaPlant.h"
+#include "PlantDefClass.h"
+#include "UIContainerClass.h"
 
 using namespace Luna::Event;
 using namespace Luna::Class;
+using namespace Luna::Enum;
+using namespace Enums;
 using namespace Fields;
 
 namespace
@@ -130,85 +135,49 @@ void LunaPlant::New(lua_State* L, void* Param)
 	return;
 }
 
-namespace
+namespace // Methods
 {
-	using namespace Luna::Enum;
-	EnumLib* L_PlantState;
-	EnumLib* L_PlantBungeeState;
+	// Game Objects
+	int GetNearestProjectile(lua_State* L);
+	int GetNearestGridItem(lua_State* L);
+	int GetNearestPickup(lua_State* L);
+	int GetNearestZombie(lua_State* L);
+	int GetNearestPlant(lua_State* L);
 
-	void lua_PlantState(lua_State* L)
-	{
-		auto Lib = EnumLib::New(L, "PlantState");
-		L_PlantState = Lib;
-		SetEnum(L, Lib);
+	int GetProjectilesInRadius(lua_State* L);
+	int GetGridItemsInRadius(lua_State* L);
+	int GetPickupsInRadius(lua_State* L);
+	int GetZombiesInRadius(lua_State* L);
+	int GetPlantsInRadius(lua_State* L);
 
-		Lib->Add(L, "NotReady", STATE_NOTREADY);
-		Lib->Add(L, "Ready", STATE_READY);
-		Lib->Add(L, "DoingSpecial", STATE_DOINGSPECIAL);
-		Lib->Add(L, "SquashLook", STATE_SQUASH_LOOK);
-		Lib->Add(L, "SquashPreLaunch", STATE_SQUASH_PRE_LAUNCH);
-		Lib->Add(L, "SquashRising", STATE_SQUASH_RISING);
-		Lib->Add(L, "SquashFalling", STATE_SQUASH_FALLING);
-		Lib->Add(L, "SquashDoneFalling", STATE_SQUASH_DONE_FALLING);
-		Lib->Add(L, "GravebusterLanding", STATE_GRAVEBUSTER_LANDING);
-		Lib->Add(L, "GravebusterEating", STATE_GRAVEBUSTER_EATING);
-		Lib->Add(L, "ChomperBiting", STATE_CHOMPER_BITING);
-		Lib->Add(L, "ChomperBitingGotOne", STATE_CHOMPER_BITING_GOT_ONE);
-		Lib->Add(L, "ChomperBitingMissed", STATE_CHOMPER_BITING_MISSED);
-		Lib->Add(L, "ChomperDigesting", STATE_CHOMPER_DIGESTING);
-		Lib->Add(L, "ChomperSwallowing", STATE_CHOMPER_SWALLOWING);
-		Lib->Add(L, "PotatoRising", STATE_POTATO_RISING);
-		Lib->Add(L, "PotatoArmed", STATE_POTATO_ARMED);
-		Lib->Add(L, "PotatoMashed", STATE_POTATO_MASHED);
-		Lib->Add(L, "SpikeweedAttacking", STATE_SPIKEWEED_ATTACKING);
-		Lib->Add(L, "SpikeweedAttacking2", STATE_SPIKEWEED_ATTACKING_2);
-		Lib->Add(L, "ScaredyshroomLowering", STATE_SCAREDYSHROOM_LOWERING);
-		Lib->Add(L, "ScaredyshroomScared", STATE_SCAREDYSHROOM_SCARED);
-		Lib->Add(L, "ScaredyshroomRaising", STATE_SCAREDYSHROOM_RAISING);
-		Lib->Add(L, "SunshroomSmall", STATE_SUNSHROOM_SMALL);
-		Lib->Add(L, "SunshroomGrowing", STATE_SUNSHROOM_GROWING);
-		Lib->Add(L, "SunshroomBig", STATE_SUNSHROOM_BIG);
-		Lib->Add(L, "MagnetshroomSucking", STATE_MAGNETSHROOM_SUCKING);
-		Lib->Add(L, "MagnetshroomCharging", STATE_MAGNETSHROOM_CHARGING);
-		Lib->Add(L, "BowlingUp", STATE_BOWLING_UP);
-		Lib->Add(L, "BowlingDown", STATE_BOWLING_DOWN);
-		Lib->Add(L, "CactusLow", STATE_CACTUS_LOW);
-		Lib->Add(L, "CactusRising", STATE_CACTUS_RISING);
-		Lib->Add(L, "CactusHigh", STATE_CACTUS_HIGH);
-		Lib->Add(L, "CactusLowering", STATE_CACTUS_LOWERING);
-		Lib->Add(L, "TanglekelpGrabbing", STATE_TANGLEKELP_GRABBING);
-		Lib->Add(L, "CobcannonArming", STATE_COBCANNON_ARMING);
-		Lib->Add(L, "CobcannonLoading", STATE_COBCANNON_LOADING);
-		Lib->Add(L, "CobcannonReady", STATE_COBCANNON_READY);
-		Lib->Add(L, "CobcannonFiring", STATE_COBCANNON_FIRING);
-		Lib->Add(L, "KernelpultButter", STATE_KERNELPULT_BUTTER);
-		Lib->Add(L, "UmbrellaTriggered", STATE_UMBRELLA_TRIGGERED);
-		Lib->Add(L, "UmbrellaReflecting", STATE_UMBRELLA_REFLECTING);
-		Lib->Add(L, "ImitaterMorphing", STATE_IMITATER_MORPHING);
-		Lib->Add(L, "ZenGardenWatered", STATE_ZEN_GARDEN_WATERED);
-		Lib->Add(L, "ZenGardenNeedy", STATE_ZEN_GARDEN_NEEDY);
-		Lib->Add(L, "ZenGardenHappy", STATE_ZEN_GARDEN_HAPPY);
-		Lib->Add(L, "MarigoldEnding", STATE_MARIGOLD_ENDING);
-		Lib->Add(L, "FlowerpotInvulnerable", STATE_FLOWERPOT_INVULNERABLE);
-		Lib->Add(L, "LilypadInvulnerable", STATE_LILYPAD_INVULNERABLE);
-	}
-	void lua_PlantBungeeState(lua_State* L)
-	{
-		auto Lib = EnumLib::New(L, "PlantBungeeState");
-		L_PlantBungeeState = Lib;
-		SetEnum(L, Lib);
+	int SpawnGrave(lua_State* L);
+	int Fire(lua_State* L);
 
-		Lib->Add(L, "None", NOT_ON_BUNGEE);
-		Lib->Add(L, "Grabbing", GETTING_GRABBED_BY_BUNGEE);
-		Lib->Add(L, "Rising", RISING_WITH_BUNGEE);
-	}
-
-	void SetupEnums(lua_State* L)
-	{
-		lua_PlantState(L);
-		lua_PlantBungeeState(L);
-	}
+	// Plant Specific
+	int Kill(lua_State* L);
+	int Damage(lua_State* L);
+	int SetSleep(lua_State* L);
+	int AddParticles(lua_State* L);
+	int IsOnHighGround(lua_State* L);
+	int DoPiercingDamage(lua_State* L);
+	int StarfruitDetect(lua_State* L);
+	int IsSunProducer(lua_State* L);
+	int FindSquashTarget(lua_State* L);
+	int RemoveEffects(lua_State* L);
+	int Squish(lua_State* L);
+	int IsOnGround(lua_State* L);
+	int GetProjectileOffset(lua_State* L);
+	int DoSpecial(lua_State* L);
+	int FindTargetZombie(lua_State* L);
 }
+
+#pragma region Methods
+int AddParticles(lua_State* L)
+{
+
+	return 0;
+}
+#pragma endregion
 
 LunaPlant* LunaPlant::Source = new LunaPlant();
 int LunaPlant::Init(lua_State* L)
@@ -216,12 +185,64 @@ int LunaPlant::Init(lua_State* L)
 	Source->AllowsInjection = true;
 	Source->SetName("Plant");
 	Source->AddSubClass("GameObject");
-	SetupEnums(L);
 	
 #pragma region Fields
-	IntField::New("Type", 0x24, Source);
+	// Game Object
+	UIObjectField::New("Lawn", 0x4, Source);
+	UIObjectField::New("Game", 0x4, Source);
+
+	RctField::New("Bounds", 0x8, Source);
+	IV2Field::New("Position", 0x8, Source);
+	IntField::New("X", 0x8, Source);
+	IntField::New("Y", 0xC, Source);
+	IV2Field::New("Size", 0x10, Source);
+	IntField::New("W", 0x10, Source);
+	IntField::New("H", 0x14, Source);
+	BlnField::New("Visible", 0x18, Source);
+	IntField::New("Lane", 0x1C, Source);
+	IntField::New("Row", 0x1C, Source);
+	IntField::New("ZIndex", 0x20, Source);
+
+	// Plant Specific
+	LunaPlantDef::PlantDefField::New("Type", 0x24, Source);
+	LunaPlantDef::PlantDefField::New("ImitaterType", 0x140, Source);
 	EnumField::New("State", 0x3C, L_PlantState, Source);
 	EnumField::New("BungeeState", 0x134, L_PlantBungeeState, Source);
+
+	IntField::New("Column", 0x28, Source);
+	IntField::New("AnimCounter", 0x2C, Source);
+	BlnField::New("AnimPing", 0x30, Source);
+	BlnField::New("Dead", 0x44, Source);
+	BlnField::New("Squished", 0x45, Source);
+
+	IntField::New("HP", 0x48, Source);
+	IntField::New("Health", 0x48, Source);
+	IntField::New("MaxHP", 0x4C, Source);
+	IntField::New("MaxHealth", 0x4C, Source);
+	BlnField::New("Offensive", 0x50, Source);
+	IntField::New("VanishTimer", 0x54, Source);
+	IntField::New("SpecialTimer", 0x58, Source);
+	IntField::New("StateTimer", 0x5C, Source);
+	IntField::New("ActionTimer", 0x60, Source);
+	IntField::New("MaxActionTimer", 0x64, Source);
+	IntField::New("ActionRate", 0x64, Source);
+	RctField::New("PlantRect", 0x68, Source);
+	RctField::New("PlantAttackRect", 0x78, Source);
+	IV2Field::New("TargetPosition", 0x88, Source);
+	IntField::New("InitialLane", 0x90, Source);
+	IntField::New("FireTimer", 0x98, Source);
+	IntField::New("BlinkTimer", 0xB8, Source);
+	IntField::New("EatenTimer", 0xBC, Source);
+	IntField::New("FlashTimer", 0xC0, Source);
+	IntField::New("GlowTimer", 0xC4, Source);
+	FV2Field::New("ShakeOffset", 0xC8, Source);
+	IntField::New("WakingTiemr", 0x138, Source);
+	BlnField::New("IsAsleep", 0x13C, Source, true);
+	BlnField::New("OnLawn", 0x13D, Source);
+	BlnField::New("IsOnBungee", 0x13E, Source);
+	BlnField::New("Highlighted", 0x13F, Source, true);
+	IntField::New("ZenGardenIndex", 0x144, Source);
+	
 #pragma endregion
 	SetupEvents();
 

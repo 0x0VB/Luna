@@ -81,6 +81,14 @@ Pickup* Lawn::AddPickup(int X, int Y, PickupType Type, PickupMotion Motion, Seed
 	return New;
 }
 
+Plant* Lawn::AddPlant(SeedType Type, int Col, int Lane, SeedType ImitaterType, bool DoEffects)
+{
+	auto self = Plants.Alloc();
+	self->Initialize(Type, ImitaterType, Lane, Col);
+	self->OnLawn = true;
+	return self;
+}
+
 void Lawn::KillPlantCell(int Col, int Lane)
 {
 	Plant* Current = NULL;

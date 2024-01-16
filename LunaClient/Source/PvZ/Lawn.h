@@ -143,6 +143,7 @@ public:
 	GridItem* AddBrain(int X, int Y, bool Zombaquarium = false);
 
 	Pickup* AddPickup(int X, int Y, PickupType Type, PickupMotion Motion, SeedType PacketType = SEED_NONE);
+	Plant* AddPlant(SeedType Type, int Column, int Lane, SeedType ImitaterType = SEED_NONE, bool DoPlantEffect = true);
 
 	void KillPlantCell(int Column, int Lane);
 	void KillPlantLane(int Lane);

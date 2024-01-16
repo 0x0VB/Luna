@@ -4,13 +4,6 @@
 #include "LunaApi/LunaClass/LunaClass.h"
 
 using namespace Luna::Class;
-class PlantDefField : public Luna::Class::LunaField
-{
-	virtual void __index(lua_State* L) override;
-	virtual void __newindex(lua_State* L) override;
-	DefNewField(PlantDefField)
-};
-
 class Luna::Class::LunaPlantDef : public Luna::Class::LunaClass
 {
 public:
@@ -22,6 +15,17 @@ public:
 	static const size_t PlantCapacity = 100;
 	static int PlantHP[PlantCapacity];
 	static int PlantDefReferences[PlantCapacity];
+	static int CurrentPlantCount;
+	static std::map<std::string, int> PlantMap;
+	static PlantDefinition* Assert(lua_State* L, int I, bool AcceptNil = false, std::string ParamName = "Type");
+
+	static class PlantDefField : public Luna::Class::LunaField
+	{
+	public:
+		virtual void __index(lua_State* L) override;
+		virtual void __newindex(lua_State* L) override;
+		DefNewField(PlantDefField)
+	};
 
 	static class HealthField : public LunaField
 	{

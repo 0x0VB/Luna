@@ -33,12 +33,13 @@
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\LunaBase.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\LunaLawn.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\LunaPlant.cpp" />
-    <ClCompile Include="Source\LunaApi\LunaClass\Classes\LunaPlantDef.cpp" />
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\PlantDefClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\SexyAppClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\StoneButtonClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIButtonClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIContainerClass.cpp" />
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\UIElementClass.cpp" />
+    <ClCompile Include="Source\LunaApi\LunaEnum\EnumList.cpp" />
     <ClCompile Include="Source\LunaApi\LunaEnum\LunaEnum.cpp" />
     <ClCompile Include="Source\LunaApi\LunaEvent\LunaEvent.cpp" />
     <ClCompile Include="Source\LunaUnpacker.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIContainerClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\UIElementClass.h" />
     <ClInclude Include="Source\LunaApi\LunaClass\LunaClass.h" />
+    <ClInclude Include="Source\LunaApi\LunaEnum\EnumList.h" />
     <ClInclude Include="Source\LunaApi\LunaEnum\LunaEnum.h" />
     <ClInclude Include="Source\LunaApi\LunaEvent\LunaEvent.h" />
     <ClInclude Include="Source\LunaApi\LunaIO\LunaIO.h" />

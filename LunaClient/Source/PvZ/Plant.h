@@ -36,7 +36,7 @@ enum SeedType
 	SEED_BLOVER = 0x1B,
 	SEED_SPLITPEA = 0x1C,
 	SEED_STARFRUIT = 0x1D,
-	SEED_PUMPKINSHELL = 0x1E,
+	SEED_PUMPKIN = 0x1E,
 	SEED_MAGNETSHROOM = 0x1F,
 	SEED_CABBAGEPULT = 0x20,
 	SEED_FLOWERPOT = 0x21,
@@ -242,6 +242,7 @@ public:
 	}
 
 	void __thiscall Initialize(SeedType Type, SeedType Imitater, int Lane, int Column);
+	void __thiscall PlantingEffects();
 	void Die();
 	void Fire(Zombie* Target = NULL, int Lane = -1, bool IsSecondary = false);
 };

@@ -24,6 +24,29 @@ void __declspec(naked) __thiscall Plant::Initialize(SeedType Type, SeedType Imit
 	}
 }
 
+
+void __declspec(naked) __thiscall Plant::PlantingEffects()
+{
+	/* FUNCTION: 40CE60
+	eax		: Lane
+	ecx		: Col
+	edx		: Board
+	esp+04	: Plant
+	*/
+	__asm
+	{
+		push esi
+		mov esi, 0x40CE60
+		push ecx
+		mov eax, Lane
+		mov edx, MyLawn
+		mov ecx, Column
+		call esi
+		pop esi
+		ret
+	}
+}
+
 void Plant::Die()
 {
 	((Die_Type)(0x4679B0))(this);

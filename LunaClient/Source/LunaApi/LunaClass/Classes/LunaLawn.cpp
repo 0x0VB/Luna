@@ -5,6 +5,7 @@
 #include "LunaApi/LunaUtil/LunaUtil.h"
 #include "LunaApi/LunaIO/LunaIO.h"
 
+#include "PvZ/Reanimation.h"
 #include "PvZ/UIElement.h"
 #include "PvZ/UIRoot.h"
 #include "PvZ/Lawn.h"
@@ -14,8 +15,9 @@
 #include "UIElementClass.h"
 #include "UIContainerClass.h"
 #include "StoneButtonClass.h"
-#include "PvZ/Reanimation.h"
 #include "ImageClass.h"
+#include "LunaPlant.h"
+#include "PlantDefClass.h"
 
 using namespace Luna::Class;
 using namespace Fields;
@@ -24,8 +26,26 @@ namespace
 {
 	int AddPlant(lua_State* L)
 	{
+		auto self = GetAndAssert(L);
+		auto Type = LunaPlantDef::Assert(L, 2);
+		auto Lane = GetInt(L, 3);
+		auto Col = GetInt(L, 4);
+		auto IType = LunaPlantDef::Assert(L, 5, true);
+		auto DoEffects = true;
+		SeedType PType;
 		
-		return 0;
+		if (IType == NULL) PType = SEED_NONE;
+		else PType = IType->SeedType;
+
+		if (lua_isboolean(L, 6)) DoEffects = lua_toboolean(L, 6);
+
+		Lawn* Game = (Lawn*)self->GetBase();
+		AssertIsA(L, 1, "Lawn");
+
+		auto Plant = Game->AddPlant(Type->SeedType, Col, Lane, PType, DoEffects);
+		LunaPlant::Source->New(L, Plant);
+
+		return 1;
 	}
 }
 
@@ -38,6 +58,8 @@ int LunaLawn::Init(lua_State* L)
 	Source->AddSubClass("Board");
 	Source->AddSubClass("Level");
 	Source->Inherit(LunaUIElement::Source);
+
+	Source->Methods["AddPlant"] = AddPlant;
 
 #pragma region Fields
 	BlnField::New("Paused", 0x164, Source);

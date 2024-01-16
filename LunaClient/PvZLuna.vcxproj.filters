@@ -174,7 +174,10 @@
     <ClCompile Include="Source\LunaApi\LunaEnum\LunaEnum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\LunaApi\LunaClass\Classes\LunaPlantDef.cpp">
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\PlantDefClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaEnum\EnumList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -462,6 +465,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\PlantDefClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaEnum\EnumList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

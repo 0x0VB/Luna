@@ -1,10 +1,8 @@
 --// Luna V0.2.2 \\--
+print(LawnApp.WindowTitle);
 LawnApp.WindowTitle = "Luna!";
-LawnApp.Speed = 1;
-local F1 = "Sun";
-local F2 = "Cost";
-Plants.PEASHOOTER[F1..F2] = 50;
-print("Cost: ", Plants.PEASHOOTER[F1..F2]);
+print(LawnApp.WindowTitle);
+
 
 local UIRoot = LawnApp.UIRoot;
 
@@ -24,6 +22,7 @@ function SpeedButton:OnMouseDown()
     LawnApp.Speed = Speed;
 end;
 
-LawnApp.OnNewGame:Connect(function(...)
-    print(...);
+LawnApp.OnNewGame:Connect(function(Lawn)
+    local Plant = Lawn:AddPlant("Imitater", 2, 0, "SnowPea");
+    Plant.X += 100;
 end);

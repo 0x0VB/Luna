@@ -66,6 +66,9 @@ void Luna::LoadScript(lua_State* L, std::filesystem::path ScriptPath)
 	lua_getref(L, Luna::Class::LunaApp::LunaInstanceRef);
 	lua_setglobal(L, "LawnApp");
 
+	LunaUtil::GetRegKey(L, "PlantData");
+	lua_setglobal(L, "Plants");
+
 	if (lua_pcall(L, 0, 0, 0) != LUA_OK)
 	{
 		std::string ErrorMsg = std::format("[{}] ERROR MESSAGE: ", ScriptPath.filename().string());
@@ -160,6 +163,5 @@ void Luna::DebugMain()
 	LunaIO::AllocateConsole();
 	SetConsoleTitleA("LunaDebugIO");
 	std::cout << "Luna Developer Mode Loaded\t\tV0.2.2\n\n";
-
 }
 #pragma endregion

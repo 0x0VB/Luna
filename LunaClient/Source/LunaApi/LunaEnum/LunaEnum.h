@@ -2,8 +2,6 @@
 #include <string>
 #include <map>
 
-#include "Luna.h"
-
 namespace Luna::Enum
 {
 	class EnumLib;
