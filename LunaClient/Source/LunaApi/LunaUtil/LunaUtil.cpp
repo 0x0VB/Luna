@@ -162,6 +162,11 @@ float LunaUtil::GetLuaFloat(lua_State* L, int I, float D)
 	if (!lua_isnumber(L, I) || lua_gettop(L) < I) return D;
 	return (float)lua_tonumber(L, I);
 }
+bool LunaUtil::GetLuaBool(lua_State* L, int I, bool D)
+{
+	if (!lua_isboolean(L, I) || lua_gettop(L) < I) return D;
+	return (bool)lua_toboolean(L, I);
+}
 double LunaUtil::GetLuaDouble(lua_State* L, int I, double D)
 {
 	if (!lua_isnumber(L, I) || lua_gettop(L) < I) return D;

@@ -8,6 +8,7 @@ class Luna::Class::LunaPlantDef : public Luna::Class::LunaClass
 {
 public:
 	virtual void New(lua_State* L, void* Param) override;
+	virtual void __tostring(lua_State* L) override;
 
 	static LunaPlantDef* Source;
 	static int Init(lua_State* L);

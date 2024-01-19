@@ -6,6 +6,7 @@ namespace Luna::Enum
 {
 	class EnumLib;
 	class EnumItem;
+	class EnumList;
 	
 	class EnumLib
 	{
@@ -60,6 +61,22 @@ namespace Luna::Enum
 		static int __tostring(lua_State* L);
 	};
 
+	class EnumList
+	{
+	private:
+		void lua_PlantState(lua_State* L);
+		void lua_PlantBungeeState(lua_State* L);
+		void lua_ParticleEffects(lua_State* L);
+	public:
+		EnumLib* L_PlantBungeeState = nullptr;
+		EnumLib* L_ParticleEffects = nullptr;
+		EnumLib* L_PlantState = nullptr;
+
+		EnumList() {}
+		EnumList(lua_State* L);
+	};
+
 	void SetEnum(lua_State* L, EnumLib* Lib);
 	int Init(lua_State* L);
+	EnumList* GetEnums(lua_State* L);
 }

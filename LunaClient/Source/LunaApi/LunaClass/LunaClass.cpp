@@ -90,18 +90,14 @@ void LunaClass::New(lua_State* L, void* Param)
 	if (!AllowsInjection)
 		return;
 
-	LunaUtil::GetRegKey(L, "Injected");
-	lua_pushvalue(L, T + 1);
 	lua_newtable(L);
-	lua_settable(L, -3);
-	lua_pop(L, 1);
+	self->InjectedRef = lua_ref(L, -1);
+	lua_settop(L, T + 1);
 }
 void LunaClass::PushInjected(lua_State* L)
 {
-	LunaUtil::GetRegKey(L, "Injected");
-	lua_pushvalue(L, 1);
-	lua_gettable(L, -2);
-	lua_replace(L, -2);
+	auto self = (LunaInstance*)lua_touserdata(L, 1);
+	lua_getref(L, self->InjectedRef);
 }
 void LunaClass::GetInjected(lua_State* L)
 {
@@ -188,7 +184,7 @@ int Luna::Class::__newindex(lua_State* L)
 	auto Field = GetString(L, 2);
 	auto Class = self->Class;
 
-	if (self->Base == NULL && Class->AllowsInjection) LunaIO::ThrowError(L, "This object has been destroyed.");
+	if (self->Base == NULL && !Class->CustomBase) LunaIO::ThrowError(L, "This object has been destroyed.");
 	else if (!lua_isstring(L, 2)) LunaIO::ThrowError(L, "Expected a string field, got " + LunaUtil::Type(L, 2));// Only string fields allowed
 	else if (Class->Methods.contains(Field)) LunaIO::ThrowError(L, Field + " is read-only.");// Error: Methods are read-only.
 	else if (Class->Fields.contains(Field)) Class->Fields[Field]->__newindex(L);// Set Field
@@ -200,7 +196,7 @@ int Luna::Class::__newindex(lua_State* L)
 int Luna::Class::__tostring(lua_State* L)
 {
 	auto self = GetAndAssert(L);
-	if (self->Base == NULL) lua_pushstring(L, "[DELETED_OBJECT]");
+	if (self->Base == NULL && !self->Class->CustomBase) lua_pushstring(L, "[DELETED_OBJECT]");
 	else self->Class->__tostring(L);
 	return 1;
 }
@@ -482,9 +478,6 @@ int Luna::Class::Init(lua_State* L)
 	
 	lua_newtable(L);
 	LunaUtil::SetRegKey(L, "ClassRef", -1, false);
-
-	lua_newtable(L);
-	LunaUtil::SetRegKey(L, "Injected", -1, false);
 
 	lua_newtable(L);
 	lua_pushstring(L, "__mode");

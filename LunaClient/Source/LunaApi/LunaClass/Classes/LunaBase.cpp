@@ -53,7 +53,7 @@ namespace // Methods
 	int Destroy(lua_State* L)
 	{
 		auto self = GetAndAssert(L);
-		LunaBase::Flush(L);
+		lua_unref(L, self->InjectedRef);
 		delete self->Base;
 		self->Base = NULL;
 		return 0;
@@ -64,10 +64,9 @@ LunaClass* LunaBase::Source = new LunaClass();
 int LunaBase::Flush(lua_State* L)
 {
 	auto self = GetAndAssert(L);
-	LunaUtil::GetRegKey(L, "Injected");
-	lua_pushvalue(L, 1);
+	lua_unref(L, self->InjectedRef);
 	lua_newtable(L);
-	lua_settable(L, -3);
+	self->InjectedRef = lua_ref(L, -1);
 	return 0;
 }
 int LunaBase::Init(lua_State* L)

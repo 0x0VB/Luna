@@ -74,8 +74,8 @@ void LunaPlantDef::HealthField::__index(lua_State* L)
 void LunaPlantDef::HealthField::__newindex(lua_State* L)
 {
 	AssertType(L, 3, "number", Name);
-	int Index = (int)lua_touserdata(L, 1);
-	int Value = (int)lua_tonumber(L, 2);
+	int Index = (int)((LunaInstance*)lua_touserdata(L, 1))->Base;
+	int Value = (int)lua_tonumber(L, 3);
 	PlantHP[Index] = Value;
 }
 
@@ -134,6 +134,12 @@ void LunaPlantDef::New(lua_State* L, void* Param)
 	LunaUtil::GetRegKey(L, "ClassMeta");
 	lua_setmetatable(L, T + 1);
 }
+
+void LunaPlantDef::__tostring(lua_State* L)
+{
+	int Type = (int)GetSelf(L)->Base;
+	lua_pushstring(L, PlantDefinitions[Type].PlantName);
+}
 #pragma endregion
 
 #pragma region Methods
@@ -171,6 +177,7 @@ int LunaPlantDef::Init(lua_State* L)
 	Source->AllowsInjection = false;
 	Source->SetName("PlantData");
 	Source->Inherit(LunaBase::Source);
+	Source->CustomBase = true;
 
 	HealthField::New("Health", 0, Source);
 	PlantNameField::New("Name", 0, Source);
@@ -179,7 +186,8 @@ int LunaPlantDef::Init(lua_State* L)
 	IndexField::New("Cooldown", 5, Source);
 	IndexField::New("ActionRate", 7, Source);
 
-	memset(PlantHP, 300, PlantCapacity * 4);
+	for (int i = 0; i < PlantCapacity; i++)
+		PlantHP[i] = 300;
 
 	PlantHP[SEED_PUMPKIN] = 3000;
 	PlantHP[SEED_WALLNUT] = 3000;

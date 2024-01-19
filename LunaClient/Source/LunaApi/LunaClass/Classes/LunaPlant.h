@@ -3,6 +3,8 @@
 #include "LunaApi/LunaEvent/LunaEvent.h"
 #include "LunaApi/LunaClass/LunaClass.h"
 
+Plant* GetPlant(lua_State* L, int I, std::string ParamName = "self", bool AcceptNil = false);
+
 class Luna::Class::LunaPlant : public Luna::Class::LunaClass
 {
 public:

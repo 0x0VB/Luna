@@ -1,9 +1,6 @@
 --// Luna V0.2.2 \\--
-print(LawnApp.WindowTitle);
+--#region SpeedButton stuff, don't mind this
 LawnApp.WindowTitle = "Luna!";
-print(LawnApp.WindowTitle);
-
-
 local UIRoot = LawnApp.UIRoot;
 
 local SpeedButton = UI.New("StoneButton", UIRoot);
@@ -21,8 +18,5 @@ function SpeedButton:OnMouseDown()
     self:ResizeToFit();
     LawnApp.Speed = Speed;
 end;
+--#endregion
 
-LawnApp.OnNewGame:Connect(function(Lawn)
-    local Plant = Lawn:AddPlant("Imitater", 2, 0, "SnowPea");
-    Plant.X += 100;
-end);

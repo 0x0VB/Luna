@@ -1,0 +1,31 @@
+Exception: Access Violation (code 0xc0000005) at address 79785322 in thread 5B8
+Module: Exception: Access Violation (code 0xc0000005) at address 79785322 in thread 5B8
+
+Logical Address: 0000:00000000
+
+79785322  0019F8EC  0001:00074322 Luna.dll
+7978501F  0019F908  0001:0007401F Luna.dll
+797843CE  0019F940  0001:000733CE Luna.dll
+797847E6  0019F980  0001:000737E6 Luna.dll
+7977D3A4  0019F99C  0001:0006C3A4 Luna.dll
+7972BE5A  0019F9DC  0001:0001AE5A Luna.dll
+7972B8C4  0019F9FC  0001:0001A8C4 Luna.dll
+
+EAX:00A5A500 EBX:009F7F20 ECX:00000004 EDX:FDA42958 ESI:0B604A38 EDI:009F7F70
+EIP:79785322 ESP:0019F8E0  EBP:0019F8EC
+CS:0023 SS:002B DS:002B ES:002B FS:0053 GS:002B
+Flags:00010206
+
+Windows Ver: NT 6.2  Build 9200
+DDraw Ver: 10.0.22621.1
+DSound Ver: 10.0.22621.1
+
+Product: PlantsVsZombies
+Version: 1.0.0.1051
+Time Loaded: 00:04:58
+Fullscreen: No
+Primary ThreadId: 5B8
+Times Played: 0
+Build Num: 0
+Build Date: 
+

@@ -42,12 +42,12 @@ int EnumLib::AssertEnum(lua_State* L, int Index, std::string ParamName)
 	else if (lua_isnumber(L, Index))
 	{
 		int Value = GetInt(L, Index);
-		if (Contains(Value)) return Value;
+		if (Values.contains(Value)) return Value;
 	}
 	else if (lua_isstring(L, Index))
 	{
 		auto ItemName = GetString(L, Index);
-		if (Contains(ItemName)) return Items[ItemName]->Value;
+		if (Items.contains(ItemName)) return Items[ItemName]->Value;
 	}
 	LunaIO::ThrowError(L, "Expected a " + Name + " for " + ParamName + ", got " + LunaUtil::Type(L, Index));
 }
@@ -153,119 +153,6 @@ void Luna::Enum::SetEnum(lua_State* L, EnumLib* Lib)
 	lua_pop(L, 1);
 }
 
-void SetupEnums(lua_State* L)
-{
-	auto Lib = EnumLib::New(L, "ParticleEffects");
-
-	Lib->Add(L, "None", PARTICLE_NONE);
-	Lib->Add(L, "MelonSplash", PARTICLE_MELONSPLASH);
-	Lib->Add(L, "WinterMelon", PARTICLE_WINTERMELON);
-	Lib->Add(L, "FumeCloud", PARTICLE_FUMECLOUD);
-	Lib->Add(L, "PopcornSplash", PARTICLE_POPCORNSPLASH);
-	Lib->Add(L, "Powie", PARTICLE_POWIE);
-	Lib->Add(L, "JackExplode", PARTICLE_JACKEXPLODE);
-	Lib->Add(L, "ZombieHead", PARTICLE_ZOMBIE_HEAD);
-	Lib->Add(L, "ZombieArm", PARTICLE_ZOMBIE_ARM);
-	Lib->Add(L, "ZombieTrafficCone", PARTICLE_ZOMBIE_TRAFFIC_CONE);
-	Lib->Add(L, "ZombiePail", PARTICLE_ZOMBIE_PAIL);
-	Lib->Add(L, "ZombieHelmet", PARTICLE_ZOMBIE_HELMET);
-	Lib->Add(L, "ZombieFlag", PARTICLE_ZOMBIE_FLAG);
-	Lib->Add(L, "ZombieDoor", PARTICLE_ZOMBIE_DOOR);
-	Lib->Add(L, "ZombieNewspaper", PARTICLE_ZOMBIE_NEWSPAPER);
-	Lib->Add(L, "ZombieHeadlight", PARTICLE_ZOMBIE_HEADLIGHT);
-	Lib->Add(L, "Powie", PARTICLE_POW);
-	Lib->Add(L, "ZombiePogo", PARTICLE_ZOMBIE_POGO);
-	Lib->Add(L, "ZombieNewspaperHead", PARTICLE_ZOMBIE_NEWSPAPER_HEAD);
-	Lib->Add(L, "ZombieBalloonHead", PARTICLE_ZOMBIE_BALLOON_HEAD);
-	Lib->Add(L, "SodRoll", PARTICLE_SOD_ROLL);
-	Lib->Add(L, "GraveStoneRise", PARTICLE_GRAVE_STONE_RISE);
-	Lib->Add(L, "Planting", PARTICLE_PLANTING);
-	Lib->Add(L, "PlantingPool", PARTICLE_PLANTING_POOL);
-	Lib->Add(L, "ZombieRise", PARTICLE_ZOMBIE_RISE);
-	Lib->Add(L, "GraveBuster", PARTICLE_GRAVE_BUSTER);
-	Lib->Add(L, "GraveBusterDie", PARTICLE_GRAVE_BUSTER_DIE);
-	Lib->Add(L, "PoolSplash", PARTICLE_POOL_SPLASH);
-	Lib->Add(L, "IceSparkle", PARTICLE_ICE_SPARKLE);
-	Lib->Add(L, "SeedPacket", PARTICLE_SEED_PACKET);
-	Lib->Add(L, "TallNutBlock", PARTICLE_TALL_NUT_BLOCK);
-	Lib->Add(L, "Doom", PARTICLE_DOOM);
-	Lib->Add(L, "DiggerRise", PARTICLE_DIGGER_RISE);
-	Lib->Add(L, "DiggerTunnel", PARTICLE_DIGGER_TUNNEL);
-	Lib->Add(L, "DancerRise", PARTICLE_DANCER_RISE);
-	Lib->Add(L, "PoolSparkly", PARTICLE_POOL_SPARKLY);
-	Lib->Add(L, "WallnutEatSmall", PARTICLE_WALLNUT_EAT_SMALL);
-	Lib->Add(L, "WallnutEatLarge", PARTICLE_WALLNUT_EAT_LARGE);
-	Lib->Add(L, "PeaSplat", PARTICLE_PEA_SPLAT);
-	Lib->Add(L, "SpikeSplat", PARTICLE_SPIKE_SPLAT);
-	Lib->Add(L, "ButterSplat", PARTICLE_BUTTER_SPLAT);
-	Lib->Add(L, "CabbageSplat", PARTICLE_CABBAGE_SPLAT);
-	Lib->Add(L, "PuffSplat", PARTICLE_PUFF_SPLAT);
-	Lib->Add(L, "StarSplat", PARTICLE_STAR_SPLAT);
-	Lib->Add(L, "IceTrap", PARTICLE_ICE_TRAP);
-	Lib->Add(L, "SnowPeaSplat", PARTICLE_SNOWPEA_SPLAT);
-	Lib->Add(L, "SnowPeaPuff", PARTICLE_SNOWPEA_PUFF);
-	Lib->Add(L, "SnowPeaTrail", PARTICLE_SNOWPEA_TRAIL);
-	Lib->Add(L, "LanternShine", PARTICLE_LANTERN_SHINE);
-	Lib->Add(L, "SeedPacketPickup", PARTICLE_SEED_PACKET_PICKUP);
-	Lib->Add(L, "PotatoMine", PARTICLE_POTATO_MINE);
-	Lib->Add(L, "PotatoMineRise", PARTICLE_POTATO_MINE_RISE);
-	Lib->Add(L, "PuffshroomTrail", PARTICLE_PUFFSHROOM_TRAIL);
-	Lib->Add(L, "PuffshroomMuzzle", PARTICLE_PUFFSHROOM_MUZZLE);
-	Lib->Add(L, "SeedPacketFlash", PARTICLE_SEED_PACKET_FLASH);
-	Lib->Add(L, "WhackAZombieRise", PARTICLE_WHACK_A_ZOMBIE_RISE);
-	Lib->Add(L, "ZombieLadder", PARTICLE_ZOMBIE_LADDER);
-	Lib->Add(L, "UmbrellaReflect", PARTICLE_UMBRELLA_REFLECT);
-	Lib->Add(L, "SeedPacketPick", PARTICLE_SEED_PACKET_PICK);
-	Lib->Add(L, "IceTrapZombie", PARTICLE_ICE_TRAP_ZOMBIE);
-	Lib->Add(L, "IceTrapRelease", PARTICLE_ICE_TRAP_RELEASE);
-	Lib->Add(L, "ZamboniSmoke", PARTICLE_ZAMBONI_SMOKE);
-	Lib->Add(L, "GloomCloud", PARTICLE_GLOOMCLOUD);
-	Lib->Add(L, "ZombiePogoHead", PARTICLE_ZOMBIE_POGO_HEAD);
-	Lib->Add(L, "ZamboniTire", PARTICLE_ZAMBONI_TIRE);
-	Lib->Add(L, "ZamboniExplosion", PARTICLE_ZAMBONI_EXPLOSION);
-	Lib->Add(L, "ZamboniExplosion2", PARTICLE_ZAMBONI_EXPLOSION2);
-	Lib->Add(L, "CatapultExplosion", PARTICLE_CATAPULT_EXPLOSION);
-	Lib->Add(L, "MowerCloud", PARTICLE_MOWER_CLOUD);
-	Lib->Add(L, "BossIceBall", PARTICLE_BOSS_ICE_BALL);
-	Lib->Add(L, "Blastmark", PARTICLE_BLASTMARK);
-	Lib->Add(L, "CoinPickupArrow", PARTICLE_COIN_PICKUP_ARROW);
-	Lib->Add(L, "PresentPickup", PARTICLE_PRESENT_PICKUP);
-	Lib->Add(L, "ImitaterMorph", PARTICLE_IMITATER_MORPH);
-	Lib->Add(L, "MoweredZombieHead", PARTICLE_MOWERED_ZOMBIE_HEAD);
-	Lib->Add(L, "MoweredZombieArm", PARTICLE_MOWERED_ZOMBIE_ARM);
-	Lib->Add(L, "ZombieHeadPool", PARTICLE_ZOMBIE_HEAD_POOL);
-	Lib->Add(L, "ZombieBossFireball", PARTICLE_ZOMBIE_BOSS_FIREBALL);
-	Lib->Add(L, "FireballDeath", PARTICLE_FIREBALL_DEATH);
-	Lib->Add(L, "IceballDeath", PARTICLE_ICEBALL_DEATH);
-	Lib->Add(L, "IceballTrail", PARTICLE_ICEBALL_TRAIL);
-	Lib->Add(L, "FireballTrail", PARTICLE_FIREBALL_TRAIL);
-	Lib->Add(L, "BossExplosion", PARTICLE_BOSS_EXPLOSION);
-	Lib->Add(L, "ScreenFlash", PARTICLE_SCREEN_FLASH);
-	Lib->Add(L, "TrophySparkle", PARTICLE_TROPHY_SPARKLE);
-	Lib->Add(L, "PortalCircle", PARTICLE_PORTAL_CIRCLE);
-	Lib->Add(L, "PortalSquare", PARTICLE_PORTAL_SQUARE);
-	Lib->Add(L, "PottedPlantGlow", PARTICLE_POTTED_PLANT_GLOW);
-	Lib->Add(L, "PottedWaterPlantGlow", PARTICLE_POTTED_WATER_PLANT_GLOW);
-	Lib->Add(L, "PottedZenGlow", PARTICLE_POTTED_ZEN_GLOW);
-	Lib->Add(L, "MindControl", PARTICLE_MIND_CONTROL);
-	Lib->Add(L, "VaseShatter", PARTICLE_VASE_SHATTER);
-	Lib->Add(L, "VaseShatterLeaf", PARTICLE_VASE_SHATTER_LEAF);
-	Lib->Add(L, "VaseShatterZombie", PARTICLE_VASE_SHATTER_ZOMBIE);
-	Lib->Add(L, "AwardPickupArrow", PARTICLE_AWARD_PICKUP_ARROW);
-	Lib->Add(L, "ZombieSeaweed", PARTICLE_ZOMBIE_SEAWEED);
-	Lib->Add(L, "ZombieMustache", PARTICLE_ZOMBIE_MUSTACHE);
-	Lib->Add(L, "ZombieFutureGlasses", PARTICLE_ZOMBIE_FUTURE_GLASSES);
-	Lib->Add(L, "Pinata", PARTICLE_PINATA);
-	Lib->Add(L, "DustSquash", PARTICLE_DUST_SQUASH);
-	Lib->Add(L, "DustFoot", PARTICLE_DUST_FOOT);
-	Lib->Add(L, "Daisy", PARTICLE_DAISY);
-	Lib->Add(L, "CreditStrobe", PARTICLE_CREDIT_STROBE);
-	Lib->Add(L, "CreditsRayswipe", PARTICLE_CREDITS_RAYSWIPE);
-	Lib->Add(L, "CreditsZombieHeadwipe", PARTICLE_CREDITS_ZOMBIEHEADWIPE);
-	Lib->Add(L, "Starburst", PARTICLE_STARBURST);
-	Lib->Add(L, "CreditsFog", PARTICLE_CREDITS_FOG);
-}
-
 int Luna::Enum::Init(lua_State* L)
 {
 	lua_newtable(L);// Enums
@@ -310,5 +197,17 @@ int Luna::Enum::Init(lua_State* L)
 	lua_settable(L, -3);
 	LunaUtil::SetRegKey(L, "EnumItemMeta");
 
+	auto Enums = new EnumList(L);
+	lua_pushlightuserdata(L, Enums);
+	LunaUtil::SetRegKey(L, "EnumsProxy");
+
 	return 0;
+}
+
+EnumList* Luna::Enum::GetEnums(lua_State* L)
+{
+	LunaUtil::GetRegKey(L, "EnumsProxy");
+	auto self = (EnumList*)lua_touserdata(L, -1);
+	lua_pop(L, 1);
+	return self;
 }

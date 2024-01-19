@@ -12,6 +12,7 @@
 #define GetDouble LunaUtil::GetLuaDouble
 #define GetFloat LunaUtil::GetLuaFloat
 #define GetField LunaUtil::GetLuaField
+#define GetBool LunaUtil::GetLuaBool
 #define GetInt LunaUtil::GetLuaInt
 #define PCall LunaUtil::FPCall
 
@@ -37,6 +38,7 @@ namespace LunaUtil
 
 	int GetLuaInt(lua_State* L, int Idx, int Default = 0);
 	float GetLuaFloat(lua_State* L, int Idx, float Default = 0);
+	bool GetLuaBool(lua_State* L, int Idx, bool Default = false);
 	double GetLuaDouble(lua_State* L, int Idx, double Default = 0);
 	std::string GetLuaString(lua_State* L, int Idx, std::string Default = "");
 	std::string GetLuaField(lua_State* L);

@@ -38,6 +38,7 @@ GridItem* Lawn::AddGrave(int Column, int Lane, bool DoEffects, bool KillPlants)
 	New->Lane = Lane;
 	New->MainTimer = 0;
 	if (DoEffects) New->DoGraveEffects();
+	if (KillPlants) KillPlantCell(Column, Lane);
 	return New;
 }
 

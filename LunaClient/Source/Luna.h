@@ -15,6 +15,7 @@ namespace Luna
 	extern size_t FoundMods;
 	extern size_t LoadedMods;
 	extern Luau::CompileOptions CompileOptions;
+	extern void* AbstractEnums;
 
 
 	void LoadScript(lua_State* L, std::filesystem::path ScriptPath);

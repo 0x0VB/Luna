@@ -26,6 +26,7 @@ namespace Luna::Class
 	public:
 		LunaClass* Class;
 		void* Base;
+		int InjectedRef = 0;
 		unsigned int Data[2] = {};
 		int Associations[30] = {};
 		void* GetBase();
@@ -35,6 +36,7 @@ namespace Luna::Class
 	public:
 		char Name[35];
 		bool AllowsInjection;
+		bool CustomBase = false;
 		std::map<std::string, LunaField*> Fields;
 		std::map<std::string, lua_CFunction> Methods;
 		std::map<std::string, LunaClass*> SubClasses;
