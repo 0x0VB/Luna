@@ -180,6 +180,12 @@
     <ClCompile Include="Source\LunaApi\LunaEnum\Enums.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\GridItemClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LunaApi\LunaClass\Classes\ZombieClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Enums\Enums.h">
@@ -465,6 +471,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\LunaApi\LunaClass\Classes\PlantDefClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\GridItemClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LunaApi\LunaClass\Classes\ZombieClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

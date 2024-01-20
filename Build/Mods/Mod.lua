@@ -1,5 +1,5 @@
 --// Luna V0.2.2 \\--
---#region SpeedButton stuff, don't mind this
+--#region SpeedButton code, don't mind this
 LawnApp.WindowTitle = "Luna!";
 local UIRoot = LawnApp.UIRoot;
 
@@ -19,4 +19,9 @@ function SpeedButton:OnMouseDown()
     LawnApp.Speed = Speed;
 end;
 --#endregion
+
+Plant.OnEaten:Connect(function(Plant, Zombie)-- When a plant is eaten,
+    local Grave = Plant:SpawnGrave();-- Spawn a grave at its location and save the grave in the variable "Grave"
+    Grave:SpawnZombie(Zombie.Type);-- Then spawn a zombie from the grave, with the same type as the zombie that ate the plant.
+end);
 

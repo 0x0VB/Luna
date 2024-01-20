@@ -90,6 +90,24 @@ Plant* Lawn::AddPlant(SeedType Type, int Col, int Lane, SeedType ImitaterType, b
 	return self;
 }
 
+__declspec(naked) Zombie* Lawn::AddZombie(ZombieType Type, int Lane, int FromWave)
+{
+	__asm
+	{
+		push ebx
+		
+		mov edx, 0x40DDC0
+		mov ebx, [esp+0x10]
+		mov eax, ecx
+
+		push [esp+0x0C]
+		push [esp+0x0C]
+		call edx
+		pop ebx
+		ret 0xC
+	}
+}
+
 void Lawn::KillPlantCell(int Col, int Lane)
 {
 	Plant* Current = NULL;

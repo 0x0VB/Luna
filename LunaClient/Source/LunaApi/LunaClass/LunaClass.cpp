@@ -469,6 +469,8 @@ LunaInstance* Luna::Class::AssertIsA(lua_State* L, int I, std::string SubClass, 
 #include "Classes/LunaLawn.h"
 #include "Classes/LunaPlant.h"
 #include "Classes/PlantDefClass.h"
+#include "Classes/GridItemClass.h"
+#include "Classes/ZombieClass.h"
 
 #include "LunaApi/LunaUtil/LunaUtil.h"
 
@@ -511,6 +513,8 @@ int Luna::Class::Init(lua_State* L)
 	LunaInit(Class::LunaLawn);
 	LunaInit(Class::LunaPlant);
 	LunaInit(Class::LunaPlantDef);
+	LunaInit(Class::LunaGridItem);
+	LunaInit(Class::LunaZombie);
 
 	return 0;
 }

@@ -138,6 +138,7 @@ namespace Luna::Class::Fields
 #define FBase(T) auto self = GetSelf(L); auto Base = (T*)GetBase(self);
 	class BytField : public LunaField
 	{
+	public:
 		virtual void __index(lua_State* L) override;
 		virtual void __newindex(lua_State* L) override;
 		DefNewField(BytField)

@@ -10,13 +10,18 @@
 #include "LunaPlant.h"
 #include "PlantDefClass.h"
 #include "UIContainerClass.h"
+#include "GridItemClass.h"
+#include "ZombieClass.h"
 
 using namespace Luna::Event;
 using namespace Luna::Class;
 using namespace Luna::Enum;
 using namespace Fields;
 
-EnumList* Enums;
+namespace
+{
+	EnumList* Enums;
+}
 Plant* GetPlant(lua_State* L, int I, std::string ParamName, bool AcceptNil)
 {
 	auto self = AssertIsA(L, I, "Plant", ParamName, AcceptNil);
@@ -207,8 +212,9 @@ namespace
 		lua_newtable(L);
 
 		LunaPlant::Source->New(L, self);
+		LunaZombie::Source->New(L, Zombie);
 		lua_pushvalue(L, T + 1);
-		OnEaten.GetEvent()->Call(L, 2);
+		OnEaten.GetEvent()->Call(L, 3);
 
 		lua_pushstring(L, "Skip");
 		lua_gettable(L, T + 1);
@@ -390,7 +396,8 @@ int Methods::SpawnGrave(lua_State* L)
 	auto Kill = GetBool(L, 2, true);
 	auto Effects = GetBool(L, 3, true);
 	auto Grave = self->MyLawn->AddGrave(self->Column, self->Lane, Effects, Kill);
-	return 0;
+	LunaGridItem::Source->New(L, Grave);
+	return 1;
 }
 int Methods::Kill(lua_State* L)
 {
