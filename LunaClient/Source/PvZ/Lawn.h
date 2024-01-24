@@ -149,5 +149,8 @@ public:
 	void KillPlantCell(int Column, int Lane);
 	void KillPlantLane(int Lane);
 	void KillPlantCol(int Col);
+
+	IVector2 PixelToGrid(int X, int Y);
+	IVector2 GridToPixel(int X, int Y);
 #pragma endregion
 };

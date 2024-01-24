@@ -5,7 +5,7 @@ local UIRoot = LawnApp.UIRoot;
 
 local SpeedButton = UI.New("StoneButton", UIRoot);
 local CurrentSpeed = 1;
-local Speeds = {5, 1, 2};
+local Speeds = {1, 2, 5};
 
 SpeedButton.Text = "1x";
 SpeedButton:ResizeToFit();
@@ -19,9 +19,3 @@ function SpeedButton:OnMouseDown()
     LawnApp.Speed = Speed;
 end;
 --#endregion
-
-Plant.OnEaten:Connect(function(Plant, Zombie)-- When a plant is eaten,
-    local Grave = Plant:SpawnGrave();-- Spawn a grave at its location and save the grave in the variable "Grave"
-    Grave:SpawnZombie(Zombie.Type);-- Then spawn a zombie from the grave, with the same type as the zombie that ate the plant.
-end);
-

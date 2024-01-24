@@ -2,6 +2,7 @@
 #include "LunaLawn.h"
 
 #include "LunaApi/LunaStructs/Rect/Rect.h"
+#include "LunaApi/LunaEnum/LunaEnum.h"
 #include "LunaApi/LunaUtil/LunaUtil.h"
 #include "LunaApi/LunaIO/LunaIO.h"
 
@@ -19,11 +20,14 @@
 #include "LunaPlant.h"
 #include "PlantDefClass.h"
 
+
 using namespace Luna::Class;
 using namespace Fields;
 
 namespace
 {
+	Luna::Enum::EnumList* Enums;
+
 	int AddPlant(lua_State* L)
 	{
 		auto self = GetAndAssert(L);
@@ -52,6 +56,7 @@ namespace
 LunaClass* LunaLawn::Source = new LunaClass();
 int LunaLawn::Init(lua_State* L)
 {
+	Enums = Enum::GetEnums(L);
 	Source->AllowsInjection = true;
 	Source->SetName("Lawn");
 	Source->AddSubClass("Game");

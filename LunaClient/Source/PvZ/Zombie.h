@@ -125,4 +125,5 @@ public:
 	void __thiscall DieNoLoot();
 	void __thiscall DieWithLoot();
 	void __thiscall Rise(int Col, int Row);
+	void __thiscall Update();
 };

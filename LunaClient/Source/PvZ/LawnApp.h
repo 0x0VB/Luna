@@ -472,4 +472,5 @@ public:
 		}
 		return R;
 	}
+	ParticleSystem* __thiscall AddParticles(ParticleEffect Effect, float X, float Y, int Layer = 400000);
 };

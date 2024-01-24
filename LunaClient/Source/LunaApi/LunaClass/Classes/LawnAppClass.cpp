@@ -4,6 +4,7 @@
 #include "LunaBase.h"
 #include "SexyAppClass.h"
 
+#include "LunaApi/LunaEnum/LunaEnum.h"
 #include "LunaApi/LunaUtil/LunaUtil.h"
 #include "Luna.h"
 
@@ -184,6 +185,7 @@ namespace
 
 namespace // Methods
 {
+	Luna::Enum::EnumList* Enums;
 	int MsgBox(lua_State* L)
 	{
 		AssertType(L, 2, "string", "Message");
@@ -202,6 +204,19 @@ namespace // Methods
 		lua_pushboolean(L, R == 0);
 		return 1;
 	}
+	int AddParticle(lua_State* L)
+	{
+		auto self = AssertIsA(L, 1, "LawnApp");
+		auto Effect = Enums->L_ParticleEffects->AssertEnum(L, 2, "Effect");
+		auto X = GetInt(L, 3);
+		auto Y = GetInt(L, 4);
+		auto Layer = GetInt(L, 5, 400000);
+		auto App = (LawnApp*)self->GetBase();
+		App->AddParticles((ParticleEffect)Effect, X, Y, Layer);
+
+		return 0;
+	}
+
 	void SetupEvents()
 	{
 		StoneButtonDraw = LunaEvent::New("OnStoneButtonDraw", StoneButtonDrawHandler, StoneButtonEntries, true);
@@ -216,6 +231,7 @@ int Luna::Class::LunaApp::LunaInstanceRef = 0;
 Luna::Class::LunaClass* Luna::Class::LunaApp::Source = new LunaClass();
 int Luna::Class::LunaApp::Init(lua_State* L)
 {
+	Enums = Enum::GetEnums(L);
 	Source->AllowsInjection = true;
 	Source->SetName("LawnApp");
 	Source->Inherit(Luna::Class::LunaAppBase::Source);
@@ -225,6 +241,7 @@ int Luna::Class::LunaApp::Init(lua_State* L)
 	BlnField::New("NewUser", 0x801, Source);
 	IntField::New("GamePlayed", 0x804, Source);
 	BlnField::New("EasyPlantingCheat", 0x814, Source);
+	BlnField::New("FreePlantingCheat", 0x814, Source);
 	BlnField::New("CloseRequest", 0x834, Source);
 	IntField::New("Age", 0x838, Source);
 
@@ -251,6 +268,7 @@ int Luna::Class::LunaApp::Init(lua_State* L)
 
 	Source->Methods["MessageBox"] = MsgBox;
 	Source->Methods["LawnMsgBox"] = LawnMsgBox;
+	Source->Methods["AddParticle"] = AddParticle;
 
 	Source->New(L, LawnApp::GetApp());
 	LunaInstanceRef = lua_ref(L, -1);

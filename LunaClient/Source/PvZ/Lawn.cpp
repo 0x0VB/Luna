@@ -131,3 +131,83 @@ void Lawn::KillPlantCol(int Col)
 		if (Current->Column == Col)
 			Current->Die();
 }
+
+int __declspec(naked) __stdcall PixelToGridX(Lawn* self, int X, int Y)
+{
+	__asm
+	{
+		push edi
+		mov edx, 0x41C4C0
+		mov ecx, [esp+0x08]
+		mov eax, [esp+0x0C]
+		mov edi, [esp+0x10]
+		call edx
+		pop edi
+		ret 0xC
+	}
+}
+
+CONST DWORD PIXEL_TO_GRID_Y = 0x41C550;
+int __declspec(naked) __stdcall PixelToGridY(Lawn* self, int X, int Y)
+{
+	__asm
+	{
+		push ecx
+		mov edx, [esp+0x08]
+		mov eax, [esp+0x0C]
+		mov ecx, [esp+0x10]
+		call PIXEL_TO_GRID_Y
+		pop ecx
+		ret 0xC
+	}
+}
+
+IVector2 Lawn::PixelToGrid(int X, int Y)
+{
+	int Gx = PixelToGridX(this, X, Y);
+	int Gy = PixelToGridY(this, X, Y);
+	return IVector2(Gx, Gy);
+}
+
+int __declspec(naked) __stdcall GridToPixelX(Lawn* self, int X, int Y)
+{
+	__asm
+	{
+		push esi
+		mov edx, 0x41C680
+		mov ecx, [esp+0x08]
+		mov eax, [esp+0x0C]
+		mov esi, [esp+0x10]
+		pop esi
+		call edx
+		ret 0xC
+	}
+}
+
+int __declspec(naked) __stdcall GridToPixelY(Lawn* self, int X, int Y)
+{
+	__asm
+	{
+		push ebx
+		mov edx, 0x41C740
+		mov ebx, [esp+0x8]
+		mov ecx, [esp+0xC]
+		mov eax, [esp+0x10]
+		call edx
+		pop ebx
+		ret 0xC
+	}
+}
+
+IVector2 Lawn::GridToPixel(int X, int Y)
+{
+	int Px = GridToPixelX(this, X, Y);
+	int Py = GridToPixelY(this, X, Y);
+	return IVector2(Px, Py);
+}
+
+IVector2 GameObject::GetCell()
+{
+	auto Rect = Bounds.GetCenter();
+	return MyLawn->PixelToGrid(Rect.X, Rect.Y);
+}

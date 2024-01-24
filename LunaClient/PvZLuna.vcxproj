@@ -50,6 +50,7 @@
     <ClCompile Include="Source\PvZ\Font.cpp" />
     <ClCompile Include="Source\PvZ\GridItem.cpp" />
     <ClCompile Include="Source\PvZ\Lawn.cpp" />
+    <ClCompile Include="Source\PvZ\LawnApp.cpp" />
     <ClCompile Include="Source\PvZ\Pickup.cpp" />
     <ClCompile Include="Source\PvZ\Plant.cpp" />
     <ClCompile Include="Source\PvZ\UIElement.cpp" />

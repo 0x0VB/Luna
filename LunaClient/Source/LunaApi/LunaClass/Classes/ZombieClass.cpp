@@ -21,6 +21,166 @@ Zombie* GetZombie(lua_State* L, int I, std::string ParamName, bool AcceptNil)
 namespace
 {
 	EnumList* Enums;
+
+	std::vector<DWORD> UpdateEntries = { 0x401D79, 0x401D8E, 0x413124 };
+	std::map<DWORD, const char*> UpdateReason = {
+		{0x413129, "Game"},
+		{0x401D93, "Almanac"},
+		{0x401D7E, "Almanac"}
+	};
+	LunaEventRef OnUpdate;
+
+	std::vector<DWORD> DeathEntries = { 0x53051B };
+	LunaEventRef OnDeath;
+
+	std::vector<DWORD> CreatedEntries = { 0x40DE90 };
+	LunaEventRef OnCreated;
+
+	std::vector<DWORD> DamagedEntries = { 0x5317C0 };
+	LunaEventRef OnDamaged;
+}
+
+namespace
+{
+	void __stdcall UpdateCaller(Zombie* self, DWORD Reason)
+	{
+		auto L = Luna::GlobalLState;
+		auto T = lua_gettop(L);
+		lua_newtable(L);
+
+		LunaZombie::Source->New(L, self);
+		lua_pushstring(L, UpdateReason[Reason]);
+		lua_pushvalue(L, T + 1);
+		OnUpdate.GetEvent()->Call(L, 3);
+
+		lua_pushstring(L, "Skip");
+		lua_gettable(L, T + 1);
+		auto Skip = GetBool(L, -1);
+		lua_settop(L, T);
+
+		if (Skip) return;
+		self->Update();
+	}
+	void __declspec(naked) UpdateHandler()
+	{
+		__asm
+		{
+			push [esp]
+			push eax
+			call UpdateCaller
+			ret
+		}
+	}
+
+	void __stdcall DeathCaller(Zombie* self)
+	{
+		auto L = Luna::GlobalLState;
+		auto T = lua_gettop(L);
+
+		LunaZombie::Source->New(L, self);
+		OnDeath.GetEvent()->Call(L, 1);
+		lua_settop(L, T);
+	}
+	void __declspec(naked) DeathHandler()
+	{
+		__asm
+		{
+			push [esp+04]
+			call DeathCaller
+
+			push [esp+04]
+			mov eax, 0x530850
+			call eax
+
+			ret 0x4
+		}
+	}
+
+	Zombie* __stdcall CreatedCaller(Zombie* self)
+	{
+		auto L = Luna::GlobalLState;
+		auto T = lua_gettop(L);
+
+		LunaZombie::Source->New(L, self);
+		OnCreated.GetEvent()->Call(L, 1);
+		lua_settop(L, T);
+
+		return self;
+	}
+	void __declspec(naked) CreatedHandler()
+	{
+		__asm
+		{
+			push eax
+			call CreatedCaller
+			ret 0x8
+		}
+	}
+
+	BOOL DAMAGE_SKIP;
+	DWORD DAMAGE_AMMOUNT;
+	DWORD DAMAGE_FLAGS;
+	void __stdcall DamagedCaller(Zombie* self, int Damage, int DFlags)
+	{
+		auto L = Luna::GlobalLState;
+		auto T = lua_gettop(L);
+		lua_newtable(L);
+
+		LunaZombie::Source->New(L, self);
+		lua_pushinteger(L, Damage);
+		lua_pushinteger(L, DFlags);
+		lua_pushvalue(L, T + 1);
+		OnDamaged.GetEvent()->Call(L, 4);
+
+		lua_pushstring(L, "Skip");
+		lua_gettable(L, T + 1);
+		DAMAGE_SKIP = GetBool(L, -1);
+
+		lua_pushstring(L, "Damage");
+		lua_gettable(L, T + 1);
+		DAMAGE_AMMOUNT = GetInt(L, -1, Damage);
+
+		lua_pushstring(L, "Flags");
+		lua_gettable(L, T + 1);
+		DAMAGE_FLAGS = GetInt(L, -1, DFlags);
+		lua_settop(L, T);
+	}
+	void __declspec(naked) DamagedHandler()
+	{
+		__asm
+		{
+			push eax
+			push [esp+0x08]
+			push esi
+			call DamagedCaller
+
+			cmp DAMAGE_SKIP, 01
+			je Skip
+
+			// No Skip
+			mov eax, DAMAGE_FLAGS
+			mov edx, DAMAGE_AMMOUNT
+			mov [esp+0x4], edx
+
+			// Vanilla Code
+			push ecx
+			mov ecx, [esi+0x28]
+			cmp ecx, 0x10
+			mov edx, 0x5317C7
+			jmp edx
+
+			Skip:
+			ret 0x4
+		}
+	}
+
+	void SetupEvents(lua_State* L)
+	{
+		OnUpdate = LunaEvent::New("Zombie.OnUpdate", UpdateHandler, UpdateEntries, true, true);
+		OnDeath = LunaEvent::New("Zombie.OnDeath", DeathHandler, DeathEntries, true, true);
+		OnCreated = LunaEvent::New("Zombie.OnCreated", CreatedHandler, CreatedEntries, true);
+		OnDamaged = LunaEvent::New("Zombie.OnDamaged", DamagedHandler, DamagedEntries, true);
+	}
 }
 
 namespace
@@ -33,7 +193,6 @@ namespace
 		else self->DieNoLoot();
 		return 0;
 	}
-
 	int RiseFromGrave(lua_State* L)
 	{
 		auto self = GetZombie(L);
@@ -48,6 +207,16 @@ namespace
 			self->Rise(Grave->Column, Grave->Lane);
 		}
 		return 0;
+	}
+	int SpawnGrave(lua_State* L)
+	{
+		auto self = GetZombie(L);
+		auto Cell = self->GetCell();
+		auto DoEffects = GetBool(L, 2, true);
+		auto KillPlants = GetBool(L, 3, true);
+		auto Grave = self->MyLawn->AddGrave(Cell.X, self->Lane, DoEffects, KillPlants);
+		LunaGridItem::Source->New(L, Grave);
+		return 1;
 	}
 }
 
@@ -119,6 +288,28 @@ int LunaZombie::Init(lua_State* L)
 
 	Source->Methods["Kill"] = Kill;
 	Source->Methods["Rise"] = RiseFromGrave;
+	Source->Methods["SpawnGrave"] = SpawnGrave;
+
+	SetupEvents(L);
+	lua_newtable(L);
+
+	lua_pushstring(L, "OnUpdate");
+	OnUpdate.Push(L);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "OnCreated");
+	OnCreated.Push(L);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "OnDamaged");
+	OnDamaged.Push(L);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "OnDeath");
+	OnDeath.Push(L);
+	lua_settable(L, -3);
+
+	lua_setglobal(L, "Zombie");
 
 	return 0;
 }

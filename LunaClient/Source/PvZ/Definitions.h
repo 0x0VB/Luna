@@ -747,6 +747,8 @@ public:
     bool Visible;
     int Lane;
     int RenderOrder;
+
+    IVector2 GetCell();
 };
 
 
@@ -774,6 +776,7 @@ class Reanimation;
 // Other
 class ReanimatorCache;
 class ProfileManager;
+class ParticleSystem;
 class CursorPreview;
 class ToolTipWidget;
 class MessageWidget;

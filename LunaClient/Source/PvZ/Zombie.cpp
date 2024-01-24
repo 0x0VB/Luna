@@ -35,3 +35,14 @@ void __declspec(naked) __thiscall Zombie::Rise(int Col, int Row)
 		ret 0x8
 	}
 }
+
+void __declspec(naked) __thiscall Zombie::Update()
+{
+	__asm
+	{
+		mov edx, 0x52AE60
+		mov eax, ecx
+		call edx
+		ret
+	}
+}

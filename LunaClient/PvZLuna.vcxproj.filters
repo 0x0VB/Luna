@@ -186,6 +186,9 @@
     <ClCompile Include="Source\LunaApi\LunaClass\Classes\ZombieClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\PvZ\LawnApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Enums\Enums.h">
