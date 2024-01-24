@@ -2,7 +2,11 @@
 #include <vector>
 #include <filesystem>
 
+#if LDEBUG
 #define LUNA_DEBUG true
+#else
+#define LUNA_DEBUG false
+#endif
 
 #define LUNA_VERSION 0
 #define LUNA_MINOR_VERSION 2
