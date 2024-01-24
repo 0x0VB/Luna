@@ -268,7 +268,7 @@ int Luna::Class::LunaApp::Init(lua_State* L)
 
 	Source->Methods["MessageBox"] = MsgBox;
 	Source->Methods["LawnMsgBox"] = LawnMsgBox;
-	Source->Methods["AddParticle"] = AddParticle;
+	Source->Methods["AddParticles"] = AddParticle;
 
 	Source->New(L, LawnApp::GetApp());
 	LunaInstanceRef = lua_ref(L, -1);

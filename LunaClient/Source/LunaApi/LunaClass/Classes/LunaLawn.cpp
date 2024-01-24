@@ -125,6 +125,5 @@ int LunaLawn::Init(lua_State* L)
 	lua_settable(L, -3);
 
 	lua_settable(L, LUA_REGISTRYINDEX);
-
 	return 0;
 }

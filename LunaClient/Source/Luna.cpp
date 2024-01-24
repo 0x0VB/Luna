@@ -29,6 +29,19 @@ void Luna::Tick()
 std::filesystem::path ModsPath = "./Mods";
 void Luna::Setup(bool DebugMode)
 {
+#pragma region Memory Changes
+	DWORD Old;
+	DWORD New;
+	// Byte Size
+	VirtualProtect((LPVOID)0x407D76, 4, PAGE_EXECUTE_READWRITE, &Old);
+	*(DWORD*)(0x407D76) = (0xEC * 1024);
+	VirtualProtect((LPVOID)0x407D76, 4, Old, &New);
+	// Max Index
+	VirtualProtect((LPVOID)0x407DAF, 4, PAGE_EXECUTE_READWRITE, &Old);
+	*(DWORD*)(0x407DAF) = 1024;
+	VirtualProtect((LPVOID)0x407DAF, 4, Old, &New);
+#pragma endregion
+
 	Luna::DebugMode = DebugMode;	// Set DebugMode
 	Luna::InitiateLunaState();		// Create Lua State at L
 	Luna::InitializeCompileOptions();

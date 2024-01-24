@@ -19,3 +19,13 @@ function SpeedButton:OnMouseDown()
     LawnApp.Speed = Speed;
 end;
 --#endregion
+
+LawnApp.FreePlantingCheat = true;
+Plant.OnEaten:Connect(function(Plant, Zombie)-- When a plant is eaten,
+    local Grave = Plant:SpawnGrave();-- Spawn a grave at its location and save the grave in the variable "Grave"
+    Grave:SpawnZombie(Zombie.Type);-- Then spawn a zombie from the grave, with the same type as the zombie that ate the plant.
+end);
+
+Zombie.OnDeath:Connect(function(Zombie)
+    Zombie:SpawnGrave();
+end);
