@@ -1,4 +1,6 @@
 #pragma once
+#include "LunaApi/LunaIO/LunaIO.h"
+#include "format"
 
 template <typename T>
 struct DataArrayItem
@@ -35,8 +37,14 @@ struct DataArray
 	}
 	T* Alloc()
 	{
-		DataArrayItem<T>* New;
+		if (Size >= MaxSize)
+		{
+			const auto info = std::format("DataArray::Alloc[{}]: MaxSize reached", Name);
+			LunaIO::Print(info, LunaIO::Warning);
+			return NULL;
+		}
 
+		DataArrayItem<T>* New;
 		int FreeListOG = FreeListHead;
 		if (FreeListHead == MaxUsedCount)
 		{
@@ -54,7 +62,8 @@ struct DataArray
 		if (NextKey == 0x10000) NextKey = 1;
 		Size++;
 
-		auto Item = new (&New->Item) T();
+		T* Item = &New->Item;
+		*Item = T();
 		return Item;
 	}
 	bool Next(T** Last)

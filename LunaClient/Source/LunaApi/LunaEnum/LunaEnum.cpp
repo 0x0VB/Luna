@@ -101,7 +101,7 @@ int EnumLib::__index(lua_State* L)
 	return 1;
 }
 
-int EnumLib::__newindex(lua_State* L) { LunaIO::ThrowError(L, "EnumLibraries are read-only."); }
+int EnumLib::__newindex(lua_State* L) { LunaIO::ThrowError(L, "EnumLibraries are read-only.");  return 0;  }
 int EnumLib::__tostring(lua_State* L)
 {
 	auto self = *(EnumLib**)lua_touserdata(L, 1);
@@ -134,6 +134,7 @@ int EnumItem::__index(lua_State* L)
 int EnumItem::__newindex(lua_State* L)
 {
 	LunaIO::ThrowError(L, "EnumItems are read-only.");
+	return 0;
 }
 
 int EnumItem::__tostring(lua_State* L)

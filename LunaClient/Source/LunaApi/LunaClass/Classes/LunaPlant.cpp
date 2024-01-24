@@ -402,6 +402,7 @@ int Methods::SpawnGrave(lua_State* L)
 int Methods::Kill(lua_State* L)
 {
 	GetPlant(L, 1)->Die();
+	return 0;
 }
 #pragma endregion
 
