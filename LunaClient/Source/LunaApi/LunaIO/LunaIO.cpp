@@ -36,13 +36,6 @@ void LunaIO::Print(const char* Text, IOColor Color, bool NewLine)
 	if (NewLine) std::cout << "\n";
 }
 
-void LunaIO::Print(std::string Text, IOColor Color, bool NewLine)
-{
-	SetColor(Color);
-	std::cout << Text;
-	if (NewLine) std::cout << "\n";
-}
-
 void LunaIO::ThrowError(lua_State* L, std::string Text, bool AppendTraceback, int Level)
 {
 	if (AppendTraceback)

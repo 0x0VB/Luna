@@ -15,7 +15,7 @@ namespace LunaIO
 	void SetColor(IOColor = None);
 
 	void Print(const char* Text, IOColor = None, bool NewLine = true);
-	void Print(std::string Text, IOColor = None, bool NewLine = true);
+	__inline void Print(std::string Text, IOColor Color = None, bool NewLine = true) { Print(Text.c_str(), Color, NewLine); }
 
 	void ThrowError(lua_State* L, std::string ErrorText, bool AppendTraceback = true, int Level = 1);
 	void ThrowError(lua_State* L, int StringCount = 1, int Level = 1);
